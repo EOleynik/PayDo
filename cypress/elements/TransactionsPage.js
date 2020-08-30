@@ -1,5 +1,7 @@
 import merchant from "../fixtures/merchant.json"
 import feen from "../fixtures/feen.json"
+import checkout from "../fixtures/checkout.json"
+import paymentMethod from "../fixtures/paymentMethod.json"
 
 class TransactionsPage {
 
@@ -8,702 +10,353 @@ class TransactionsPage {
         const amount = cy.get('[class="bold price-align"]').first();
     }
 
-    getCheck() {
-        const amount1 = cy.get(10 - 0.35 - 0.6)
+    checkAmountUIGBP(payAmount) {
 
-    }
-
-
-    checkAmountUiGbpAll(payAmount, payCurrency) {
-
-        // Get percent commission
+        // Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/"+merchant.bussiness_account,
+            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/"+paymentMethod.pm_id+"/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
         }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""])
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let fixcom = response.body.data[7].value.GBP[0];
             let perscom = response.body.data[7].value.GBP[1];
-            perscom = (perscom).toFixed(2)
+            let strateg = response.body.data[7].strategy
 
-            // Get fixed commission
-            cy.request({
-                method: 'GET',
-                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/"+merchant.bussiness_account,
-                headers: {
-                    token: feen.token,
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200)
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let fixcom = response.body.data[7].value.GBP[0];
-                fixcom = (fixcom).toFixed(2)
+            cy.wait(3000)
 
-                cy.wait(3000)
+            //Check status tranzaction
+            cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
+                expect(text).to.eq(' Accepted ')
+            })
 
-                //Check status tranzaction
-                cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
-                    expect(text).to.eq(' Accepted ')
-                })
+            //Сalculation formula & Check Amount
 
-                //Сalculation formula & Check Amount
+            if (strateg == 1) {
+
+                // суммируем фиксированную комиссию с процентом комиссии
+                let sumcom = (+fixcom + (+payAmount / 100 * +perscom)).toFixed(2)
+
+                // отнимаем сумму комисий от стоимости товара
+                let rezult = (payAmount - sumcom).toFixed(2)
+
+                cy.log("стратегия комиссий =" + " " + strateg)
+                cy.log("цена товара =" + " " + payAmount)
+                cy.log("сумма комиссий =" + " " + sumcom)
+
                 cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                    expect(text).to.eq((payAmount - fixcom - (payAmount / 100 * perscom)).toFixed(2) + ' ' + payCurrency)
+                    expect(text).to.eq((+rezult).toFixed(2) + ' ' + 'GBP')
                 })
-            })
-        })
-
-    }
-
-
-    // Самый простой кейс.Цена товара - совпадает с валютами которые в кабинете мерчанта (USD, EUR, GBP, RUB)
-    // и валютами провайдера, Стратегия комиссии - ALL. Валюта товара GBP
-    checkAmountUiGbpMax(payAmount, payCurrency) {
-
-        // Get percent commission
-        cy.request({
-            method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
-            headers: {
-                token: feen.token,
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""])
-            let perscom = response.body.data[7].value.GBP[1];
-
-            // Get fixed commission
-            cy.request({
-                method: 'GET',
-                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
-                headers: {
-                    token: feen.token,
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200)
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let fixcom = response.body.data[7].value.GBP[0];
-
-                cy.wait(3000);
-
-                // Checking transaction status
-                // cy.request({
-                //     method: 'GET',
-                //     url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-                //     headers: {
-                //         token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE3ODIiLCJhY2Nlc3NUb2tlbiI6IjU4ZjE4NzhiZWQwYmJiMzM5OTk1NzVkMiIsInRva2VuSWQiOiIyOCIsIndhbGxldElkIjoiMTc3NiIsInRpbWUiOjE1OTY5NjYyNzUsImV4cGlyZWRBdCI6MTYwOTM2NTYwMCwicm9sZXMiOltdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjpmYWxzZX19.CKWO2ky4C0GytFG0_pK-aKsFCa5cITEE7hBVxedH-78'
-                //     }
-                // }).then((response) => {
-                //     expect(response).property('status').to.equal(200)
-                //     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                //     let status = response.body.data[0].state;
-                //     expect(status).to.eq(2);
-
-                // Check status tranzaction
-                cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
-                    expect(text).to.eq(' Accepted ')
-                })
-
-                //Сalculation formula & Check Amount
-                cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                    if (fixcom > (payAmount / 100 * perscom)) {
-                        expect(text).to.eq((payAmount - fixcom).toFixed(2) + ' ' + payCurrency)
-                    } else {
-                        expect(text).to.eq((payAmount - (payAmount / 100 * perscom)).toFixed(2) + ' ' + payCurrency)
-                    }
-                })
-
-                // Checking transaction amount
-                // cy.request({
-                //     method: 'GET',
-                //     url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-                //     headers: {
-                //         token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE3ODIiLCJhY2Nlc3NUb2tlbiI6IjU4ZjE4NzhiZWQwYmJiMzM5OTk1NzVkMiIsInRva2VuSWQiOiIyOCIsIndhbGxldElkIjoiMTc3NiIsInRpbWUiOjE1OTY5NjYyNzUsImV4cGlyZWRBdCI6MTYwOTM2NTYwMCwicm9sZXMiOltdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjpmYWxzZX19.CKWO2ky4C0GytFG0_pK-aKsFCa5cITEE7hBVxedH-78'
-                //     }
-                // }).then((response) => {
-                //     expect(response).property('status').to.equal(200)
-                //     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                //     let sum = response.body.data[0].amount;
-                //      if (fixcom > (payAmount / 100 * perscom)) {
-                //          expect(sum).to.eq((payAmount - fixcom - (payAmount / 100 * conversion)).toFixed(8))
-                //      } else {
-                //          expect(sum).to.eq((payAmount - (payAmount / 100 * perscom) - (payAmount / 100 * conversion)).toFixed(8))
-                //      }
-                //})
-            })
-        })
-
-
-    }
-
-    checkAmountUiUsdAll(payAmount, conversion, payCurrency) {
-
-        // Get percent commission
-        cy.request({
-            method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/"+merchant.bussiness_account,
-            headers: {
-                token: feen.token,
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""])
-            let perscom = response.body.data[7].value.USD[1];
-
-            // Get fixed commission
-            cy.request({
-                method: 'GET',
-                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/"+merchant.bussiness_account,
-                headers: {
-                    token: feen.token,
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200)
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let fixcom = response.body.data[7].value.USD[0];
-
-                cy.wait(3000)
-
-                //Check status tranzaction
-                cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
-                    expect(text).to.eq(' Accepted ')
-                })
-
-                // Сalculation formula & Check Amount
-                cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                   expect(text).to.eq((payAmount - fixcom - (payAmount / 100 * perscom) - (payAmount / 100 * conversion)).toFixed(2) + ' ' + payCurrency)
-                })
-
-            })
-        })
-    }
-
-
-    // Цена товара - совпадает с валютами которые в кабинете мерчанта (USD, EUR, GBP, RUB)
-    // и валютами провайдера, Стратегия комиссии - ALL. Валюта товара USD
-    checkAmountUSDMax(payAmount, conversion, payCurrency) {
-
-        // Get percent commission
-        cy.request({
-            method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
-            headers: {
-                token: feen.token,
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""])
-            let perscom = response.body.data[7].value.USD[1];
-
-            // Get fixed commission
-            cy.request({
-                method: 'GET',
-                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
-                headers: {
-                    token: feen.token,
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200)
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let fixcom = response.body.data[7].value.USD[0];
-
-                cy.wait(3000);
-
-                // Checking transaction status
-                cy.request({
-                    method: 'GET',
-                    url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-                    headers: {
-                        token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE4MTIiLCJhY2Nlc3NUb2tlbiI6IjY0YjE2NGUxOTMyMzA0ODFjNmZlY2VmYiIsInRva2VuSWQiOiIyOSIsIndhbGxldElkIjoiMTgwNiIsInRpbWUiOjE1OTcxMjYwNDYsImV4cGlyZWRBdCI6MTYwOTM2NTYwMCwicm9sZXMiOltdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjpmYWxzZX19.7RrfbqC_w5ovuMq4j0KtAnCslgBAKUHPmR0wOOFNhqM'
-                    }
-                }).then((response) => {
-                    expect(response).property('status').to.equal(200)
-                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    let status = response.body.data[0].state;
-                    expect(status).to.eq(2);
-
-                    // Checking transaction amount
-                    cy.request({
-                        method: 'GET',
-                        url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-                        headers: {
-                            token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE4MTIiLCJhY2Nlc3NUb2tlbiI6IjY0YjE2NGUxOTMyMzA0ODFjNmZlY2VmYiIsInRva2VuSWQiOiIyOSIsIndhbGxldElkIjoiMTgwNiIsInRpbWUiOjE1OTcxMjYwNDYsImV4cGlyZWRBdCI6MTYwOTM2NTYwMCwicm9sZXMiOltdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjpmYWxzZX19.7RrfbqC_w5ovuMq4j0KtAnCslgBAKUHPmR0wOOFNhqM'
-                        }
-                    }).then((response) => {
-                        expect(response).property('status').to.equal(200)
-                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        let sum = response.body.data[0].amount;
-                        if (fixcom > (payAmount / 100 * perscom)) {
-                            expect(sum).to.eq((payAmount - fixcom - (payAmount / 100 * conversion)).toFixed(8))
-                        } else {
-                            expect(sum).to.eq((payAmount - (payAmount / 100 * perscom) - (payAmount / 100 * conversion)).toFixed(8))
-                        }
-                    })
-
-                    // Check status tranzaction
-                    // cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
-                    //     expect(text).to.eq(' Accepted ')
-                    // })
-                    //
-                    // // Сalculation formula & Check Amount
-                    // cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                    //     if (fixcom > (payAmount / 100 * perscom)) {
-                    //         expect(text).to.eq((payAmount - fixcom - (payAmount / 100 * conversion)).toFixed(2) + ' ' + payCurrency)
-                    //     } else {
-                    //         expect(text).to.eq((payAmount - (payAmount / 100 * perscom) - (payAmount / 100 * conversion)).toFixed(2) + ' ' + payCurrency)
-                    //     }
-                    // })
-
-                })
-            })
-
-        })
-    }
-
-    checkAmountTRYAll(payAmount, conversion, payCurrency) {
-
-        // Get percent commission
-        cy.request({
-            method: 'GET',
-            url: `https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/1782`,
-            headers: {
-                token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE2MDQiLCJhY2Nlc3NUb2tlbiI6ImRlYzhhMDE5YjA1Y2M2ZjVkMzk3ZjdiOSIsInRva2VuSWQiOm51bGwsIndhbGxldElkIjoiMTU5OCIsInRpbWUiOjE1OTYzNTgyNzMsImV4cGlyZWRBdCI6bnVsbCwicm9sZXMiOlsiUk9MRV9GSU5BTkNJQUwiXSwidHdvRmFjdG9yIjp7InBhc3NlZCI6dHJ1ZX19.GGimEqCfcBU3fMMiO23Uc9_-nPidBcmNwpFvNuNi3SU',
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""])
-            let perscom = response.body.data[7].value.TRY[1];
-
-            // Get fixed commission
-            cy.request({
-                method: 'GET',
-                url: `https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/1782`,
-                headers: {
-                    token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE2MDQiLCJhY2Nlc3NUb2tlbiI6ImRlYzhhMDE5YjA1Y2M2ZjVkMzk3ZjdiOSIsInRva2VuSWQiOm51bGwsIndhbGxldElkIjoiMTU5OCIsInRpbWUiOjE1OTYzNTgyNzMsImV4cGlyZWRBdCI6bnVsbCwicm9sZXMiOlsiUk9MRV9GSU5BTkNJQUwiXSwidHdvRmFjdG9yIjp7InBhc3NlZCI6dHJ1ZX19.GGimEqCfcBU3fMMiO23Uc9_-nPidBcmNwpFvNuNi3SU',
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200)
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let fixcom = response.body.data[7].value.TRY[0];
-
-                cy.wait(3000);
-
-                // Checking transaction status
-                cy.request({
-                    method: 'GET',
-                    url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-                    headers: {
-                        token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE3ODIiLCJhY2Nlc3NUb2tlbiI6IjU4ZjE4NzhiZWQwYmJiMzM5OTk1NzVkMiIsInRva2VuSWQiOiIyOCIsIndhbGxldElkIjoiMTc3NiIsInRpbWUiOjE1OTY5NjYyNzUsImV4cGlyZWRBdCI6MTYwOTM2NTYwMCwicm9sZXMiOltdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjpmYWxzZX19.CKWO2ky4C0GytFG0_pK-aKsFCa5cITEE7hBVxedH-78'
-                    }
-                }).then((response) => {
-                    expect(response).property('status').to.equal(200)
-                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    let status = response.body.data[0].state;
-                    expect(status).to.eq(2);
-
-                    // Check status tranzaction
-                    // cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
-                    //     expect(text).to.eq(' Accepted ')
-                    // })
-
-                    // Checking transaction amount
-                    cy.request({
-                        method: 'GET',
-                        url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-                        headers: {
-                            token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE3ODIiLCJhY2Nlc3NUb2tlbiI6IjU4ZjE4NzhiZWQwYmJiMzM5OTk1NzVkMiIsInRva2VuSWQiOiIyOCIsIndhbGxldElkIjoiMTc3NiIsInRpbWUiOjE1OTY5NjYyNzUsImV4cGlyZWRBdCI6MTYwOTM2NTYwMCwicm9sZXMiOltdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjpmYWxzZX19.CKWO2ky4C0GytFG0_pK-aKsFCa5cITEE7hBVxedH-78'
-                        }
-                    }).then((response) => {
-                        expect(response).property('status').to.equal(200)
-                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        let sum = response.body.data[0].amount;
-
-                        let one = (payAmount / 100 * conversion) //комиссия за первую конвертацию
-                        let two = (payAmount - fixcom - (payAmount / 100 * perscom) - one) //отнимаем комиссии
-
-                        cy.request({
-                            method: 'GET',
-                            url: 'http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=TRY&to=USD&amount=1',
-                        }).then((response) => {
-                            expect(response).property('status').to.equal(200)
-                            //expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                            let rat = response.body.info.rate;
-
-                            let thre = (two * rat)//конвертируем в основную валюту мерчанта т к try есть в валюте оплаты
-
-
-                            let four = (thre - ((two * rat) / 100 * conversion)) //отнимаем проц за конверт
-                            let five = (four / 100 * conversion)//вторая конверт в GBP
-                            let result = (four - five).toFixed(8)
-
-                            expect(sum).to.eq(result)//((payAmount - fixcom - (payAmount / 100 * perscom) - (payAmount / 100 * conversion)).toFixed(8))
-
-                            // Сalculation formula & Check Amount
-                            // cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                            //     expect(text).to.eq((payAmount - fixcom - (payAmount / 100 * perscom) - (payAmount / 100 * conversion)).toFixed(2) + ' ' + payCurrency)
-                            // })
-
-                        })
-                    })
-                })
-            })
-
-
-        })
-    }
-
-    // Цена товара - не совпадает с валютами, которые в кабинете мерчанта (USD, EUR, GBP, RUB),
-    // основная валюта мерчанта совпадает с валютой оплаты, Стратегия комиссии - ALL.
-    checkAmountUiUahAll(payAmount, conversion, payCurrency, mainCurrency) {
-
-        // Get percent commission
-        cy.request({
-            method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/"+merchant.bussiness_account,
-            headers: {
-                token: feen.token,
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""])
-            let perscom = response.body.data[7].value.UAH[1];
-            console.log(perscom)
-
-            // Get fixed commission
-            cy.request({
-                method: 'GET',
-                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/"+merchant.bussiness_account,
-                headers: {
-                    token: feen.token,
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200)
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let fixcom = response.body.data[7].value.UAH[0];
-                console.log(fixcom)
-
-                cy.wait(3000);
-
-                // Check status tranzaction
-                cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
-                    expect(text).to.eq(' Accepted ')
-                })
-
-                // Get rate
-                cy.request({
-                    method: 'GET',
-                    url: "http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=UAH&to="+mainCurrency+"&amount=1",
-                }).then((response) => {
-                    expect(response).property('status').to.equal(200)
-                    //expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    let rat = response.body.info.rate; //0.04
-                    console.log(rat)
-
-
-                    // Checking transaction amount
-
-                    // комиссия за первую конвертацию с UAH в USD
-                    let exch = (payAmount / 100 * conversion).toFixed(2)
-                    console.log(exch)
-
-                    // комиссия за вторую конвертацию с USD в GBP
-                    let exch2 = ((payAmount * rat) / 100 * conversion)
-                    console.log(exch2)
-
-                    // сумма комиссий
-                    //let com = ((perscom + fixcom) + exch)
-                    //console.log(com)
-
-                    // отнимаем комиссии от стоимости
-                    let wcom = (payAmount - fixcom - (payAmount/100*perscom) - exch)
-                    console.log(wcom)
-
-                    // отнимаем комиссию за первую конвертацию
-                    //let wcom2 = (wcom-exch)
-                   // console.log(wcom2)
-
-                    // конвертация в USD
-                    let exusd = (wcom * rat)
-                    console.log(exusd)
-
-                    // комиссия за конвертацию в USD
-                    let comusd = (exusd / 100 * conversion)
-                    console.log(comusd)
-
-
-
-
-                    let final = (exusd - comusd - exch2)
-
-                    //
-
-                    // // комиссия за конвертацию с UAH в USD
-                    // let com1 = (payAmount / 100 * conversion).toFixed(2); // UAH 15.58
-                    // console.log(com1)
-                    //
-                    // // комиссия за конвертацию с USD в GBP
-                    // let com2 = ((payAmount * rat).toFixed(2) / 100 * conversion).toFixed(2) //USD o.58
-                    // console.log(com2)
-                    //
-                    // // отнимаем комиссии фикс проц конвертация в USD
-                    // let result = (payAmount - fixcom.toFixed(2) - (payAmount / 100 * perscom.toFixed(2)) - com1).toFixed(2) //UAH 377.2
-                    // console.log(result)
-                    //
-                    // // конвертируем result в USD
-                    // let convresult = (result * rat).toFixed(2) // USD 13.8
-                    // console.log(convresult)
-                    //
-                    // // комиссия за конвертацию result в USD
-                    // let com3 = (convresult / 100 * conversion).toFixed(2) // USD 0.48
-                    // console.log(com3)
-                    //
-                    // //отнимаем комиссию за конвертацию
-                    // let result2 = (convresult - com3).toFixed(2) // USD 13.32
-                    // console.log(result2)
-                    //
-                    // // комиссия за конвертацию с USD в GBP
-                    // let com4 = ((payAmount * rat).toFixed(2) / 100 * conversion).toFixed(2) //(result2 / 100 * conversion) // USD
-                    // console.log(com4)
-                    //
-                    // // FINAL
-                    // let final = result2 - com4 // USD
-                    // console.log(final)
+            } else {
+                if (fixcom > (+payAmount / 100 * +perscom)) {
+
+                    // отнимаем фиксированную комиссию от стоимости товара
+                    let rezult = (payAmount - fixcom).toFixed(2)
+
+                    cy.log("стратегия комиссий =" + " " + strateg)
+                    cy.log("цена товара =" + " " + payAmount)
+                    cy.log("фиксированная комиссия =" + " " + (+fixcom).toFixed(2))
 
                     cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                        expect(text).to.eq((final).toFixed(2) + ' ' + mainCurrency)
+                        expect(text).to.eq((+rezult).toFixed(2) + ' ' + 'GBP')
                     })
+                } else {
+                    // отнимаем процент комиссии от стоимости товара
+                    let rezult = (payAmount - (+payAmount / 100 * +perscom)).toFixed(2)
 
-                })
-            })
+                    cy.log("стратегия комиссий =" + " " + strateg)
+                    cy.log("цена товара =" + " " + payAmount)
+                    cy.log("процент комиссии =" + " " + (payAmount /100 *perscom).toFixed(2))
+
+                    cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
+                        expect(text).to.eq((+rezult).toFixed(2) + ' ' + 'GBP')
+                    })
+                }
+            }
         })
-
     }
 
-    // Цена товара - совпадает с валютами которые в кабинете мерчанта (USD, EUR, GBP, RUB)
-    // и валютами провайдера, Стратегия комиссии - ALL. Валюта товара USD
-    checkAmountUiUSDMax(payAmount, conversion, payCurrency) {
 
-        // Get percent commission
+    checkAmountUIUSD(payAmount) {
+
+        // Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
+            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
         }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""])
-            let perscom = response.body.data[7].value.USD[1];
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let fixcom = response.body.data[7].value[checkout.product_currency_c2][0];
+            let perscom = response.body.data[7].value[checkout.product_currency_c2][1];
+            let strateg = response.body.data[7].strategy
 
-            // Get fixed commission
-            cy.request({
-                method: 'GET',
-                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
-                headers: {
-                    token: feen.token,
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200)
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let fixcom = response.body.data[7].value.USD[0];
+            cy.wait(3000)
 
-                cy.wait(3000);
+            //Check status tranzaction
+            cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
+                expect(text).to.eq(' Accepted ')
+            })
 
-                // Checking status tranzaction
-                cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
-                    expect(text).to.eq(' Accepted ')
-                })
+            // Сalculation formula & Check Amount
 
-                // Сalculation formula & Check Amount
+            // процент за конвертацию в GBP
+            let exchcom = (payAmount / 100 * checkout.exchange_percentage).toFixed(2)
+
+            if (strateg == 1) {
+
+                // суммируем фиксированную комиссию, процент комиссии и процент за конвертацию
+                let sumcom = (+fixcom + (+payAmount / 100 * +perscom) + +exchcom).toFixed(2)
+
+                // отнимаем сумму комисий от стоимости товара
+                let rezult = (payAmount - sumcom).toFixed(2)
+
+                cy.log("стратегия комиссий =" + " " + strateg)
+                cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c2)
+                cy.log("сумма комиссий =" + " " + sumcom)
+
                 cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                    if (fixcom > (payAmount / 100 * perscom)) {
-                        expect(text).to.eq((payAmount - (fixcom + (payAmount / 100 * conversion)).toFixed(2)).toFixed(2) + ' ' + payCurrency)
-                    } else {
-                        expect(text).to.eq((payAmount - ((payAmount / 100 * perscom) + (payAmount / 100 * conversion)).toFixed(2)).toFixed(2) + ' ' + payCurrency)
-                    }
+                    expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                 })
-            })
+            } else {
+                if (fixcom > (+payAmount / 100 * +perscom)) {
+
+                    // суммируем фиксированную комиссию и процент за конвертацию
+                    let sumcom = (+fixcom + +exchcom).toFixed(2)
+
+                    // отнимаем сумму комиссий от стоимости товара
+                    let rezult = (payAmount - sumcom).toFixed(2)
+
+                    cy.log("стратегия комиссий =" + " " + strateg)
+                    cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c2)
+                    cy.log("фиксированная комиссия =" + " " + (+fixcom).toFixed(2))
+
+                    cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
+                        expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
+                    })
+                } else {
+
+                    // суммируем процент комиссии и процент за конвертацию
+                    let sumcom = ((+payAmount / 100 * +perscom) + +exchcom).toFixed(2)
+
+                    // отнимаем сумму комиссий от стоимости товара
+                    let rezult = (payAmount - sumcom).toFixed(2)
+
+                    cy.log("стратегия комиссий =" + " " + strateg)
+                    cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c2)
+                    cy.log("процент комиссии =" + " " + (payAmount / 100 * perscom).toFixed(2))
+
+                    cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
+                        expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
+                    })
+                }
+            }
         })
     }
 
-    //Цена товара - не совпадает с валютами, которые в кабинете мерчанта (USD, EUR, GBP, RUB),
-    // основная валюта мерчанта совпадает с валютой оплаты, Стратегия комиссии - ALL. Валюта товара UAH
-    checkAmountUiUahMax(payAmount, conversion, payCurrency, mainCurrency) {
-        // Get percent commission
+    checkAmountUIUAH(payAmount) {
+
+        // Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
+            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
         }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""])
-            let perscom = (response.body.data[7].value.UAH[1]).toFixed(2);
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let fixcom = response.body.data[7].value[checkout.product_currency_c3][0];
+            let perscom = response.body.data[7].value[checkout.product_currency_c3][1];
+            let strateg = response.body.data[7].strategy
 
-            // Get fixed commission
+            cy.wait(5000)
+
+            //Check status tranzaction
+            cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
+                expect(text).to.eq(' Accepted ')
+            })
+
+            // Сalculation formula & Check Amount
+
+            // Get rate
             cy.request({
                 method: 'GET',
-                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
-                headers: {
-                    token: feen.token,
-                }
+                url: "http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=" + checkout.product_currency_c3 + "&to=" + merchant.main_currency + "&amount=1",
             }).then((response) => {
                 expect(response).property('status').to.equal(200)
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let fixcom = (response.body.data[7].value.UAH[0]).toFixed(2);
+                let rate = response.body.info.rate;
 
-                cy.wait(3000);
+                if (strateg == 1) {
 
-                // Check status tranzaction
-                cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
-                    expect(text).to.eq(' Accepted ')
-                })
+                    // сумма комиссий
+                    let sumcom = (+fixcom + (+payAmount / 100 * +perscom)).toFixed(2)
 
-                // Get rate
-                cy.request({
-                    method: 'GET',
-                    url: 'http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=UAH&to=USD&amount=1',
-                }).then((response) => {
-                    expect(response).property('status').to.equal(200)
-                    //expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    let rat = response.body.info.rate;
-                    console.log(rat)
+                    // комиссия за конвертацию с UAH в основную валюту мерчанта
+                    let exch = (payAmount / 100 * checkout.exchange_percentage).toFixed(2)
 
-                    // Checking transaction amount
+                    // комиссия за конвертацию цены товара с основной валюты в GBP
+                    //let exch2 = ((payAmount * 0.036512990427426) / 100 * +checkout.exchange_percentage).toFixed(2)
+                    let exch2 = ((payAmount * rate) / 100 * checkout.exchange_percentage).toFixed(2)
 
-                    if (fixcom > (payAmount / 100 * perscom)) {
+                    // отнимаем от стоимости товара сумму комисий и комиссию за конвертацию с UAH
+                    let net = (payAmount - sumcom - exch).toFixed(2)
 
+                    // конвертируем результат в основную валюту мерчанта
+                    //let conv = (net * 0.036512990427426).toFixed(2)
+                    let conv = (net * +rate).toFixed(2)
 
+                    // комиссия за конвертацию
+                    let comconv = (conv / 100 * +checkout.exchange_percentage).toFixed(2)
 
+                    // отнимаем комиссии за конвертацию
+                    let rezult = (conv - comconv - exch2).toFixed(2)
 
-                        // комиссия за конвертацию с UAH в USD
-                        let com1 = (payAmount / 100 * conversion).toFixed(2); // UAH
-                        console.log(com1)
+                    cy.log("стратегия комиссий =" + " " + strateg)
+                    cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3)
+                    cy.log("сумма комиссий =" + " " + sumcom)
+                    cy.log("комиссия за конвертацию валюты товара в основную валюту =" + " " + exch)
+                    cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2)
+                    cy.log("комиссия за конвертацию цены без комиссий в основную валюту мерчанта =" + " " + comconv)
 
-                        // комиссия за конвертацию с USD в GBP
-                        let com2 = ((payAmount * rat) / 100 * conversion).toFixed(2) //USD
-                        console.log(com2)
+                    // получаем и сравниваем Amount
 
-                        // отнимаем комиссию фикс и ком конвертации в USD
-                        let result = (payAmount - fixcom - com1).toFixed(2) //UAH
-                        console.log(result)
+                    cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
+                        expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
+                    })
 
-                        // конвертируем result в USD
-                        let convresult = (result * rat).toFixed(2) // USD
-                        console.log(convresult)
+                } else {
+                    if (fixcom > (+payAmount / 100 * +perscom)) {
 
-                        // комиссия за конвертацию result в USD
-                        let com3 = (convresult / 100 * conversion).toFixed(2) // USD
-                        console.log(com3)
+                        // комиссия за конвертацию с UAH в основную валюту мерчанта
+                        let exch = (payAmount / 100 * checkout.exchange_percentage).toFixed(2)
 
-                        //отнимаем комиссию за конвертацию
-                        let result2 = (convresult - com3).toFixed(2) // USD
-                        console.log(result2)
+                        // комиссия за конвертацию цены товара с основной валюты в GBP
+                        //let exch2 = ((payAmount * 0.036512990427426) / 100 * +checkout.exchange_percentage).toFixed(2)
+                        let exch2 = ((payAmount * rate) / 100 * checkout.exchange_percentage).toFixed(2)
 
-                        // комиссия за конвертацию с USD в GBP
-                        let com4 = ((payAmount * rat) / 100 * conversion).toFixed(2)   // USD
-                        console.log(com4)
+                        // суммируем фиксированную комиссию и комиссию за конвертацию с UAH в основную валюту мерчанта
+                        let sumcom = (+fixcom + +exch).toFixed(2)
 
-                        // FINAL
-                        let final = result2 - com4 // USD
-                        console.log(final)
+                        // отнимаем от стоимости товара сумму комиссий
+                        let net = (payAmount - sumcom).toFixed(2)
+
+                        // конвертируем результат в основную валюту мерчанта
+                        //let conv = (net * 0.036512990427426).toFixed(2)
+                        let conv = (net * +rate).toFixed(2)
+
+                        // комиссия за конвертацию
+                        let comconv = (conv / 100 * +checkout.exchange_percentage).toFixed(2)
+
+                        // отнимаем комиссии за конвертацию
+                        let rezult = (conv - comconv - exch2).toFixed(2)
+
+                        cy.log("стратегия комиссий =" + " " + strateg)
+                        cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3)
+                        cy.log("фиксированная комиссия =" + " " + (+fixcom).toFixed(2))
+                        cy.log("комиссия за конвертацию валюты товара в основную валюту =" + " " + exch)
+                        cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2)
+                        cy.log("комиссия за конвертацию цены без комиссий в основную валюту мерчанта =" + " " + comconv)
+
+                        // получаем и сравниваем Amount
 
                         cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                            expect(text).to.eq((final).toFixed(2) + ' ' + mainCurrency)
+                            expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                         })
+
                     } else {
 
-                        // комиссия за конвертацию с UAH в USD
-                        let com1 = (payAmount / 100 * conversion).toFixed(2); // UAH
-                        console.log(com1)
+                        // комиссия за конвертацию с UAH в основную валюту мерчанта
+                        let exch = (payAmount / 100 * checkout.exchange_percentage).toFixed(2)
 
-                        // комиссия за конвертацию с USD в GBP
-                        let com2 = ((payAmount * rat) / 100 * conversion).toFixed(2) //USD
-                        console.log(com2)
+                        // комиссия за конвертацию цены товара с основной валюты в GBP
+                        //let exch2 = ((payAmount * 0.036512990427426) / 100 * +checkout.exchange_percentage).toFixed(2)
+                        let exch2 = ((payAmount * rate) / 100 * checkout.exchange_percentage).toFixed(2)
 
-                        // отнимаем комиссию фикс и ком конвертации в USD
-                        let result = (payAmount - (payAmount / 100 * perscom) - com1).toFixed(2) //UAH
-                        console.log(result)
+                        // суммируем процент комиссии и комиссию за конвертацию с UAH в основную валюту мерчанта
+                        let sumcom = ((+payAmount / 100 * +perscom) + +exch).toFixed(2)
 
-                        // конвертируем result в USD
-                        let convresult = (result * rat).toFixed(2) // USD
-                        console.log(convresult)
+                        // отнимаем от стоимости товара сумму комиссий
+                        let net = (payAmount - sumcom).toFixed(2)
 
-                        // комиссия за конвертацию result в USD
-                        let com3 = (convresult / 100 * conversion).toFixed(2) // USD
-                        console.log(com3)
+                        // конвертируем результат в основную валюту мерчанта
+                        //let conv = (net * 0.036512990427426).toFixed(2)
+                        let conv = (net * +rate).toFixed(2)
 
-                        //отнимаем комиссию за конвертацию
-                        let result2 = (convresult - com3).toFixed(2) // USD
-                        console.log(result2)
+                        // комиссия за конвертацию
+                        let comconv = (conv / 100 * +checkout.exchange_percentage).toFixed(2)
 
-                        // комиссия за конвертацию с USD в GBP
-                        let com4 = ((payAmount * rat) / 100 * conversion).toFixed(2)   // USD
-                        console.log(com4)
+                        // отнимаем комиссии за конвертацию
+                        let rezult = (conv - comconv - exch2).toFixed(2)
 
-                        // FINAL
-                        let final = result2 - com4 // USD
-                        console.log(final)
+                        cy.log("стратегия комиссий =" + " " + strateg)
+                        cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3)
+                        cy.log("процент комиссии =" + " " + (payAmount / 100 * perscom).toFixed(2))
+                        cy.log("комиссия за конвертацию валюты товара в основную валюту =" + " " + exch)
+                        cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2)
+                        cy.log("комиссия за конвертацию цены без комиссий в основную валюту мерчанта =" + " " + comconv)
+
+                        // получаем и сравниваем Amount
 
                         cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                            expect(text).to.eq((final).toFixed(2) + ' ' + mainCurrency)
+                            expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                         })
-
                     }
-
-                })
+                }
             })
         })
     }
 
+    checkAmountAPIGBP(payAmount) {
 
-    checkAmountAPIGbpAll(payAmount, payCurrency) {
-        // Get persent commission
+        // Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
+            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
         }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""])
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let fixcom = response.body.data[7].value.GBP[0];
             let perscom = response.body.data[7].value.GBP[1];
-            perscom = (perscom).toFixed(2)
+            let strateg = response.body.data[7].strategy
 
-            // Get fixed commission
+            cy.wait(5000)
+
+            //Check status tranzaction
             cy.request({
                 method: 'GET',
-                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
+                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                 headers: {
-                    token: feen.token,
+                    token: merchant.token
                 }
             }).then((response) => {
                 expect(response).property('status').to.equal(200)
                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let fixcom = response.body.data[7].value.GBP[0];
-                fixcom = (fixcom).toFixed(2)
+                let status = response.body.data[0].state;
+                expect(status).to.eq(2);
 
-                cy.wait(3000)
+                //Сalculation formula & Check Amount
 
-                //Check status tranzaction
-                cy.request({
-                    method: 'GET',
-                    url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-                    headers: {
-                        token: merchant.token
-                    }
-                }).then((response) => {
-                    expect(response).property('status').to.equal(200)
-                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    let status = response.body.data[0].state;
-                    expect(status).to.eq(2);
+                if (strateg == 1) {
 
-                    //Сalculation formula & Check Amount
+                    // суммируем фиксированную комиссию и процент комиссии
+                    let sumcom = (+fixcom + (+payAmount / 100 * +perscom)).toFixed(2)
+
+                    // отнимаем от стоимости товара сумму комисий
+                    let rezult = (+payAmount - sumcom).toFixed(2)
+
+                    cy.log("стратегия комиссий =" + " " + strateg)
+                    cy.log("цена товара =" + " " + payAmount)
+                    cy.log("сумма комиссий =" + " " + sumcom)
+
                     cy.request({
                         method: 'GET',
                         url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -714,161 +367,17 @@ class TransactionsPage {
                         expect(response).property('status').to.equal(200)
                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                         let sum = response.body.data[0].amount;
-                        cy.log(sum)
-                        expect(sum).to.eq((payAmount - fixcom - (payAmount / 100 * perscom)).toFixed(2)) //+ ' ' + payCurrency)
+                        expect(sum).to.eq((+rezult).toFixed(2)).toString()
                     })
-                })
-            })
-        })
-    }
+                } else {
+                    if (fixcom > (+payAmount / 100 * +perscom)) {
 
+                        // отнимаем от стоимости товара фиксированную комиссию
+                        let rezult = (payAmount - fixcom).toFixed(2)
 
-    checkAmountAPIUsdAll(payAmount, conversion, payCurrency) {
-        // Get persent commission
-        cy.request({
-            method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
-            headers: {
-                token: feen.token,
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""])
-            let perscom = response.body.data[7].value.USD[1];
-            perscom = (perscom).toFixed(2)
-
-            // Get fixed commission
-            cy.request({
-                method: 'GET',
-                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
-                headers: {
-                    token: feen.token,
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200)
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let fixcom = response.body.data[7].value.USD[0];
-                fixcom = (fixcom).toFixed(2)
-
-                cy.wait(4000)
-
-                //Check status tranzaction
-                cy.request({
-                    method: 'GET',
-                    url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-                    headers: {
-                        token: merchant.token
-                    }
-                }).then((response) => {
-                    expect(response).property('status').to.equal(200)
-                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    let status = response.body.data[0].state;
-                    expect(status).to.eq(2);
-
-                    //Сalculation formula & Check Amount
-                    cy.request({
-                        method: 'GET',
-                        url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-                        headers: {
-                            token: merchant.token
-                        }
-                    }).then((response) => {
-                        expect(response).property('status').to.equal(200)
-                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        let sum = response.body.data[0].amount;
-                        console.log(sum)
-                        expect(sum).to.eq((payAmount - fixcom - (payAmount / 100 * perscom) - (payAmount / 100 * conversion)).toFixed(2)) //+ ' ' + payCurrency)
-                    })
-                })
-            })
-        })
-    }
-
-    checkAmountAPIUAHAll(payAmount, conversion, payCurrency) {
-        // Get persent commission
-        cy.request({
-            method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
-            headers: {
-                token: feen.token,
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""])
-            let perscom = response.body.data[7].value.UAH[1];
-            perscom = (perscom).toFixed(2)
-
-            // Get fixed commission
-            cy.request({
-                method: 'GET',
-                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/300/" + merchant.bussiness_account,
-                headers: {
-                    token: feen.token,
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200)
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let fixcom = response.body.data[7].value.UAH[0];
-                fixcom = (fixcom).toFixed(2)
-
-                cy.wait(4000)
-
-                //Check status tranzaction
-                cy.request({
-                    method: 'GET',
-                    url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-                    headers: {
-                        token: merchant.token
-                    }
-                }).then((response) => {
-                    expect(response).property('status').to.equal(200)
-                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    let status = response.body.data[0].state;
-                    expect(status).to.eq(2);
-
-                    //Сalculation formula & Check Amount
-
-                    // Get rate
-                    cy.request({
-                        method: 'GET',
-                        url: 'http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=UAH&to=USD&amount=1',
-                    }).then((response) => {
-                        expect(response).property('status').to.equal(200)
-                        //expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        let rat = response.body.info.rate;
-                        console.log(rat)
-
-                        // комиссия за конвертацию с UAH в USD
-                        let com1 = (payAmount / 100 * conversion).toFixed(2); // UAH 15.58
-                        console.log(com1)
-
-                        // комиссия за конвертацию с USD в GBP
-                        let com2 = ((payAmount * rat).toFixed(2) / 100 * conversion).toFixed(2) //USD o.58
-                        console.log(com2)
-
-                        // отнимаем комиссии фикс проц конвертация в USD
-                        let result = ((payAmount - fixcom).toFixed(2) - (payAmount / 100 * perscom).toFixed(2) - com1).toFixed(2)  //UAH 377.2
-                        console.log(result)
-
-                        // конвертируем result в USD
-                        let convresult = (result * rat).toFixed(2) // USD 13.8
-                        console.log(convresult)
-
-                        // комиссия за конвертацию result в USD
-                        let com3 = (convresult / 100 * conversion).toFixed(2) // USD 0.48
-                        console.log(com3)
-
-                        //отнимаем комиссию за конвертацию
-                        let result2 = (convresult - com3).toFixed(2) // USD 13.32
-                        console.log(result2)
-
-                        // комиссия за конвертацию с USD в GBP
-                        let com4 = ((payAmount * rat).toFixed(2) / 100 * conversion).toFixed(2) //(result2 / 100 * conversion) // USD
-                        console.log(com4)
-
-                        // FINAL
-                        let final = result2 - com4 // USD
-                        console.log(final)
+                        cy.log("стратегия комиссий =" + " " + strateg)
+                        cy.log("цена товара =" + " " + payAmount)
+                        cy.log("фиксированная комиссия =" + " " + fixcom)
 
                         cy.request({
                             method: 'GET',
@@ -880,13 +389,745 @@ class TransactionsPage {
                             expect(response).property('status').to.equal(200)
                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                             let sum = response.body.data[0].amount;
-                            expect(sum).to.eq(final).toFixed(2) //+ ' ' + mainCurrency)
+                            expect(sum).to.eq((+rezult).toFixed(2)).toString()
                         })
+                    } else {
+                        // отнимаем от стоимости товара процент комиссии
+                        let rezult = (payAmount - (+payAmount / 100 * +perscom)).toFixed(2)
+
+                        cy.log("стратегия комиссий =" + " " + strateg)
+                        cy.log("цена товара =" + " " + payAmount)
+                        cy.log("процент комиссии =" + " " + (+payAmount / 100 * +perscom).toFixed(2))
+
+                        cy.request({
+                            method: 'GET',
+                            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                            headers: {
+                                token: merchant.token
+                            }
+                        }).then((response) => {
+                            expect(response).property('status').to.equal(200)
+                            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                            let sum = response.body.data[0].amount;
+                            expect(sum).to.eq((+rezult).toFixed(2)).toString()
+                        })
+                    }
+                }
+            })
+        })
+    }
+
+
+    checkAmountAPIUSD(payAmount) {
+
+        // Get strategy, percent and fix commissions
+        cy.request({
+            method: 'GET',
+            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            headers: {
+                token: feen.token,
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let fixcom = response.body.data[7].value[checkout.product_currency_c2][0];
+            let perscom = response.body.data[7].value[checkout.product_currency_c2][1];
+            let strateg = response.body.data[7].strategy
+
+            cy.wait(5000)
+
+            //Check status tranzaction
+            cy.request({
+                method: 'GET',
+                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                headers: {
+                    token: merchant.token
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200)
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                let status = response.body.data[0].state;
+                expect(status).to.eq(2);
+
+                // Сalculation formula & Check Amount
+
+                // процент за конвертацию цены товара в GBP
+                let exchcom = (payAmount / 100 * checkout.exchange_percentage).toFixed(2)
+
+                if (strateg == 1) {
+
+                    // суммируем фиксированную комиссию и процент комиссии
+                    let sumcom = (+fixcom + (+payAmount / 100 * +perscom)).toFixed(2)
+
+                    // отнимаем от стоимости товара сумму комисий и процент за конвертацию в GBP
+                    let rezult = (payAmount - sumcom - exchcom).toFixed(2)
+
+                    cy.log("стратегия комиссий =" + " " + strateg)
+                    cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c2)
+                    cy.log("сумма комиссий =" + " " + sumcom)
+                    cy.log("процент за конвертацию =" + " " + exchcom)
+
+                    cy.request({
+                        method: 'GET',
+                        url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                        headers: {
+                            token: merchant.token
+                        }
+                    }).then((response) => {
+                        expect(response).property('status').to.equal(200)
+                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                        let sum = response.body.data[0].amount;
+                        expect(sum).to.eq(rezult)
                     })
+                } else {
+                    if (fixcom > (+payAmount / 100 * +perscom)) {
+
+                        // отнимаем от стоимости товара фиксированную комиссию и процент за конвертацию в GBP
+                        let rezult = (+payAmount - fixcom - exchcom).toFixed(2)
+
+                        cy.log("стратегия комиссий =" + " " + strateg)
+                        cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c2)
+                        cy.log("фиксированная комиссия =" + " " + fixcom)
+                        cy.log("процент за конвертацию =" + " " + exchcom)
+
+                        cy.request({
+                            method: 'GET',
+                            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                            headers: {
+                                token: merchant.token
+                            }
+                        }).then((response) => {
+                            expect(response).property('status').to.equal(200)
+                            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                            let sum = response.body.data[0].amount;
+                            expect(sum).to.eq(rezult)
+                        })
+                    } else {
+
+                        // отнимаем от стоимости товара процент комиссии и процент за конвертацию в GBP
+                        let rezult = (payAmount - (+payAmount / 100 * +perscom) - exchcom).toFixed(2)
+
+                        cy.log("стратегия комиссий =" + " " + strateg)
+                        cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c2)
+                        cy.log("процент комиссии =" + " " + (+payAmount / 100 * +perscom).toFixed(2))
+                        cy.log("процент за конвертацию =" + " " + exchcom)
+
+                        cy.request({
+                            method: 'GET',
+                            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                            headers: {
+                                token: merchant.token
+                            }
+                        }).then((response) => {
+                            expect(response).property('status').to.equal(200)
+                            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                            let sum = response.body.data[0].amount;
+                            expect(sum).to.eq(rezult)
+                        })
+                    }
+                }
+            })
+        })
+    }
+
+    checkAmountAPIUAH(payAmount) {
+
+        // Get strategy, percent and fix commissions
+        cy.request({
+            method: 'GET',
+            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            headers: {
+                token: feen.token,
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let fixcom = response.body.data[7].value[checkout.product_currency_c3][0];
+            let perscom = response.body.data[7].value[checkout.product_currency_c3][1];
+            let strateg = response.body.data[7].strategy
+
+            cy.wait(5000)
+
+            //Check status tranzaction
+            cy.request({
+                method: 'GET',
+                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                headers: {
+                    token: merchant.token
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200)
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                let status = response.body.data[0].state;
+                expect(status).to.eq(2);
+
+                // Сalculation formula & Check Amount
+
+                // Get rate
+                cy.request({
+                    method: 'GET',
+                    url: "http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=" + checkout.product_currency_c3 + "&to=" + merchant.main_currency + "&amount=1",
+                }).then((response) => {
+                    expect(response).property('status').to.equal(200)
+                    let rate = response.body.info.rate;
+
+                    // комиссия за конвертацию цены товара в основную валюту мерчанта
+                    let exch = (payAmount / 100 * checkout.exchange_percentage).toFixed(2)
+
+                    // комиссия за конвертацию цены товара с основной валюты в GBP
+                    //let exch2 = ((payAmount * 0.036512990427426) / 100 * +checkout.exchange_percentage).toFixed(2)
+                    let exch2 = ((payAmount * rate) / 100 * checkout.exchange_percentage).toFixed(2)
+
+                    if (strateg == 1) {
+
+                        // суммируем фиксированную комиссию и процент комиссии
+                        let sumcom = (+fixcom + (+payAmount / 100 * +perscom)).toFixed(2)
+
+                        // отнимаем от стоимости товара сумму комисий и комиссию за конвертацию в основную валюту
+                        let net = (payAmount - sumcom - exch).toFixed(2)
+
+                        // конвертируем результат в основную валюту мерчанта
+                        //let conv = (net * 0.036512990427426).toFixed(2)
+                        let conv = (net * +rate).toFixed(2)
+
+                        // комиссия за конвертацию результата в основную валюту
+                        let comconv = (+conv / 100 * +checkout.exchange_percentage).toFixed(2)
+
+                        // отнимаем комиссию за конвертацию результата и комиссию за конвертацию цены товара из основной валюты в GBP
+                        let rezult = (conv - comconv - exch2).toFixed(2)
+
+                        cy.log("стратегия комиссий =" + " " + strateg)
+                        cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3)
+                        cy.log("сумма комиссий =" + " " + sumcom)
+                        cy.log("комиссия за конвертацию цены товара в основную валюту =" + " " + exch)
+                        cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2)
+                        cy.log("комиссия за конвертацию цены без комиссий в основную валюту мерчанта =" + " " + comconv)
+
+                        // получаем и сравниваем Amount
+
+                        cy.request({
+                            method: 'GET',
+                            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                            headers: {
+                                token: merchant.token
+                            }
+                        }).then((response) => {
+                            expect(response).property('status').to.equal(200)
+                            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                            let sum = response.body.data[0].amount;
+                            expect(sum).to.eq(rezult)
+                        })
+
+                    } else {
+                        if (fixcom > (+payAmount / 100 * +perscom)) {
+
+                            // отнимаем от стоимости товара фиксированную комиссию и комиссию за конвертацию цены товара в основную валюту
+                            let net = (payAmount - fixcom - exch).toFixed(2)
+
+                            // конвертируем результат в основную валюту мерчанта
+                            //let conv = (net * 0.036512990427426).toFixed(2)
+                            let conv = (net * +rate).toFixed(2)
+
+                            // комиссия за конвертацию результата в основную валюту
+                            let comconv = (conv / 100 * +checkout.exchange_percentage).toFixed(2)
+
+                            // отнимаем комиссию за конвертацию результата и комиссию за конвертацию из основной валюты в GBP
+                            let rezult = (conv - comconv - exch2).toFixed(2)
+
+                            cy.log("стратегия комиссий =" + " " + strateg)
+                            cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3)
+                            cy.log("фиксированная комиссия =" + " " + fixcom)
+                            cy.log("комиссия за конвертацию цены товара в основную валюту =" + " " + exch)
+                            cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2)
+                            cy.log("комиссия за конвертацию цены без комиссий в основную валюту =" + " " + comconv)
+
+                            // получаем и сравниваем Amount
+
+                            cy.request({
+                                method: 'GET',
+                                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                                headers: {
+                                    token: merchant.token
+                                }
+                            }).then((response) => {
+                                expect(response).property('status').to.equal(200)
+                                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                let sum = response.body.data[0].amount;
+                                expect(sum).to.eq(rezult)
+                            })
+
+                        } else {
+
+                            // отнимаем от стоимости товара процент комиссии и комиссию за конвертацию цены товара в основную валюту
+                            let net = (payAmount - (+payAmount / 100 * +perscom) - exch).toFixed(2)
+
+                            // конвертируем результат в основную валюту мерчанта
+                            //let conv = (net * 0.036441447467412).toFixed(2)
+                            let conv = (net * +rate).toFixed(2)
+
+                            // комиссия за конвертацию результата в основную валюту
+                            let comconv = (conv / 100 * +checkout.exchange_percentage).toFixed(2)
+
+                            // отнимаем комиссию за конвертацию результата и комиссию за конвертацию из основной валюты в GBP
+                            let rezult = (conv - comconv - exch2).toFixed(2)
+
+                            cy.log("стратегия комиссий =" + " " + strateg)
+                            cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3)
+                            cy.log("процент комиссии =" + " " + (+payAmount / 100 * +perscom).toFixed(2))
+                            cy.log("комиссия за конвертацию цены товара в основную валюту =" + " " + exch)
+                            cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2)
+                            cy.log("комиссия за конвертацию цены без комиссий в основную валюту мерчанта =" + " " + comconv)
+
+                            // получаем и сравниваем Amount
+
+                            cy.request({
+                                method: 'GET',
+                                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                                headers: {
+                                    token: merchant.token
+                                }
+                            }).then((response) => {
+                                expect(response).property('status').to.equal(200)
+                                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                let sum = response.body.data[0].amount;
+                                expect(sum).to.eq(rezult)
+                            })
+                        }
+                    }
                 })
             })
         })
     }
+
+    checkAmountAPICUP(payAmount) {
+
+        // Get strategy, percent and fix commissions
+        cy.request({
+            method: 'GET',
+            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            headers: {
+                token: feen.token,
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let fixcom = response.body.data[7].value[checkout.product_currency_c4][0];
+            let perscom = response.body.data[7].value[checkout.product_currency_c4][1];
+            let strateg = response.body.data[7].strategy
+
+            cy.wait(5000)
+
+            //Check status tranzaction
+            cy.request({
+                method: 'GET',
+                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                headers: {
+                    token: merchant.token
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200)
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                let status = response.body.data[0].state;
+                expect(status).to.eq(2);
+
+                // Сalculation formula & Check Amount
+
+                // Get rate from product currency to pay currency
+                cy.request({
+                    method: 'GET',
+                    url: "http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=" + checkout.product_currency_c4 + "&to="
+                        + checkout.pay_currency + "&amount=1",
+                }).then((response) => {
+                    expect(response).property('status').to.equal(200)
+                    let rate = response.body.info.rate;
+
+                    // Get rate from pay currency to main currency
+                    cy.request({
+                        method: 'GET',
+                        url: "http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=" + checkout.pay_currency + "&to="
+                            + merchant.main_currency + "&amount=1",
+                    }).then((response) => {
+                        expect(response).property('status').to.equal(200)
+                        let rate2 = response.body.info.rate;
+
+                        // комиссия за конвертацию цены товара в валюту оплаты
+                        let exch = (payAmount / 100 * checkout.exchange_percentage).toFixed(2)
+
+                        // комиссия за конвертацию с валюты оплаты в GBP
+                        //let exch2 = (((payAmount * 0.031927358873092).toFixed(2)) / 100 * +checkout.exchange_percentage).toFixed(2)
+                        let exch2 = ((payAmount * rate) / 100 * checkout.exchange_percentage).toFixed(2)
+
+
+                        if (strateg == 1) {
+
+                            // суммируем фиксированную комиссию и процент комиссии
+                            let sumcom = (+fixcom + (+payAmount / 100 * +perscom)).toFixed(2)
+
+                            // отнимаем от стоимости товара сумму комисий и комиссию за конвертацию цены товара в валюту оплаты
+                            let net = (payAmount - sumcom - exch).toFixed(2)
+
+                            // конвертируем результат в валюту оплаты
+                            //let conv = (+net * 0.031927358873092).toFixed(2)
+                            let conv = (+net * +rate).toFixed(2)
+
+                            // комиссия за конвертацию результата в валюту оплаты
+                            let comconv = (+conv / 100 * +checkout.exchange_percentage).toFixed(2)
+
+                            // отнимаем комиссию за конвертацию результата в валюту оплаты
+                            let min = (+conv - comconv).toFixed(2)
+
+                            // конвертируем в основную валюту мерчанта
+                            let conv2 = (+min * +rate2).toFixed(2)
+                            //let conv2 = (+min * 1.1819283160476).toFixed(2)
+
+                            // комиссия за конвертацию в основную валюту мерчанта
+                            let comconv2 = (conv2 / 100 * checkout.exchange_percentage).toFixed(2)
+
+                            // отнимаем комиссию за конвертацию в основную валюту
+                            let min2 = (conv2 - comconv2).toFixed(2)
+
+                            // конвертируем комиссия за конвертацию с валюты оплаты в GBP в основную валюту мерчанта
+                            let conv3 = (exch2 * rate2).toFixed(2)
+                            //let conv3 = (exch2 * 1.1819283160476).toFixed(2)
+
+                            // отнимаем конвертированную комиссию
+                            let rezult = (min2 - conv3).toFixed(2)
+
+                            cy.log("стратегия комиссий =" + " " + strateg)
+                            cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3)
+                            cy.log("сумма комиссий =" + " " + sumcom)
+                            cy.log("комиссия за конвертацию цены товара в валюту оплаты=" + " " + exch)
+                            cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3 )
+                            cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv)
+                            cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2)
+
+                            // получаем и сравниваем Amount
+
+                            cy.request({
+                                method: 'GET',
+                                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                                headers: {
+                                    token: merchant.token
+                                }
+                            }).then((response) => {
+                                expect(response).property('status').to.equal(200)
+                                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                let sum = response.body.data[0].amount;
+                                expect(sum).to.eq(rezult)
+                            })
+                        } else {
+                            if (fixcom > (+payAmount / 100 * +perscom)) {
+
+                                // отнимаем от стоимости товара фиксированную комиссию и комиссию за конвертацию валюты товара  в валюту оплаты
+                                let net = (payAmount - fixcom - exch).toFixed(2)
+
+                                // конвертируем результат в основную валюту мерчанта
+                                let conv = (net * 0.031927358873092).toFixed(2)
+                                //let conv = (net * +rate).toFixed(2)
+
+                                // комиссия за конвертацию
+                                let comconv = (conv / 100 * +checkout.exchange_percentage).toFixed(2)
+
+                                // отнимаем комиссию за конвертацию результата в валюту оплаты
+                                let min = (conv - comconv).toFixed(2)
+
+                                // конвертируем в основную валюту мерчанта
+                                //let conv2 = (+min * +rate2).toFixed(2)
+                                let conv2 = (+min * 1.1819283160476).toFixed(2)
+
+                                // комиссия за конвертацию в основную валюту мерчанта
+                                let comconv2 = (conv2 / 100 * checkout.exchange_percentage).toFixed(2)
+
+                                // отнимаем комиссию за конвертацию
+                                let min2 = (conv2 - (conv2 / 100 * checkout.exchange_percentage)).toFixed(2)
+
+                                // конвертируем комиссию за второй обмен в основную валюту мерчанта
+                                //let conv3 = (exch2 * rate2).toFixed(2)
+                                let conv3 = (exch2 * 1.1819283160476).toFixed(2)
+
+                                let rezult = (min2 - conv3).toFixed(2)
+
+                                cy.log("стратегия комиссий =" + " " + strateg)
+                                cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c4)
+                                cy.log("фиксированная комиссия =" + " " + (+fixcom).toFixed(2))
+                                cy.log("комиссия за конвертацию цены товара в валюту оплаты=" + " " + exch)
+                                cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3 )
+                                cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv)
+                                cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2)
+
+                                // получаем и сравниваем Amount
+
+                                cy.request({
+                                    method: 'GET',
+                                    url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                                    headers: {
+                                        token: merchant.token
+                                    }
+                                }).then((response) => {
+                                    expect(response).property('status').to.equal(200)
+                                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                    let sum = response.body.data[0].amount;
+                                    expect(sum).to.eq(rezult)
+                                    })
+                            } else {
+
+                                // отнимаем от стоимости товара процент комиссии и комиссию за конвертацию цены товара в валюту оплаты
+                                let net = (payAmount - (payAmount / 100 * perscom) - exch).toFixed(2)
+
+                                // конвертируем результат в валюту оплаты
+                                //let conv = (net * 0.031927358873092).toFixed(2)
+                                let conv = (net * +rate).toFixed(2)
+
+                                // комиссия за конвертацию результата в валюту оплаты
+                                let comconv = (conv / 100 * +checkout.exchange_percentage).toFixed(2)
+
+                                // отнимаем комиссии за конвертацию результата в валюту оплаты
+                                let min = (conv - comconv).toFixed(2)
+
+                                // конвертируем в основную валюту мерчанта
+                                let conv2 = (+min * +rate2).toFixed(2)
+                                //let conv2 = (+min * 1.1819283160476).toFixed(2)
+
+                                // комиссия за конвертацию в основную валюту мерчанта
+                                let comconv2 = (conv2 / 100 * checkout.exchange_percentage).toFixed(2)
+
+                                // отнимаем комиссию за конвертацию в основную валюту
+                                let min2 = (conv2 - (conv2 / 100 * checkout.exchange_percentage)).toFixed(2)
+
+                                // конвертируем комиссию конвертации с валюты оплаты в GBP
+                                let conv3 = (exch2 * rate2).toFixed(2)
+                                //let conv3 = (exch2 * 1.1819283160476).toFixed(2)
+
+                                // отнимаем комиссию за конвертацию
+                                let rezult = (min2 - conv3).toFixed(2)
+
+                                cy.log("стратегия комиссий =" + " " + strateg)
+                                cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3)
+                                cy.log("процент комиссии =" + " " + (+payAmount / 100 * perscom).toFixed(2))
+                                cy.log("комиссия за конвертацию цены товара в валюту оплаты=" + " " + exch)
+                                cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3 )
+                                cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv)
+                                cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2)
+
+                                // получаем и сравниваем Amount
+
+                                cy.request({
+                                    method: 'GET',
+                                    url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                                    headers: {
+                                        token: merchant.token
+                                    }
+                                }).then((response) => {
+                                    expect(response).property('status').to.equal(200)
+                                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                    let sum = response.body.data[0].amount;
+                                    expect(sum).to.eq(rezult)
+                                })
+                            }
+                        }
+                    })
+                })
+
+            })
+        })
+
+    }
+
+    checkAmountUICUP(payAmount) {
+        // Get strategy, percent and fix commissions
+        cy.request({
+            method: 'GET',
+            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            headers: {
+                token: feen.token,
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let fixcom = response.body.data[7].value[checkout.product_currency_c4][0];
+            let perscom = response.body.data[7].value[checkout.product_currency_c4][1];
+            let strateg = response.body.data[7].strategy
+
+            cy.wait(5000)
+
+            //Check status tranzaction
+            cy.get('[class="mat-chip mat-focus-indicator mat-primary mat-standard-chip status_2"]').eq(0).invoke('text').should((text) => {
+                expect(text).to.eq(' Accepted ')
+            })
+
+            // Сalculation formula & Check Amount
+
+            // Get rate from product currency to pay currency
+            cy.request({
+                method: 'GET',
+                url: "http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=" + checkout.product_currency_c4 + "&to=" + checkout.pay_currency + "&amount=1",
+            }).then((response) => {
+                expect(response).property('status').to.equal(200)
+                let rate = response.body.info.rate;
+
+                // Get rate from pay currency to main currency
+                cy.request({
+                    method: 'GET',
+                    url: "http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=" + checkout.pay_currency + "&to="
+                        + merchant.main_currency + "&amount=1",
+                }).then((response) => {
+                    expect(response).property('status').to.equal(200)
+                    let rate2 = response.body.info.rate;
+
+                    // комиссия за конвертацию цены товара в валюту оплаты
+                    let exch = (payAmount / 100 * checkout.exchange_percentage).toFixed(2)
+
+                    // комиссия за конвертацию с валюты оплаты в GBP
+                    //let exch2 = (((payAmount * 0.031927358873092).toFixed(2)) / 100 * +checkout.exchange_percentage).toFixed(2)
+                    let exch2 = ((payAmount * rate) / 100 * checkout.exchange_percentage).toFixed(2)
+
+                    if (strateg == 1) {
+
+                        // суммируем фиксированную комиссию и процент комиссии
+                        let sumcom = (+fixcom + (+payAmount / 100 * +perscom)).toFixed(2)
+
+                        // отнимаем от стоимости товара сумму комисий и комиссию за конвертацию цены товара в валюту оплаты
+                        let net = (payAmount - sumcom - exch).toFixed(2)
+
+                        // конвертируем результат в валюту оплаты
+                        //let conv = (+net * 0.031927358873092).toFixed(2)
+                        let conv = (+net * +rate).toFixed(2)
+
+                        // комиссия за конвертацию результата в валюту оплаты
+                        let comconv = (+conv / 100 * +checkout.exchange_percentage).toFixed(2)
+
+                        // отнимаем комиссию за конвертацию результата в валюту оплаты
+                        let min = (+conv - comconv).toFixed(2)
+
+                        // конвертируем в основную валюту мерчанта
+                        let conv2 = (+min * +rate2).toFixed(2)
+                        //let conv2 = (+min * 1.1819283160476).toFixed(2)
+
+                        // комиссия за конвертацию в основную валюту мерчанта
+                        let comconv2 = (conv2 / 100 * checkout.exchange_percentage).toFixed(2)
+
+                        // отнимаем комиссию за конвертацию в основную валюту
+                        let min2 = (conv2 - comconv2).toFixed(2)
+
+                        // конвертируем комиссию за конвертацию с валюты оплаты в GBP в основную валюту мерчанта
+                        let conv3 = (exch2 * rate2).toFixed(2)
+                        //let conv3 = (exch2 * 1.1819283160476).toFixed(2)
+
+                        // отнимаем конвертированную комиссию
+                        let rezult = (min2 - conv3).toFixed(2)
+
+                        cy.log("стратегия комиссий =" + " " + strateg)
+                        cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c4)
+                        cy.log("сумма комиссий =" + " " + sumcom)
+                        cy.log("комиссия за конвертацию цены товара в валюту оплаты=" + " " + exch)
+                        cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3)
+                        cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv)
+                        cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2)
+
+                        // получаем и сравниваем Amount
+
+                        cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
+                            expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
+                        })
+                    } else {
+                        if (fixcom > (+payAmount / 100 * +perscom)) {
+
+                            // отнимаем от стоимости товара фиксированную комиссию и комиссию за конвертацию валюты товара  в валюту оплаты
+                            let net = (payAmount - fixcom - exch).toFixed(2)
+
+                            // конвертируем результат в основную валюту мерчанта
+                            //let conv = (net * 0.031927358873092).toFixed(2)
+                            let conv = (net * +rate).toFixed(2)
+
+                            // комиссия за конвертацию
+                            let comconv = (conv / 100 * +checkout.exchange_percentage).toFixed(2)
+
+                            // отнимаем комиссию за конвертацию результата в валюту оплаты
+                            let min = (conv - comconv).toFixed(2)
+
+                            // конвертируем в основную валюту мерчанта
+                            let conv2 = (+min * +rate2).toFixed(2)
+                            //let conv2 = (+min * 1.1819283160476).toFixed(2)
+
+                            // комиссия за конвертацию в основную валюту мерчанта
+                            let comconv2 = (conv2 / 100 * checkout.exchange_percentage).toFixed(2)
+
+                            // отнимаем комиссию за конвертацию
+                            let min2 = (conv2 - (conv2 / 100 * checkout.exchange_percentage)).toFixed(2)
+
+                            // конвертируем комиссию за второй обмен в основную валюту мерчанта
+                            let conv3 = (exch2 * rate2).toFixed(2)
+                            //let conv3 = (exch2 * 1.1819283160476).toFixed(2)
+
+                            let rezult = (min2 - conv3).toFixed(2)
+
+                            cy.log("стратегия комиссий =" + " " + strateg)
+                            cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c4)
+                            cy.log("фиксированная комиссия =" + " " + (+fixcom).toFixed(2))
+                            cy.log("комиссия за конвертацию цены товара в валюту оплаты=" + " " + exch)
+                            cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3)
+                            cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv)
+                            cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2)
+
+                            // получаем и сравниваем Amount
+
+                            cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
+                                expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
+                            })
+                        } else {
+
+                            // отнимаем от стоимости товара процент комиссии и комиссию за конвертацию цены товара в валюту оплаты
+                            let net = (payAmount - (payAmount / 100 * perscom) - exch).toFixed(2)
+
+                            // конвертируем результат в валюту оплаты
+                            //let conv = (net * 0.031927358873092).toFixed(2)
+                            let conv = (net * +rate).toFixed(2)
+
+                            // комиссия за конвертацию результата в валюту оплаты
+                            let comconv = (conv / 100 * +checkout.exchange_percentage).toFixed(2)
+
+                            // отнимаем комиссии за конвертацию результата в валюту оплаты
+                            let min = (conv - comconv).toFixed(2)
+
+                            // конвертируем в основную валюту мерчанта
+                            let conv2 = (+min * +rate2).toFixed(2)
+                            //let conv2 = (+min * 1.1819283160476).toFixed(2)
+
+                            // комиссия за конвертацию в основную валюту мерчанта
+                            let comconv2 = (conv2 / 100 * checkout.exchange_percentage).toFixed(2)
+
+                            // отнимаем комиссию за конвертацию в основную валюту
+                            let min2 = (conv2 - (conv2 / 100 * checkout.exchange_percentage)).toFixed(2)
+
+                            // конвертируем комиссию конвертации с валюты оплаты в GBP
+                            let conv3 = (exch2 * rate2).toFixed(2)
+                            //let conv3 = (exch2 * 1.1819283160476).toFixed(2)
+
+                            // отнимаем комиссию за конвертацию
+                            let rezult = (min2 - conv3).toFixed(2)
+
+                            cy.log("стратегия комиссий =" + " " + strateg)
+                            cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c4)
+                            cy.log("процент комиссии =" + " " + (+payAmount / 100 * perscom).toFixed(2))
+                            cy.log("комиссия за конвертацию цены товара в валюту оплаты=" + " " + exch)
+                            cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3)
+                            cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv)
+                            cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2)
+
+                            // получаем и сравниваем Amount
+
+                            cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
+                                expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
+                            })
+                        }
+                    }
+                })
+            })
+        })
+    }
+
+
 }
+
 
 export default new TransactionsPage();

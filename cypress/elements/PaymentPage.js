@@ -2,12 +2,6 @@
 
 class PaymentPage{
 
-
-    getRadioInputLinkCard() {
-        //return cy.get('[class="mat-radio-button checkout-user-cards__list_link-card mat-accent"]');
-        //return cy.get('#mat-input-18');
-    }
-
     getInputCardNumber() {
         return cy.get('#mat-input-16');
     }
@@ -26,6 +20,11 @@ class PaymentPage{
 
     getButtonPay() {
         return cy.get('[class="mat-focus-indicator button-simple checkout-pay-button mat-raised-button mat-button-base"]');
+    }
+
+    getSelectCurrency() {
+         cy.get('.mat-select-value-text > .ng-tns-c140-42').click()
+       return cy.get ('#mat-option-335 > .mat-option-text').click()
     }
 }
 

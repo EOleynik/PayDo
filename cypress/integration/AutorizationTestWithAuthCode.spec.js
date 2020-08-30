@@ -14,5 +14,5 @@ describe('Authorization smoke', () => {
         homePage.getCheckUrl();
         homePage.getMenuProjects();
 
-            })
-            })
+    })
+})

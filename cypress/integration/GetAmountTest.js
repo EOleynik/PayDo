@@ -1,7 +1,6 @@
 import loginPage from "../elements/LoginPage";
 import user from "../fixtures/user.json";
 import homePage from "../elements/HomePage";
-import parentPage from "../elements/ParentPage";
 import transactionsPage from "../elements/TransactionsPage";
 import merchant from "../fixtures/merchant.json"
 import manager from "../fixtures/manajer.json"
@@ -356,35 +355,62 @@ describe('', () => {
         //     })
 
 
-        cy.request({            //получение идентификатора проекта по ID мерчанта и PROJNAME
+        // cy.request({            //получение идентификатора проекта по ID мерчанта и PROJNAME
+        //     method: 'GET',
+        //     url: 'https://app.stage.paydo.com/v1/apps/filters',
+        //     params: {
+        //         "query[userIdentifier]": merchant.bussiness_account,
+        //         "query[name]": "sdasdsds"
+        //     },
+        //     headers: {
+        //         token: manager.token
+        //     }
+        // }).then((response) => {
+        //     expect(response).property('status').to.equal(200)
+        //     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+        //     let projident = response.body.data[0].identifier
+        //
+        //     cy.request({  // accept project
+        //         method: 'POST',
+        //         url: "https://app.stage.paydo.com/v1/apps/" + projident + "/accept",
+        //         params: {
+        //             "query[userIdentifier]": merchant.bussiness_account
+        //         },
+        //         headers: {
+        //             token: manager.token
+        //         }
+        //     }).then((response) => {
+        //         expect(response).property('status').to.equal(200)
+        //         //expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+        //
+        //     })
+        //})
+
+        // Получить рейт с последней транзакции
+        cy.request({   // получить ID последней транзакции мерчанта
             method: 'GET',
-            url: 'https://app.stage.paydo.com/v1/apps/filters',
-            params: {
-                "query[userIdentifier]": merchant.bussiness_account,
-                "query[name]": "sdasdsds"
-            },
+            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
             headers: {
-                token: manager.token
+                token: merchant.token
             }
         }).then((response) => {
             expect(response).property('status').to.equal(200)
             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-            let projident = response.body.data[0].identifier
+            let identif = response.body.data[0].identifier;
 
-            cy.request({  // accept project
-                method: 'POST',
-                url: "https://app.stage.paydo.com/v1/apps/" + projident + "/accept",
-                params: {
-                    "query[userIdentifier]": merchant.bussiness_account
-                },
+            cy.request({ //получить рейт последней транзакции подставив ID транзакции
+                method: 'GET',
+                url: "https://app.stage.paydo.com/v1/transactions/" + identif,
                 headers: {
                     token: manager.token
                 }
             }).then((response) => {
                 expect(response).property('status').to.equal(200)
-                //expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                let r = response.body.data.exchange[0].rate
+                cy.log(r)
             })
         })
     })
+
 })

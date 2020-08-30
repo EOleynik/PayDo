@@ -1,5 +1,4 @@
-import loginPage from "../elements/LoginPage";
-import projectsPage from "../elements/ProjectsPage";
+
 import feenpage from "../elements/FeenPage"
 
 describe('Hold settings', () => {

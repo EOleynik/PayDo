@@ -1,4 +1,4 @@
-import loginPage from "../elements/LoginPage";
+
 import projectsPage from "../elements/ProjectsPage";
 
 describe('Projects suit', () => {

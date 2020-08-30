@@ -6,5 +6,6 @@
   "bussiness_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE4MTIiLCJhY2Nlc3NUb2tlbiI6IjY0YjE2NGUxOTMyMzA0ODFjNmZlY2VmYiIsInRva2VuSWQiOm51bGwsIndhbGxldElkIjoiMTgwNiIsInRpbWUiOjE1OTcxMjU5NjQsImV4cGlyZWRBdCI6bnVsbCwicm9sZXMiOltdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjp0cnVlfX0.Wf_90Kna5dLKjlaBWSGzfghcGYaTh-5KHu-IYOaCpR8",
   "email": "eugeniy.o+4avtotest@payop.com",
   "project_name": "MyNewProject",
-  "project_ID": "cc9cf5c0-e5c8-46f0-8da3-fce662143c03"
+  "project_ID": "cc9cf5c0-e5c8-46f0-8da3-fce662143c03",
+  "main_currency": "USD"
 }

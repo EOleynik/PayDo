@@ -4,32 +4,32 @@ import merchant from "../fixtures/merchant.json"
 
 class FeenPage {
 
-    getInstallComStrategAll(fix, pers) {
-        cy.request({
-            method: 'POST',
-            url: `https://app.stage.paydo.com/v1/instrument-settings/commissions/custom`,
-            headers: {
-                token: feen.token,
-            },
-            body: {
-                "transactionType": 7,
-                "strategy": 1,
-                "source": 1,
-                "value": {
-                    "ALL": [
-                        fix,
-                        pers
-                    ]
-                },
-                "currency": "",
-                "paymentMethodIdentifier": 300,
-                "userIdentifier": merchant.bussiness_account
-
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(201)
-        })
-    }
+    // getInstallComStrategAll(fix, pers) {
+    //     cy.request({
+    //         method: 'POST',
+    //         url: `https://app.stage.paydo.com/v1/instrument-settings/commissions/custom`,
+    //         headers: {
+    //             token: feen.token,
+    //         },
+    //         body: {
+    //             "transactionType": 7,
+    //             "strategy": 1,
+    //             "source": 1,
+    //             "value": {
+    //                 "ALL": [
+    //                     fix,
+    //                     pers
+    //                 ]
+    //             },
+    //             "currency": "",
+    //             "paymentMethodIdentifier": 300,
+    //             "userIdentifier": merchant.bussiness_account
+    //
+    //         }
+    //     }).then((response) => {
+    //         expect(response).property('status').to.equal(201)
+    //     })
+    // }
 
     getLogin() {
         loginPage.visit('/');
@@ -39,7 +39,7 @@ class FeenPage {
     }
 
 
-    installComStrategMAX(fix, pers) {
+    setCommissionsAndStrategy() {
         cy.request({
             method: 'POST',
             url: `https://app.stage.paydo.com/v1/instrument-settings/commissions/custom`,
@@ -48,12 +48,12 @@ class FeenPage {
             },
             body: {
                 "transactionType": 7,
-                "strategy": 2,
+                "strategy": feen.strategy,
                 "source": 1,
                 "value": {
                     "ALL": [
-                        fix,
-                        pers
+                        feen.fix_commission,
+                        feen.percent_commission
                     ]
                 },
                 "currency": "",

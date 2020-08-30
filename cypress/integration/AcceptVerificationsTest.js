@@ -1,4 +1,4 @@
-import loginPage from "../elements/LoginPage";
+
 import managerPage from "../elements/ManagerPage"
 
 describe('Accept verification tests', () => {

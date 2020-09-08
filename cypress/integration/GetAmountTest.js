@@ -419,8 +419,7 @@ describe('', () => {
     before (() => {
 
                 cy.visit('https://app.stage.paydo.com/ru/auth/registration');
-
-        cy.setLocalStorage("item", 'disable-captcha', true);
+                window.localStorage.setItem('disable-captcha', 'true');
 
             })
 
@@ -437,27 +436,27 @@ describe('', () => {
                     cy.wait(90000);
                     cy.get('button.submit-btn').click();
 
-                    cy.task("gmail:getMessage", {
-                        from: "support@paydo.com",
-                        //to: `qaevergreens+${Cypress.env('current_client')}@gmail.com`,
-                        to: `eugeniy.o+test0709@payop.com`,
-                        subject: "Your One-time Authorization Code"
-                    },{timeout:120000}).then(email => {
+                    // cy.task("gmail:getMessage", {
+                    //     from: "support@paydo.com",
+                    //     //to: `qaevergreens+${Cypress.env('current_client')}@gmail.com`,
+                    //     to: `eugeniy.o+test0709@payop.com`,
+                    //     subject: "Your One-time Authorization Code"
+                    // },{timeout:120000}).then(email => {
 
-                        assert.isNotNull(email, `Check that email present`);
+                    //     assert.isNotNull(email, `Check that email present`);
 
-                        cy.parse(email.body.html).then((emailContent) => {
+                    //     cy.parse(email.body.html).then((emailContent) => {
 
-                            let title = emailContent.find("h1").eq(5).text();
-                            expect(title.includes("successfully registered")).to.equal(true);
+                    //         let title = emailContent.find("h1").eq(5).text();
+                    //         expect(title.includes("successfully registered")).to.equal(true);
 
-                            let activationLink = emailContent.find("a[href*=\"user-activate\"]").attr("href");
-                            cy.visit(activationLink)
-                            cy.wait(200000)
+                    //         let activationLink = emailContent.find("a[href*=\"user-activate\"]").attr("href");
+                    //         cy.visit(activationLink)
+                    //         cy.wait(200000)
 
-                        });
+                    //     });
 
-                    });
+                    // });
 
                 });
 

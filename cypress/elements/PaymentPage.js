@@ -3,19 +3,19 @@
 class PaymentPage{
 
     getInputCardNumber() {
-        return cy.get('#mat-input-16');
+        return cy.get('#mat-input-0');
     }
 
     getInputExpirationDate() {
-        return cy.get('#mat-input-17');
+        return cy.get('#mat-input-1');
     }
 
     getInputCVC() {
-        return cy.get('#mat-input-18');
+        return cy.get('#mat-input-2');
     }
 
     getInputCatdholderName() {
-        return cy.get('#mat-input-19');
+        return cy.get('#mat-input-3');
     }
 
     getButtonPay() {
@@ -23,8 +23,8 @@ class PaymentPage{
     }
 
     getSelectCurrency() {
-         cy.get('.mat-select-value-text > .ng-tns-c140-42').click()
-       return cy.get ('#mat-option-335 > .mat-option-text').click()
+         cy.get('.mat-select-value-text > .ng-tns-c107-5').click()
+       return cy.get ('#mat-option-1 > .mat-option-text').click()
     }
 }
 

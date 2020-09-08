@@ -5,9 +5,11 @@ import transactionsPage from "../elements/TransactionsPage";
 import merchant from "../fixtures/merchant.json"
 import manager from "../fixtures/manajer.json"
 
+
+
 describe('', () => {
 
-    it('', () => {
+
 
 
         // cy.visit('https://www.google.com.ua/')
@@ -387,30 +389,94 @@ describe('', () => {
         //})
 
         // Получить рейт с последней транзакции
-        cy.request({   // получить ID последней транзакции мерчанта
-            method: 'GET',
-            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-            headers: {
-                token: merchant.token
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(200)
-            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-            let identif = response.body.data[0].identifier;
+    //     cy.request({   // получить ID последней транзакции мерчанта
+    //         method: 'GET',
+    //         url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+    //         headers: {
+    //             token: merchant.token
+    //         }
+    //     }).then((response) => {
+    //         expect(response).property('status').to.equal(200)
+    //         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+    //         let identif = response.body.data[0].identifier;
+    //
+    //         cy.request({ //получить рейт последней транзакции подставив ID транзакции
+    //             method: 'GET',
+    //             url: "https://app.stage.paydo.com/v1/transactions/" + identif,
+    //             headers: {
+    //                 token: manager.token
+    //             }
+    //         }).then((response) => {
+    //             expect(response).property('status').to.equal(200)
+    //             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+    //             let r = response.body.data.exchange[0].rate
+    //             cy.log(r)
+    //         })
+    //     })
 
-            cy.request({ //получить рейт последней транзакции подставив ID транзакции
-                method: 'GET',
-                url: "https://app.stage.paydo.com/v1/transactions/" + identif,
-                headers: {
-                    token: manager.token
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200)
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let r = response.body.data.exchange[0].rate
-                cy.log(r)
+
+
+    before (() => {
+
+                cy.visit('https://app.stage.paydo.com/ru/auth/registration');
+                window.localStorage.setItem('disable-captcha', 'true');
+
             })
-        })
+
+                it('sends confirmation mail after registration', () => {
+
+                    //cy.visit('https://app.stage.paydo.com/ru/auth/registration');
+
+
+                    //cy.get("input[name=\"email\"]").type(`qaevergreens+${Cypress.env('current_client')}@gmail.com`);
+                    cy.get("input[name=\"email\"]").type(`eugeniy.o+test0709@payop.com`);
+                    cy.get("input[formcontrolname=\"password\"]").type("eugeniy.o+test0709@payop.com");
+                    cy.get("input[formcontrolname=\"passwordConfirm\"]").type("eugeniy.o+test0709@payop.com");
+                    cy.get('.mat-checkbox-inner-container').click();
+                    cy.wait(90000);
+                    cy.get('button.submit-btn').click();
+
+                    // cy.task("gmail:getMessage", {
+                    //     from: "support@paydo.com",
+                    //     //to: `qaevergreens+${Cypress.env('current_client')}@gmail.com`,
+                    //     to: `eugeniy.o+test0709@payop.com`,
+                    //     subject: "Your One-time Authorization Code"
+                    // },{timeout:120000}).then(email => {
+
+                    //     assert.isNotNull(email, `Check that email present`);
+
+                    //     cy.parse(email.body.html).then((emailContent) => {
+
+                    //         let title = emailContent.find("h1").eq(5).text();
+                    //         expect(title.includes("successfully registered")).to.equal(true);
+
+                    //         let activationLink = emailContent.find("a[href*=\"user-activate\"]").attr("href");
+                    //         cy.visit(activationLink)
+                    //         cy.wait(200000)
+
+                    //     });
+
+                    // });
+
+                });
+
+
+
+        // it('sends mail after successful account activation', () => {
+        //
+        //     cy.task("gmail:getMessage", {
+        //         from: "support@payop.com",
+        //         to: `qaevergreens+${Cypress.env('current_client')}@gmail.com`,
+        //         subject: "Your PayOp account has been activated"
+        //     },{timeout:120000}).then(email => {
+        //
+        //         assert.isNotNull(email, `Check that email present`);
+        //
+        //     })
+        // });
+
     })
 
-})
+
+
+

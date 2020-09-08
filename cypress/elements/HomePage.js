@@ -3,7 +3,7 @@
 class HomePage{
 
     getCheckUrl() {
-        return  cy.url().should('include', 'en/profile/overview');
+        return  cy.url().should('include', 'en/overview');
     }
 
     getMenuVerification() {
@@ -31,6 +31,20 @@ class HomePage{
     getMenuPaymentHistory() {
         return cy.contains('Payments History');
     }
+
+    getMenuTransactions() {
+        return cy.contains('Transactions');
+    }
+
+    getMenuTickets() {
+        return cy.contains ('Tickets')
+    }
+
+    getMenuCreateTransfer() {
+        return cy.contains ('Create Transfer');
+    }
+
+
 }
 
 export default new HomePage();

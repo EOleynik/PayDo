@@ -55,6 +55,7 @@ class CreateCheckoutPage {
                 cy.request({
                     method: 'POST',
                     url: `https://app.stage.paydo.com/v1/payment-tools/card-token/create`,
+
                     body: {
 
                         "invoiceIdentifier": invId,
@@ -87,7 +88,7 @@ class CreateCheckoutPage {
                                 "extraFields": []
                             },
                             "cardToken": tok,
-                            "checkStatusUrl": "https://app.stage.paydo.com/en/payment/wait-page/{{txid}}"
+                            "checkStatusUrl": "https://app.stage.payop.com/en/payment/wait-page/{{txid}}"
                         }
                     }).then((response) => {
                         expect(response).property('status').to.equal(200)

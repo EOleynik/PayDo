@@ -15,7 +15,7 @@ class TransactionsPage {
         // Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/"+paymentMethod.pm_id+"/" + merchant.bussiness_account,
+            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
@@ -69,7 +69,7 @@ class TransactionsPage {
 
                     cy.log("стратегия комиссий =" + " " + strateg)
                     cy.log("цена товара =" + " " + payAmount)
-                    cy.log("процент комиссии =" + " " + (payAmount /100 *perscom).toFixed(2))
+                    cy.log("процент комиссии =" + " " + (payAmount / 100 * perscom).toFixed(2))
 
                     cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                         expect(text).to.eq((+rezult).toFixed(2) + ' ' + 'GBP')
@@ -314,7 +314,7 @@ class TransactionsPage {
 
     checkAmountAPIGBP(payAmount) {
 
-        // Get strategy, percent and fix commissions
+        //Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
             url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
@@ -596,6 +596,7 @@ class TransactionsPage {
                         // отнимаем комиссию за конвертацию результата и комиссию за конвертацию цены товара из основной валюты в GBP
                         let rezult = (conv - comconv - exch2).toFixed(2)
 
+                        cy.log("рейт from "+checkout.product_currency_c3+" to "+merchant.main_currency+" = "+rate)
                         cy.log("стратегия комиссий =" + " " + strateg)
                         cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3)
                         cy.log("сумма комиссий =" + " " + sumcom)
@@ -797,7 +798,7 @@ class TransactionsPage {
                             cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3)
                             cy.log("сумма комиссий =" + " " + sumcom)
                             cy.log("комиссия за конвертацию цены товара в валюту оплаты=" + " " + exch)
-                            cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3 )
+                            cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3)
                             cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv)
                             cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2)
 
@@ -851,7 +852,7 @@ class TransactionsPage {
                                 cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c4)
                                 cy.log("фиксированная комиссия =" + " " + (+fixcom).toFixed(2))
                                 cy.log("комиссия за конвертацию цены товара в валюту оплаты=" + " " + exch)
-                                cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3 )
+                                cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3)
                                 cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv)
                                 cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2)
 
@@ -868,7 +869,7 @@ class TransactionsPage {
                                     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                     let sum = response.body.data[0].amount;
                                     expect(sum).to.eq(rezult)
-                                    })
+                                })
                             } else {
 
                                 // отнимаем от стоимости товара процент комиссии и комиссию за конвертацию цены товара в валюту оплаты
@@ -905,7 +906,7 @@ class TransactionsPage {
                                 cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3)
                                 cy.log("процент комиссии =" + " " + (+payAmount / 100 * perscom).toFixed(2))
                                 cy.log("комиссия за конвертацию цены товара в валюту оплаты=" + " " + exch)
-                                cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3 )
+                                cy.log("конвертированная комиссия конвертации с валюты оплаты в GBP =" + " " + conv3)
                                 cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv)
                                 cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2)
 
@@ -1127,7 +1128,81 @@ class TransactionsPage {
     }
 
 
+    getButtonDetails() {
+        return cy.get('[class="mat-focus-indicator details-button-custom mat-raised-button mat-button-base"]').eq(0);
+    }
+
+    getButtonPartialRefund() {
+        return cy.get('[class="white-btn w-183 mr-30"]');
+    }
+
+    getButtonCreateRefund() {
+        return cy.get('[class="mat-button-wrapper"]');
+    }
+
+    getInputPartialRefundAmount() {
+        return cy.get('#mat-input-6');
+    }
+
+    checkCreateRefund() {
+        // get ID last transaction
+        cy.request({
+            method: 'GET',
+            url: 'https://account.stage.paydo.com/v1/transactions/user-transactions',
+            headers: {
+                token: merchant.token,
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let trIdent = response.body.data[0].identifier
+
+            // get status refund
+            cy.request({
+                method: 'GET',
+                url: "https://account.stage.paydo.com/v1/transactions/" + trIdent,
+                headers: {
+                    token: merchant.token,
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200);
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                expect(response.body.data.refunds[0].status).to.eq(1)
+            })
+        })
+    }
+
+
+    getButtonOk() {
+        // return cy.get('[class="new-alert-btn ng-tns-c275-0"]')
+        return cy.get('.new-alert-btn');
+
+    }
+
+    getButtonRefund() {
+        return cy.get('[class="purple-btn w-183"]');
+    }
+
+
+    confirmRefund() {
+        return cy.get('[mat-raised-button=""]');
+    }
+
+
+    getButtonFilter() {
+        return cy.get('.filter-buttons > :nth-child(3) > .mat-button-wrapper');
+    }
+
+    getInputMerchantID() {
+        return cy.get('#mat-input-0');
+    }
+
+    getButtonChargebackCreate() {
+        return cy.get('[class="mat-ripple mat-button-ripple"]').eq(3)
+    }
 }
+
+
 
 
 export default new TransactionsPage();

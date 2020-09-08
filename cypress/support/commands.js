@@ -52,3 +52,15 @@ Cypress.Commands.add('uploadFile', { prevSubject: true }, (subject, fixturePath,
         });
     });
 })
+
+Cypress.Commands.add("remove_captcha",()=>{
+    localStorage.setItem('disable-captcha', true);
+});
+
+Cypress.Commands.add("remove_captcha",()=>{
+    localStorage.setItem('disable-captcha', true);
+});
+
+Cypress.Commands.add("generateClient",() => {
+    Cypress.env('current_client',Math.random().toString(36).substring(3))
+});

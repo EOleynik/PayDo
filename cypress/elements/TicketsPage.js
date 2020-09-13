@@ -34,14 +34,16 @@ class TicketsPage {
     }
 
     checkCreateTicket() {
-        cy.get('[class="alert__title ng-tns-c270-0"]').invoke('text').should((text) => {
+       // cy.get('[class="alert__title ng-tns-c270-0"]').invoke('text').should((text) => {
+        cy.get('[class="alert__title ng-tns-c71-0"]').invoke('text').should((text) => {
             expect(text).to.eq('Success')
         })
     }
 
 
     closeAllert() {
-        return cy.get ('[class="close-alert ng-tns-c270-0"]');
+        //return cy.get ('[class="close-alert ng-tns-c270-0"]');
+        return cy.get ('.close-alert')
     }
 
     getInputRequestNameFin() {

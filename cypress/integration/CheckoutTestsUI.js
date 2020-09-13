@@ -58,7 +58,7 @@ describe('Checkout suit', () => {
             cy.wait(2000);
             loginPage.getButtonToAdmibPanel().click();
             cy.wait(3000);
-            homePage.getMenuTransactions().click();
+            homePage.getMenuPaymentHistory().click();
             transactionsPage.checkAmountUIGBP(payAmount);
         })
 
@@ -98,7 +98,7 @@ describe('Checkout suit', () => {
             cy.wait(2000);
             loginPage.getButtonToAdmibPanel().click();
             cy.wait(3000);
-            homePage.getMenuTransactions().click();
+            homePage.getMenuPaymentHistory().click();
             transactionsPage.checkAmountUIUSD(payAmount);
         })
 
@@ -138,7 +138,7 @@ describe('Checkout suit', () => {
             cy.wait(2000);
             loginPage.getButtonToAdmibPanel().click();
             cy.wait(3000);
-            homePage.getMenuTransactions().click();
+            homePage.getMenuPaymentHistory().click();
             transactionsPage.checkAmountUIUAH(payAmount);
         })
 
@@ -179,7 +179,7 @@ describe('Checkout suit', () => {
             cy.wait(2000);
             loginPage.getButtonToAdmibPanel().click();
             cy.wait(3000);
-            homePage.getMenuTransactions().click();
+            homePage.getMenuPaymentHistory().click();
             transactionsPage.checkAmountUICUP(payAmount);
         })
 

@@ -18,7 +18,7 @@ describe('Refund suit', () => {
         cy.wait(2000);
         homePage.getCheckUrl();
         cy.wait(2000);
-        homePage.getMenuTransactions().click();
+        homePage.getMenuPaymentHistory().click();
         transactionsPage.getButtonDetails().click();
         transactionsPage.getButtonPartialRefund().click();
         transactionsPage.getInputPartialRefundAmount().type('100');
@@ -33,7 +33,7 @@ describe('Refund suit', () => {
         cy.wait(2000);
         homePage.getCheckUrl();
         cy.wait(2000);
-        homePage.getMenuTransactions().click();
+        homePage.getMenuPaymentHistory().click();
         transactionsPage.getButtonDetails().click();
         transactionsPage.getButtonRefund().click();
         transactionsPage.confirmRefund().click();

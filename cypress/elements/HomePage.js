@@ -3,7 +3,15 @@
 class HomePage{
 
     getCheckUrl() {
-        return  cy.url().should('include', 'en/overview');
+        return  cy.url().should('include','/en/profile/overview');
+    }
+
+    getCheckUrlMan() {
+        return  cy.url().should('include', '/en/manager');
+    }
+
+    getCheckUrlFin() {
+        return  cy.url().should('include', '/en/financial');
     }
 
     getMenuVerification() {
@@ -43,6 +51,7 @@ class HomePage{
     getMenuCreateTransfer() {
         return cy.contains ('Create Transfer');
     }
+
 
 
 }

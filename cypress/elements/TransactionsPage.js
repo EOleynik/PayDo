@@ -47,6 +47,7 @@ class TransactionsPage {
                 cy.log("цена товара =" + " " + payAmount);
                 cy.log("сумма комиссий =" + " " + sumcom);
 
+                // Check Amount
                 cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                     expect(text).to.eq((+rezult).toFixed(2) + ' ' + 'GBP')
                 })
@@ -60,6 +61,7 @@ class TransactionsPage {
                     cy.log("цена товара =" + " " + payAmount);
                     cy.log("фиксированная комиссия =" + " " + (+fixcom).toFixed(2));
 
+                    // Check Amount
                     cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                         expect(text).to.eq((+rezult).toFixed(2) + ' ' + 'GBP')
                     })
@@ -71,6 +73,7 @@ class TransactionsPage {
                     cy.log("цена товара =" + " " + payAmount);
                     cy.log("процент комиссии =" + " " + (payAmount / 100 * perscom).toFixed(2));
 
+                    // Check Amount
                     cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                         expect(text).to.eq((+rezult).toFixed(2) + ' ' + 'GBP')
                     })
@@ -120,6 +123,7 @@ class TransactionsPage {
                 cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c2);
                 cy.log("сумма комиссий =" + " " + sumcom);
 
+                // Check Amount
                 cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                     expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                 })
@@ -136,6 +140,7 @@ class TransactionsPage {
                     cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c2);
                     cy.log("фиксированная комиссия =" + " " + (+fixcom).toFixed(2));
 
+                    // Check Amount
                     cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                         expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                     })
@@ -151,6 +156,7 @@ class TransactionsPage {
                     cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c2);
                     cy.log("процент комиссии =" + " " + (payAmount / 100 * perscom).toFixed(2));
 
+                    // Check Amount
                     cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                         expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                     })
@@ -184,7 +190,7 @@ class TransactionsPage {
 
             // Сalculation formula & Check Amount
 
-            // Get rate
+            // Get the rate from  product currency to main currency
             cy.request({
                 method: 'GET',
                 url: "http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=" + checkout.product_currency_c3 + "&to=" + merchant.main_currency + "&amount=1",
@@ -217,6 +223,7 @@ class TransactionsPage {
                     // отнимаем комиссии за конвертацию
                     let rezult = (conv - comconv - exch2).toFixed(2);
 
+                    cy.log("рейт обмена в основную валюту  =" + " " + rate);
                     cy.log("стратегия комиссий =" + " " + strateg);
                     cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3);
                     cy.log("сумма комиссий =" + " " + sumcom);
@@ -224,8 +231,7 @@ class TransactionsPage {
                     cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2);
                     cy.log("комиссия за конвертацию цены без комиссий в основную валюту мерчанта =" + " " + comconv);
 
-                    // получаем и сравниваем Amount
-
+                    // Check Amount
                     cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                         expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                     })
@@ -256,6 +262,7 @@ class TransactionsPage {
                         // отнимаем комиссии за конвертацию
                         let rezult = (conv - comconv - exch2).toFixed(2);
 
+                        cy.log("рейт обмена в основную валюту  =" + " " + rate);
                         cy.log("стратегия комиссий =" + " " + strateg);
                         cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3);
                         cy.log("фиксированная комиссия =" + " " + (+fixcom).toFixed(2));
@@ -263,8 +270,7 @@ class TransactionsPage {
                         cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2);
                         cy.log("комиссия за конвертацию цены без комиссий в основную валюту мерчанта =" + " " + comconv);
 
-                        // получаем и сравниваем Amount
-
+                        // Check Amount
                         cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                             expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                         })
@@ -294,6 +300,7 @@ class TransactionsPage {
                         // отнимаем комиссии за конвертацию
                         let rezult = (conv - comconv - exch2).toFixed(2);
 
+                        cy.log("рейт обмена в основную валюту  =" + " " + rate);
                         cy.log("стратегия комиссий =" + " " + strateg);
                         cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3);
                         cy.log("процент комиссии =" + " " + (payAmount / 100 * perscom).toFixed(2));
@@ -301,8 +308,7 @@ class TransactionsPage {
                         cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2);
                         cy.log("комиссия за конвертацию цены без комиссий в основную валюту мерчанта =" + " " + comconv);
 
-                        // получаем и сравниваем Amount
-
+                        // Check Amount
                         cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                             expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                         })
@@ -357,6 +363,7 @@ class TransactionsPage {
                     cy.log("цена товара =" + " " + payAmount);
                     cy.log("сумма комиссий =" + " " + sumcom);
 
+                    // Check Amount
                     cy.request({
                         method: 'GET',
                         url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -379,6 +386,7 @@ class TransactionsPage {
                         cy.log("цена товара =" + " " + payAmount);
                         cy.log("фиксированная комиссия =" + " " + fixcom);
 
+                        // Check Amount
                         cy.request({
                             method: 'GET',
                             url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -399,6 +407,7 @@ class TransactionsPage {
                         cy.log("цена товара =" + " " + payAmount);
                         cy.log("процент комиссии =" + " " + (+payAmount / 100 * +perscom).toFixed(2));
 
+                        // Check Amount
                         cy.request({
                             method: 'GET',
                             url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -467,6 +476,7 @@ class TransactionsPage {
                     cy.log("сумма комиссий =" + " " + sumcom);
                     cy.log("процент за конвертацию =" + " " + exchcom);
 
+                    // Check Amount
                     cy.request({
                         method: 'GET',
                         url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -490,6 +500,7 @@ class TransactionsPage {
                         cy.log("фиксированная комиссия =" + " " + fixcom);
                         cy.log("процент за конвертацию =" + " " + exchcom);
 
+                        // Check Amount
                         cy.request({
                             method: 'GET',
                             url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -512,6 +523,7 @@ class TransactionsPage {
                         cy.log("процент комиссии =" + " " + (+payAmount / 100 * +perscom).toFixed(2));
                         cy.log("процент за конвертацию =" + " " + exchcom);
 
+                        // Check Amount
                         cy.request({
                             method: 'GET',
                             url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -563,7 +575,7 @@ class TransactionsPage {
 
                 // Сalculation formula & Check Amount
 
-                // Get rate
+                // Get the rate from product currency to main currency
                 cy.request({
                     method: 'GET',
                     url: "http://data.fixer.io/api/convert?access_key=f74d95af4d874be993c3d2b716800735&from=" + checkout.product_currency_c3 + "&to=" + merchant.main_currency + "&amount=1",
@@ -596,7 +608,7 @@ class TransactionsPage {
                         // отнимаем комиссию за конвертацию результата и комиссию за конвертацию цены товара из основной валюты в GBP
                         let rezult = (conv - comconv - exch2).toFixed(2);
 
-                        cy.log("рейт from "+checkout.product_currency_c3+" to "+merchant.main_currency+" = "+rate);
+                        cy.log("рейт с "+checkout.product_currency_c3+" в "+merchant.main_currency+" = "+rate);
                         cy.log("стратегия комиссий =" + " " + strateg);
                         cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3);
                         cy.log("сумма комиссий =" + " " + sumcom);
@@ -604,8 +616,7 @@ class TransactionsPage {
                         cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2);
                         cy.log("комиссия за конвертацию цены без комиссий в основную валюту мерчанта =" + " " + comconv);
 
-                        // получаем и сравниваем Amount
-
+                        // Check Amount
                         cy.request({
                             method: 'GET',
                             url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -635,6 +646,7 @@ class TransactionsPage {
                             // отнимаем комиссию за конвертацию результата и комиссию за конвертацию из основной валюты в GBP
                             let rezult = (conv - comconv - exch2).toFixed(2);
 
+                            cy.log("рейт с "+checkout.product_currency_c3+" в "+merchant.main_currency+" = "+rate);
                             cy.log("стратегия комиссий =" + " " + strateg);
                             cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3);
                             cy.log("фиксированная комиссия =" + " " + fixcom);
@@ -642,8 +654,7 @@ class TransactionsPage {
                             cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2);
                             cy.log("комиссия за конвертацию цены без комиссий в основную валюту =" + " " + comconv);
 
-                            // получаем и сравниваем Amount
-
+                            // Check Amount
                             cy.request({
                                 method: 'GET',
                                 url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -672,6 +683,7 @@ class TransactionsPage {
                             // отнимаем комиссию за конвертацию результата и комиссию за конвертацию из основной валюты в GBP
                             let rezult = (conv - comconv - exch2).toFixed(2);
 
+                            cy.log("рейт c "+checkout.product_currency_c3+" в "+merchant.main_currency+" = "+rate);
                             cy.log("стратегия комиссий =" + " " + strateg);
                             cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3);
                             cy.log("процент комиссии =" + " " + (+payAmount / 100 * +perscom).toFixed(2));
@@ -679,8 +691,7 @@ class TransactionsPage {
                             cy.log("комиссия за конвертацию с основной валюты в валюту провайдера =" + " " + exch2);
                             cy.log("комиссия за конвертацию цены без комиссий в основную валюту мерчанта =" + " " + comconv);
 
-                            // получаем и сравниваем Amount
-
+                            // Check Amount
                             cy.request({
                                 method: 'GET',
                                 url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -794,6 +805,8 @@ class TransactionsPage {
                             // отнимаем конвертированную комиссию
                             let rezult = (min2 - conv3).toFixed(2);
 
+                            cy.log("рейт c "+checkout.product_currency_c3+" в "+checkout.pay_currency+" = "+rate);
+                            cy.log("рейт c "+checkout.pay_currency+" в "+merchant.main_currency+" = "+rate2);
                             cy.log("стратегия комиссий =" + " " + strateg);
                             cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3);
                             cy.log("сумма комиссий =" + " " + sumcom);
@@ -802,8 +815,7 @@ class TransactionsPage {
                             cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv);
                             cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2);
 
-                            // получаем и сравниваем Amount
-
+                            // Check Amount
                             cy.request({
                                 method: 'GET',
                                 url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -848,6 +860,8 @@ class TransactionsPage {
 
                                 let rezult = (min2 - conv3).toFixed(2);
 
+                                cy.log("рейт c "+checkout.product_currency_c3+" в "+checkout.pay_currency+" = "+rate);
+                                cy.log("рейт c "+checkout.pay_currency+" в "+merchant.main_currency+" = "+rate2);
                                 cy.log("стратегия комиссий =" + " " + strateg);
                                 cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c4);
                                 cy.log("фиксированная комиссия =" + " " + (+fixcom).toFixed(2));
@@ -856,8 +870,7 @@ class TransactionsPage {
                                 cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv);
                                 cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2);
 
-                                // получаем и сравниваем Amount
-
+                                // Check Amount
                                 cy.request({
                                     method: 'GET',
                                     url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -902,6 +915,8 @@ class TransactionsPage {
                                 // отнимаем комиссию за конвертацию
                                 let rezult = (min2 - conv3).toFixed(2);
 
+                                cy.log("рейт c "+checkout.product_currency_c3+" в "+checkout.pay_currency+" = "+rate);
+                                cy.log("рейт c "+checkout.pay_currency+" в "+merchant.main_currency+" = "+rate2);
                                 cy.log("стратегия комиссий =" + " " + strateg);
                                 cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c3);
                                 cy.log("процент комиссии =" + " " + (+payAmount / 100 * perscom).toFixed(2));
@@ -910,8 +925,7 @@ class TransactionsPage {
                                 cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv);
                                 cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2);
 
-                                // получаем и сравниваем Amount
-
+                                // Check Amount
                                 cy.request({
                                     method: 'GET',
                                     url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
@@ -1017,6 +1031,8 @@ class TransactionsPage {
                         // отнимаем конвертированную комиссию
                         let rezult = (min2 - conv3).toFixed(2);
 
+                        cy.log("рейт c "+checkout.product_currency_c4+" в "+checkout.pay_currency+" = "+rate);
+                        cy.log("рейт c "+checkout.pay_currency+" в "+merchant.main_currency+" = "+rate2);
                         cy.log("стратегия комиссий =" + " " + strateg);
                         cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c4);
                         cy.log("сумма комиссий =" + " " + sumcom);
@@ -1025,8 +1041,7 @@ class TransactionsPage {
                         cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv);
                         cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2);
 
-                        // получаем и сравниваем Amount
-
+                        // Check Amount
                         cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                             expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                         })
@@ -1062,6 +1077,8 @@ class TransactionsPage {
 
                             let rezult = (min2 - conv3).toFixed(2);
 
+                            cy.log("рейт c "+checkout.product_currency_c4+" в "+checkout.pay_currency+" = "+rate);
+                            cy.log("рейт c "+checkout.pay_currency+" в "+merchant.main_currency+" = "+rate2);
                             cy.log("стратегия комиссий =" + " " + strateg);
                             cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c4);
                             cy.log("фиксированная комиссия =" + " " + (+fixcom).toFixed(2));
@@ -1070,8 +1087,7 @@ class TransactionsPage {
                             cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv);
                             cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2);
 
-                            // получаем и сравниваем Amount
-
+                            // Check Amount
                             cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                                 expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                             })
@@ -1107,6 +1123,8 @@ class TransactionsPage {
                             // отнимаем комиссию за конвертацию
                             let rezult = (min2 - conv3).toFixed(2);
 
+                            cy.log("рейт c "+checkout.product_currency_c4+" в "+checkout.pay_currency+" = "+rate);
+                            cy.log("рейт c "+checkout.pay_currency+" в "+merchant.main_currency+" = "+rate2);
                             cy.log("стратегия комиссий =" + " " + strateg);
                             cy.log("цена товара =" + " " + payAmount + " " + checkout.product_currency_c4);
                             cy.log("процент комиссии =" + " " + (+payAmount / 100 * perscom).toFixed(2));
@@ -1115,8 +1133,7 @@ class TransactionsPage {
                             cy.log("комиссия за конвертацию в валюту оплаты =" + " " + comconv);
                             cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2);
 
-                            // получаем и сравниваем Amount
-
+                            // Check Amount
                             cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                                 expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
                             })
@@ -1145,7 +1162,7 @@ class TransactionsPage {
     }
 
     checkCreateRefund() {
-        // get ID last transaction
+        // get ID last transaction and save on variable trIdent
         cy.request({
             method: 'GET',
             url: 'https://account.stage.paydo.com/v1/transactions/user-transactions',

@@ -16,34 +16,12 @@
  * @type {Cypress.PluginConfig}
  */
 
-
 module.exports = (on, config) => {
     // `on` is used to hook into various events Cypress emits
     // `config` is the resolved Cypress config
 
 
- // ...
+    // ...
 
-  on("task", {
-    "gmail:getMessage": async args => {
-
-      const { from, to, subject } = args;
-      const email = await gmail.check_inbox(
-          path.resolve(__dirname, "credential.json"), // credentials.json is inside plugins/ directory.
-          path.resolve(__dirname, "token.json"), // gmail_token.json is inside plugins/ directory.
-          {from: from,
-            to: to,
-            subject:subject,
-            include_body: true,
-            max_wait_time_sec: 200
-          }
-      );
-
-      return email[0];
-
-    }
-
-  });
-
-};
+}
 

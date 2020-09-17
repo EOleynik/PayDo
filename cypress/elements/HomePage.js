@@ -1,3 +1,4 @@
+import merchant from "../fixtures/merchant";
 
 
 class HomePage{
@@ -53,7 +54,23 @@ class HomePage{
     }
 
 
+    setMainCurrency() {
+        cy.request({
+            method: 'POST',
+            url: "https://account.stage.paydo.com/v1/users/settings/change-currency",
+            headers: {
+                token: merchant.token,
+            },
+            body: {
+                "identifier": merchant.bussiness_account,
+                "currency": merchant.main_currency
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(201);
+            expect(response.body.status).eq(1);
 
+        })
+    }
 }
 
 export default new HomePage();

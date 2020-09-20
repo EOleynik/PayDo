@@ -7,13 +7,13 @@ import merchant from "../fixtures/merchant"
 
 describe('Ticket suit ', () => {
 
-    describe('Merchant', () => {
+    describe('Merchant account', () => {
 
         it('Create ticket', () => {
             loginPage.visit('/');
             loginPage.getAuthorization();
             loginPage.getButtonToAdmibPanel().click();
-            cy.wait(2000);
+            cy.wait(5000);
             homePage.getCheckUrl();
             cy.wait(2000);
             homePage.getMenuTickets().click();
@@ -21,54 +21,58 @@ describe('Ticket suit ', () => {
             ticketsPage.getInputRequestName().type(ticket.request_name);
             ticketsPage.selectTopic();
             ticketsPage.getInputQuestion().type(ticket.question);
-            //ticketsPage.getButtonSelectFile().click()
+            ticketsPage.attachFile();
             ticketsPage.getButtonSendTicket().click();
-            ticketsPage.checkCreateTicket()
+            ticketsPage.checkCreateTicket();
             ticketsPage.closeAllert().click();
         })
 
-    })
+    });
 
-    describe('Financial', () => {
+    describe('Manager panel', () => {
 
         it('Create ticket', () => {
-            loginPage.visitAdmin();
-            loginPage.getFeenAuthorization();
-            loginPage.getButtonToAdmibPanel().click();
+
+            loginPage.visit('/');
+            loginPage.getManagerAuthorization();
             cy.wait(2000);
+            loginPage.getButtonToAdmibPanel().click();
+            cy.wait(3000);
+            homePage.getCheckUrlMan();
+            homePage.getMenuTickets().click();
+            ticketsPage.getButtonCreateNewTicket().click();
+            ticketsPage.getInputMerchantID().type(merchant.bussiness_account);
+            ticketsPage.getInputRequestNameFin().type(ticket.request_name);
+            ticketsPage.selectTopicMan();
+            ticketsPage.getInputQuestion().type(ticket.question);
+            ticketsPage.attachFile();
+            ticketsPage.getButtonSendTicket().click();
+            ticketsPage.checkCreateTicketFin();
+            ticketsPage.closeAlertFin().click();
+       })
+     });
+
+    describe('Financial panel', () => {
+
+        it('Create ticket', () => {
+            loginPage.visit('/');
+            loginPage.getFeenAuthorization();
+            cy.wait(2000);
+            loginPage.getButtonToAdmibPanel().click();
+            cy.wait(3000);
+            homePage.getCheckUrlFin();
             homePage.getMenuTickets().click();
             ticketsPage.getButtonCreateNewTicket().click();
             ticketsPage.getInputMerchantID().type(merchant.bussiness_account);
             ticketsPage.getInputRequestNameFin().type(ticket.request_name);
             ticketsPage.selectTopicFin();
             ticketsPage.getInputQuestion().type(ticket.question);
-            //ticketsPage.getButtonSelectFile().click()
+            ticketsPage.attachFile();
             ticketsPage.getButtonSendTicket().click();
             ticketsPage.checkCreateTicketFin();
-            ticketsPage.closeAllertFin().click();
+            ticketsPage.closeAlertFin().click();
         })
-    })
+    });
 
-    // describe('Manager', () => {
-    //
-    //     it('Create ticket', () => {
-    //
-    //         loginPage.visitAdmin();
-    //         loginPage.getManagerAuthorization();
-    //         loginPage.getButtonToAdmibPanel().click();
-    //         cy.wait(2000);
-    //         homePage.getMenuTickets().click();
-    //         // ticketsPage.getButtonCreateNewTicket().click();
-    //         // ticketsPage.getInputMerchantID().type(merchant.bussiness_account);
-    //         // ticketsPage.getInputRequestNameFin().type(ticket.request_name);
-    //         // ticketsPage.selectTopicFin();
-    //         // ticketsPage.getInputQuestion().type(ticket.question);
-    //         // //ticketsPage.getButtonSelectFile().click()
-    //         // ticketsPage.getButtonSendTicket().click();
-    //         // ticketsPage.checkCreateTicketFin();
-    //         // ticketsPage.closeAllertFin().click();
-       //})
-    //})
-
-})
+});
 

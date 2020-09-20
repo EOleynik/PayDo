@@ -8,9 +8,9 @@ describe('Chargeback suit', () => {
 
     beforeEach('', () => {
         createCheckoutPage.getCheckout2API(300);
-        loginPage.visitAdmin();
+        loginPage.visit('/');
         loginPage.getFeenAuthorization();
-    })
+    });
 
     //Чарджбек
     it('Chargeback', () => {

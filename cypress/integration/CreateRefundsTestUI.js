@@ -10,7 +10,7 @@ describe('Refund suit', () => {
         loginPage.visit('/');
         loginPage.getAuthorization();
         createCheckoutPage.getCheckout2API(300);
-    })
+    });
 
     // Частичный рефанд на 100 USD, цена товара 300 USD
     it('Partial Refund', () => {
@@ -18,14 +18,14 @@ describe('Refund suit', () => {
         cy.wait(2000);
         homePage.getCheckUrl();
         cy.wait(2000);
-        homePage.getMenuTransactions().click();
+        homePage.getMenuPaymentHistory().click();
         transactionsPage.getButtonDetails().click();
         transactionsPage.getButtonPartialRefund().click();
         transactionsPage.getInputPartialRefundAmount().type('100');
         transactionsPage.getButtonCreateRefund().click();
-        transactionsPage.getButtonOk().click();
+        transactionsPage.getButtonCreateRefundOk().click();
         transactionsPage.checkCreateRefund();
-    })
+    });
 
     // Полный рефанд, цена товара 300 USD
     it('Full Refund', () => {
@@ -33,16 +33,17 @@ describe('Refund suit', () => {
         cy.wait(2000);
         homePage.getCheckUrl();
         cy.wait(2000);
-        homePage.getMenuTransactions().click();
+        homePage.getMenuPaymentHistory().click();
         transactionsPage.getButtonDetails().click();
+        cy.wait(2000);
         transactionsPage.getButtonRefund().click();
         transactionsPage.confirmRefund().click();
-        transactionsPage.getButtonOk().click();
+        transactionsPage.getButtonCreateRefundOk().click();
         transactionsPage.checkCreateRefund();
-    })
+    });
 
 
-})
+});
 
 
 

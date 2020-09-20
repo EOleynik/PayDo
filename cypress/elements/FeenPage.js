@@ -8,12 +8,11 @@ class FeenPage {
     getLogin() {
         loginPage.visit('/');
         window.localStorage.setItem('user-session',
-            '{"id":"1604","email":"eugeniy.o+f2@payop.com","token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE2MDQiLCJhY2Nlc3NUb2tlbiI6ImRlYzhhMDE5YjA1Y2M2ZjVkMzk3ZjdiOSIsInRva2VuSWQiOm51bGwsIndhbGxldElkIjoiMTU5OCIsInRpbWUiOjE1OTYzNTgyNzMsImV4cGlyZWRBdCI6bnVsbCwicm9sZXMiOlsiUk9MRV9GSU5BTkNJQUwiXSwidHdvRmFjdG9yIjp7InBhc3NlZCI6dHJ1ZX19.GGimEqCfcBU3fMMiO23Uc9_-nPidBcmNwpFvNuNi3SU","role":4,"moduleUrl":"financial","status":1,"type":2,"accountType":1,"availableAccounts":[],"stayLogin":true,"isLoggedIn":true}')
+            '{"id":"1604","email":"eugeniy.o+f2@payop.com","token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE2MDQiLCJhY2Nlc3NUb2tlbiI6ImRlYzhhMDE5YjA1Y2M2ZjVkMzk3ZjdiOSIsInRva2VuSWQiOm51bGwsIndhbGxldElkIjoiMTU5OCIsInRpbWUiOjE1OTYzNTgyNzMsImV4cGlyZWRBdCI6bnVsbCwicm9sZXMiOlsiUk9MRV9GSU5BTkNJQUwiXSwidHdvRmFjdG9yIjp7InBhc3NlZCI6dHJ1ZX19.GGimEqCfcBU3fMMiO23Uc9_-nPidBcmNwpFvNuNi3SU","role":4,"moduleUrl":"financial","status":1,"type":2,"accountType":1,"availableAccounts":[],"stayLogin":true,"isLoggedIn":true}');
         loginPage.getButtonToAdmibPanel().click();
     }
 
-
-    setComissionsAndStrategy() {
+    setCommissionsAndStrategy() {
         cy.request({
             method: 'POST',
             url: `https://app.stage.paydo.com/v1/instrument-settings/commissions/custom`,
@@ -105,7 +104,7 @@ class FeenPage {
                     "updatedAt": 1597518380
                 }
         }).then((response) => {
-            expect(response).property('status').to.equal(201)
+            expect(response).property('status').to.equal(201);
             expect(response.body).property('data').to.not.be.oneOf([null, ""])
         })
     }
@@ -128,7 +127,7 @@ class FeenPage {
 
             }
         }).then((response) => {
-            expect(response).property('status').to.equal(201)
+            expect(response).property('status').to.equal(201);
             expect(response.body).property('status').to.not.be.oneOf([null, ""])
         })
     }
@@ -145,7 +144,7 @@ class FeenPage {
                 "primaryIdentifier": 300
             }
         }).then((response) => {
-            expect(response).property('status').to.equal(200)
+            expect(response).property('status').to.equal(200);
             expect(response.body).property('status').to.not.be.oneOf([null, ""])
         })
     }
@@ -177,7 +176,7 @@ class FeenPage {
     }
 
     changeComissionsAndStrategy() {
-        // Get strategy
+        // Get a strategy for the moment
         cy.request({
             method: 'GET',
             url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,

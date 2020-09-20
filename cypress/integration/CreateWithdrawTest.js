@@ -9,7 +9,7 @@ describe('Withdraw suit ', () => {
         beforeEach('', () => {
             loginPage.visit('/');
             loginPage.getAuthorization();
-        })
+        });
 
         it('Create withdraw', () => {
             loginPage.getButtonToAdmibPanel().click();
@@ -25,14 +25,13 @@ describe('Withdraw suit ', () => {
             maneyTransferPage.getInputBICcode().type('BIJORU66XXX');
             maneyTransferPage.getInputBeneficiaryBank().type('Primatbank');
             maneyTransferPage.getInputPurposePayment().type('Other');
-            maneyTransferPage.getCheckboxPaymentNotComercial().click();
+            maneyTransferPage.getCheckboxPaymentNotCommercial().click();
             maneyTransferPage.getInputAmountToTransfer().type('100');
             //maneyTransferPage.getFieldAmountToBeCharged().click();
             maneyTransferPage.getButtonProceed().click();
             maneyTransferPage.getButtonConfirmTransfer().click()
 
 
-
-        })
-    })
-})
+        });
+    });
+});

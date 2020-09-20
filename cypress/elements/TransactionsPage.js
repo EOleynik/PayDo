@@ -1146,15 +1146,15 @@ class TransactionsPage {
 
 
     getButtonDetails() {
-        return cy.get('[class="mat-focus-indicator details-button-custom mat-raised-button mat-button-base"]').eq(0);
+        return cy.contains('span', 'Details').eq(0);
     }
 
     getButtonPartialRefund() {
-        return cy.get('[class="white-btn w-183 mr-30"]');
+        return cy.contains('div', 'Partial Refund');
     }
 
     getButtonCreateRefund() {
-        return cy.get('[class="mat-button-wrapper"]');
+        return cy.contains('span', ' Create refund ')
     }
 
     getInputPartialRefundAmount() {
@@ -1190,21 +1190,17 @@ class TransactionsPage {
     }
 
 
-    getButtonOk() {
-        // return cy.get('[class="new-alert-btn ng-tns-c275-0"]')
-        return cy.get('.new-alert-btn');
-
+    getButtonCreateRefundOk() {
+        return cy.contains('div', ' Ok ');
     }
 
     getButtonRefund() {
         return cy.get('[class="purple-btn w-183"]');
     }
 
-
     confirmRefund() {
-        return cy.get('[mat-raised-button=""]');
+        return cy.contains('button', 'Yes, I sure ');
     }
-
 
     getButtonFilter() {
         return cy.get('.filter-buttons > :nth-child(3) > .mat-button-wrapper');

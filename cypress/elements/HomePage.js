@@ -30,11 +30,11 @@ class HomePage{
 
 
     getMenuProjects() {
-        return cy.contains('Projects').click();
+        return cy.contains('Projects');
     }
 
     getSubMenuRest() {
-        return cy.get(':nth-child(3) > .mid-menu > :nth-child(3) > .mid-menu__li-link > .mat-line').click();
+        return cy.contains ('p', 'REST');
     }
 
     getMenuPaymentHistory() {

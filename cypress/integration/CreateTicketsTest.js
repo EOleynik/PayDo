@@ -21,34 +21,12 @@ describe('Ticket suit ', () => {
             ticketsPage.getInputRequestName().type(ticket.request_name);
             ticketsPage.selectTopic();
             ticketsPage.getInputQuestion().type(ticket.question);
-            //ticketsPage.getButtonSelectFile().click()
+            ticketsPage.attachFile();
             ticketsPage.getButtonSendTicket().click();
             ticketsPage.checkCreateTicket();
             ticketsPage.closeAllert().click();
         })
 
-    });
-
-    describe('Financial panel', () => {
-
-        it('Create ticket', () => {
-            loginPage.visit('/');
-            loginPage.getFeenAuthorization();
-            cy.wait(2000);
-            loginPage.getButtonToAdmibPanel().click();
-            cy.wait(3000);
-            homePage.getCheckUrlFin();
-            homePage.getMenuTickets().click();
-            ticketsPage.getButtonCreateNewTicket().click();
-            ticketsPage.getInputMerchantID().type(merchant.bussiness_account);
-            ticketsPage.getInputRequestNameFin().type(ticket.request_name);
-            ticketsPage.selectTopicFin();
-            ticketsPage.getInputQuestion().type(ticket.question);
-            //ticketsPage.getButtonSelectFile().click()
-            ticketsPage.getButtonSendTicket().click();
-            ticketsPage.checkCreateTicketFin();
-            ticketsPage.closeAllertFin().click();
-        })
     });
 
     describe('Manager panel', () => {
@@ -65,14 +43,36 @@ describe('Ticket suit ', () => {
             ticketsPage.getButtonCreateNewTicket().click();
             ticketsPage.getInputMerchantID().type(merchant.bussiness_account);
             ticketsPage.getInputRequestNameFin().type(ticket.request_name);
-            ticketsPage.selectTopicFin();
+            ticketsPage.selectTopicMan();
             ticketsPage.getInputQuestion().type(ticket.question);
-            //ticketsPage.getButtonSelectFile().click()
+            ticketsPage.attachFile();
             ticketsPage.getButtonSendTicket().click();
             ticketsPage.checkCreateTicketFin();
-            ticketsPage.closeAllertFin().click();
+            ticketsPage.closeAlertFin().click();
        })
-     })
+     });
+
+    describe('Financial panel', () => {
+
+        it('Create ticket', () => {
+            loginPage.visit('/');
+            loginPage.getFeenAuthorization();
+            cy.wait(2000);
+            loginPage.getButtonToAdmibPanel().click();
+            cy.wait(3000);
+            homePage.getCheckUrlFin();
+            homePage.getMenuTickets().click();
+            ticketsPage.getButtonCreateNewTicket().click();
+            ticketsPage.getInputMerchantID().type(merchant.bussiness_account);
+            ticketsPage.getInputRequestNameFin().type(ticket.request_name);
+            ticketsPage.selectTopicFin();
+            ticketsPage.getInputQuestion().type(ticket.question);
+            ticketsPage.attachFile();
+            ticketsPage.getButtonSendTicket().click();
+            ticketsPage.checkCreateTicketFin();
+            ticketsPage.closeAlertFin().click();
+        })
+    });
 
 });
 

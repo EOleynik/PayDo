@@ -11,7 +11,7 @@ class MoneyTransferPage {
     }
 
     selectCountry() {
-        cy.get ('#mat-input-9').click()
+        cy.get ('#mat-input-9').click();
         return cy.get ('#mat-option-10 > .mat-option-text').click();
     }
 
@@ -35,7 +35,7 @@ class MoneyTransferPage {
         return cy.get ('#mat-input-8');
     }
 
-    getCheckboxPaymentNotComercial() {
+    getCheckboxPaymentNotCommercial() {
         return cy.get ('#mat-checkbox-2 > .mat-checkbox-layout > .mat-checkbox-inner-container');
     }
 

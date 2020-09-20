@@ -1,11 +1,11 @@
-import merchant from "../fixtures/merchant";
+
 import ticket from "../fixtures/ticket"
 
 class TicketsPage {
 
 
     getButtonCreateNewTicket() {
-        return cy.get ('[class="mat-focus-indicator create-ticket-button mat-raised-button mat-button-base mat-primary"]');
+        return cy.contains('span', 'Create new ticket')
     }
 
     getInputMerchantID(){
@@ -17,32 +17,29 @@ class TicketsPage {
     }
 
     selectTopic() {
-        cy.get ('#mat-select-3 > .mat-select-trigger > .mat-select-arrow-wrapper').click()
-        return cy.get ('#mat-option-13 > .mat-option-text').click();
+        cy.contains('span', 'Sales department').click();
+        return cy.contains('span', ticket.department_1).click();
     }
 
     getInputQuestion() {
         return cy.get ('[class="ql-editor ql-blank"]').click();
     }
 
-    getButtonSelectFile() {
-        return cy.get ('.content-wrap > .mat-focus-indicator > .mat-button-wrapper')
+    attachFile() {
+
     }
 
     getButtonSendTicket() {
-        return cy.get ('.mat-dialog-actions > .mat-focus-indicator')
+        return cy.contains('span', ' Send ticket ');
     }
 
     checkCreateTicket() {
-       // cy.get('[class="alert__title ng-tns-c270-0"]').invoke('text').should((text) => {
-        cy.get('[class="alert__title ng-tns-c71-0"]').invoke('text').should((text) => {
+        cy.contains('div', 'Success').invoke('text').should((text) => {
             expect(text).to.eq('Success')
-        })
+        });
     }
 
-
     closeAllert() {
-        //return cy.get ('[class="close-alert ng-tns-c270-0"]');
         return cy.get ('.close-alert')
     }
 
@@ -51,21 +48,25 @@ class TicketsPage {
     }
 
     selectTopicFin() {
-        cy.get ('#mat-select-23 > .mat-select-trigger > .mat-select-arrow-wrapper').click()
-        return cy.get ('#mat-option-133 > .mat-option-text').click();
+        cy.get ('#mat-select-23 > .mat-select-trigger > .mat-select-arrow-wrapper').click();
+        return cy.contains('span', ticket.department_3).click();
     }
 
-    closeAllertFin() {
+    closeAlertFin() {
         return cy.get ('.close-alert');
     }
 
     checkCreateTicketFin() {
         cy.get('.alert__title').invoke('text').should((text) => {
-            expect(text).to.eq('Success')
+            expect(text).to.eq('Success');
         })
 
     }
 
+    selectTopicMan() {
+        cy.get('#mat-select-23 > .mat-select-trigger > .mat-select-arrow-wrapper').click();
+        return cy.contains('span', ticket.department_2).click();
+    }
 }
 
 export default new TicketsPage();

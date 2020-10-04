@@ -1,6 +1,6 @@
-import loginPage from "../elements/LoginPage";
-import homePage from "../elements/HomePage";
-import maneyTransferPage from "../elements/MoneyTransferPage";
+import loginPage from "../../elements/LoginPage";
+import homePage from "../../elements/HomePage";
+import maneyTransferPage from "../../elements/MoneyTransferPage";
 
 describe('Withdraw suit ', () => {
 
@@ -12,6 +12,7 @@ describe('Withdraw suit ', () => {
         });
 
         it('Create withdraw', () => {
+
             loginPage.getButtonToAdmibPanel().click();
             cy.wait(2000);
             homePage.getCheckUrl();

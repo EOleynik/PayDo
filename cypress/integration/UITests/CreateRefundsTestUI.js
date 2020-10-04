@@ -1,8 +1,8 @@
 
-import loginPage from "../elements/LoginPage";
-import homePage from "../elements/HomePage";
-import transactionsPage from "../elements/TransactionsPage";
-import createCheckoutPage from "../elements/CreateCheckoutPage"
+import loginPage from "../../elements/LoginPage";
+import homePage from "../../elements/HomePage";
+import transactionsPage from "../../elements/TransactionsPage";
+import createCheckoutPage from "../../elements/CreateCheckoutPage"
 
 describe('Refund suit', () => {
 

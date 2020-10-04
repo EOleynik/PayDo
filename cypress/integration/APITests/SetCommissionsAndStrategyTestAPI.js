@@ -1,5 +1,5 @@
-import feenPage from "../elements/FeenPage";
+import feenPage from "../../elements/FeenPage";
 
 it('Set comissions and strategy' ,() => {
     feenPage.setNewCommissionsAndStrategy();
-})
+});

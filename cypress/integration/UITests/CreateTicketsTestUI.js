@@ -1,9 +1,9 @@
 
-import loginPage from "../elements/LoginPage";
-import homePage from "../elements/HomePage";
-import ticketsPage from "../elements/TicketsPage"
-import ticket from "../fixtures/ticket"
-import merchant from "../fixtures/merchant"
+import loginPage from "../../elements/LoginPage";
+import homePage from "../../elements/HomePage";
+import ticketsPage from "../../elements/TicketsPage"
+import ticket from "../../fixtures/ticket"
+import merchant from "../../fixtures/merchant"
 
 describe('Ticket suit ', () => {
 
@@ -22,6 +22,7 @@ describe('Ticket suit ', () => {
             ticketsPage.selectTopic();
             ticketsPage.getInputQuestion().type(ticket.question);
             ticketsPage.attachFile();
+            cy.wait(2000);
             ticketsPage.getButtonSendTicket().click();
             ticketsPage.checkCreateTicket();
             ticketsPage.closeAllert().click();
@@ -46,11 +47,13 @@ describe('Ticket suit ', () => {
             ticketsPage.selectTopicMan();
             ticketsPage.getInputQuestion().type(ticket.question);
             ticketsPage.attachFile();
+            cy.wait(2000);
             ticketsPage.getButtonSendTicket().click();
             ticketsPage.checkCreateTicketFin();
             ticketsPage.closeAlertFin().click();
        })
-     });
+
+    });
 
     describe('Financial panel', () => {
 
@@ -68,10 +71,12 @@ describe('Ticket suit ', () => {
             ticketsPage.selectTopicFin();
             ticketsPage.getInputQuestion().type(ticket.question);
             ticketsPage.attachFile();
+            cy.wait(2000);
             ticketsPage.getButtonSendTicket().click();
             ticketsPage.checkCreateTicketFin();
             ticketsPage.closeAlertFin().click();
         })
+
     });
 
 });

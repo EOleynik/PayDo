@@ -1204,6 +1204,17 @@ class TransactionsPage {
     closeAlert() {
         cy.get('[class="close-alert ng-tns-c71-0"]').click();
     }
+
+    isErrorAlertDisplayed(alert) {
+        cy.get('li.ng-tns-c71-0').invoke('text').should((text) => {
+            expect(text).to.eq(alert)
+            //expect(text).to.eq('Refund amount is bigger than transaction amount')
+        })
+    }
+
+    getInputPartialRefundAmountRepeat() {
+        return cy.get('#mat-input-7');
+    }
 }
 
 

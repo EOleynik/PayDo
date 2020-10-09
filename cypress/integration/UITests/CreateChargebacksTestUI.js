@@ -13,7 +13,7 @@ describe('Chargeback suit', () => {
     });
 
     it('Create Chargeback', () => {
-        loginPage.getButtonToAdmibPanel().click();
+        loginPage.getButtonToAdminPanel().click();
         cy.wait(2000);
         homePage.getMenuPaymentHistory().click();
         transactionsPage.getButtonFilter().click();

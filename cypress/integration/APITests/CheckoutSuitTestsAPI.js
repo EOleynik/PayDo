@@ -72,7 +72,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
             describe('Change strategy', () => {
 
                 it('Change strategy', () => {
-                    feenPage.changeComissionsAndStrategy()
+                    feenPage.changeCommissionsAndStrategy()
                 })
             });
 

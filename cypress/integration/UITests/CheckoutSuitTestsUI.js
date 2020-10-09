@@ -1,4 +1,4 @@
-import merchant from "../../fixtures/merchant";
+
 import feenPage from "../../elements/FeenPage";
 import loginPage from "../../elements/LoginPage";
 import homePage from "../../elements/HomePage";
@@ -34,7 +34,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                 //let payAmount = 400;
                 let payCurrency = 'GBP';
 
-                loginPage.getButtonToAdmibPanel().click();
+                loginPage.getButtonToAdminPanel().click();
                 cy.wait(5000);
                 homePage.getCheckUrl();
                 homePage.getMenuProjects().click();
@@ -61,7 +61,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                 loginPage.visit('/');
                 cy.wait(5000);
-                loginPage.getButtonToAdmibPanel().click();
+                loginPage.getButtonToAdminPanel().click();
                 cy.wait(5000);
                 homePage.getMenuPaymentHistory().click();
                 transactionsPage.checkAmountUIGBP(payAmount);
@@ -74,7 +74,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                 let payAmount = cy.getRandomArbitrary(300, 500);
                 //let payAmount = 400;
 
-                loginPage.getButtonToAdmibPanel().click();
+                loginPage.getButtonToAdminPanel().click();
                 cy.wait(5000);
                 homePage.getCheckUrl();
                 homePage.getMenuProjects().click();
@@ -101,7 +101,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                 loginPage.visit('/');
                 cy.wait(5000);
-                loginPage.getButtonToAdmibPanel().click();
+                loginPage.getButtonToAdminPanel().click();
                 cy.wait(5000);
                 homePage.getMenuPaymentHistory().click();
                 transactionsPage.checkAmountUIUSD(payAmount);
@@ -114,7 +114,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                 let payAmount = cy.getRandomArbitrary(300, 500);
                 //let payAmount = 366.31;
 
-                loginPage.getButtonToAdmibPanel().click();
+                loginPage.getButtonToAdminPanel().click();
                 cy.wait(5000);
                 homePage.getCheckUrl();
                 homePage.getMenuProjects().click();
@@ -141,7 +141,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                 loginPage.visit('/');
                 cy.wait(5000);
-                loginPage.getButtonToAdmibPanel().click();
+                loginPage.getButtonToAdminPanel().click();
                 cy.wait(5000);
                 homePage.getMenuPaymentHistory().click();
                 transactionsPage.checkAmountUIUAH(payAmount);
@@ -154,7 +154,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                 let payAmount = cy.getRandomArbitrary(500, 1500);
                 //let payAmount = 419.94;
 
-                loginPage.getButtonToAdmibPanel().click();
+                loginPage.getButtonToAdminPanel().click();
                 cy.wait(5000);
                 homePage.getCheckUrl();
                 homePage.getMenuProjects().click();
@@ -182,7 +182,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                 loginPage.visit('/');
                 cy.wait(5000);
-                loginPage.getButtonToAdmibPanel().click();
+                loginPage.getButtonToAdminPanel().click();
                 cy.wait(5000);
                 homePage.getMenuPaymentHistory().click();
                 transactionsPage.checkAmountUICUP(payAmount);
@@ -211,7 +211,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                         //let payAmount = 400;
                         let payCurrency = 'GBP';
 
-                        loginPage.getButtonToAdmibPanel().click();
+                        loginPage.getButtonToAdminPanel().click();
                         cy.wait(5000);
                         homePage.getCheckUrl();
                         homePage.getMenuProjects().click();
@@ -238,7 +238,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                         loginPage.visit('/');
                         cy.wait(5000);
-                        loginPage.getButtonToAdmibPanel().click();
+                        loginPage.getButtonToAdminPanel().click();
                         cy.wait(5000);
                         homePage.getMenuPaymentHistory().click();
                         transactionsPage.checkAmountUIGBP(payAmount);
@@ -251,7 +251,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                         let payAmount = cy.getRandomArbitrary(300, 500);
                         //let payAmount = 400;
 
-                        loginPage.getButtonToAdmibPanel().click();
+                        loginPage.getButtonToAdminPanel().click();
                         cy.wait(5000);
                         homePage.getCheckUrl();
                         homePage.getMenuProjects().click();
@@ -278,7 +278,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                         loginPage.visit('/');
                         cy.wait(5000);
-                        loginPage.getButtonToAdmibPanel().click();
+                        loginPage.getButtonToAdminPanel().click();
                         cy.wait(5000);
                         homePage.getMenuPaymentHistory().click();
                         transactionsPage.checkAmountUIUSD(payAmount);
@@ -291,7 +291,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                         let payAmount = cy.getRandomArbitrary(300, 500);
                         //let payAmount = 366.31;
 
-                        loginPage.getButtonToAdmibPanel().click();
+                        loginPage.getButtonToAdminPanel().click();
                         cy.wait(5000);
                         homePage.getCheckUrl();
                         homePage.getMenuProjects().click();
@@ -318,7 +318,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                         loginPage.visit('/');
                         cy.wait(5000);
-                        loginPage.getButtonToAdmibPanel().click();
+                        loginPage.getButtonToAdminPanel().click();
                         cy.wait(5000);
                         homePage.getMenuPaymentHistory().click();
                         transactionsPage.checkAmountUIUAH(payAmount);
@@ -331,7 +331,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                         let payAmount = cy.getRandomArbitrary(500, 1500);
                         //let payAmount = 419.94;
 
-                        loginPage.getButtonToAdmibPanel().click();
+                        loginPage.getButtonToAdminPanel().click();
                         cy.wait(5000);
                         homePage.getCheckUrl();
                         homePage.getMenuProjects().click();
@@ -359,7 +359,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                         loginPage.visit('/');
                         cy.wait(5000);
-                        loginPage.getButtonToAdmibPanel().click();
+                        loginPage.getButtonToAdminPanel().click();
                         cy.wait(5000);
                         homePage.getMenuPaymentHistory().click();
                         transactionsPage.checkAmountUICUP(payAmount);

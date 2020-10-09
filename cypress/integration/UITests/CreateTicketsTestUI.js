@@ -12,7 +12,7 @@ describe('Ticket suit ', () => {
         it('Create ticket', () => {
             loginPage.visit('/');
             loginPage.getAuthorization();
-            loginPage.getButtonToAdmibPanel().click();
+            loginPage.getButtonToAdminPanel().click();
             cy.wait(5000);
             homePage.getCheckUrl();
             cy.wait(2000);
@@ -37,7 +37,7 @@ describe('Ticket suit ', () => {
             loginPage.visit('/');
             loginPage.getManagerAuthorization();
             cy.wait(2000);
-            loginPage.getButtonToAdmibPanel().click();
+            loginPage.getButtonToAdminPanel().click();
             cy.wait(3000);
             homePage.getCheckUrlMan();
             homePage.getMenuTickets().click();
@@ -61,7 +61,7 @@ describe('Ticket suit ', () => {
             loginPage.visit('/');
             loginPage.getFeenAuthorization();
             cy.wait(2000);
-            loginPage.getButtonToAdmibPanel().click();
+            loginPage.getButtonToAdminPanel().click();
             cy.wait(3000);
             homePage.getCheckUrlFin();
             homePage.getMenuTickets().click();

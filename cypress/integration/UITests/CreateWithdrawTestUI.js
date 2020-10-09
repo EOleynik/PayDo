@@ -13,7 +13,7 @@ describe('Withdraw suit ', () => {
 
         it('Create withdraw', () => {
 
-            loginPage.getButtonToAdmibPanel().click();
+            loginPage.getButtonToAdminPanel().click();
             cy.wait(2000);
             homePage.getCheckUrl();
             cy.wait(2000);

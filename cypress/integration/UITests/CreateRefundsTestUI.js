@@ -4,6 +4,7 @@ import homePage from "../../elements/HomePage";
 import transactionsPage from "../../elements/TransactionsPage";
 import createCheckoutPage from "../../elements/CreateCheckoutPage"
 import refund from "../../fixtures/refund";
+import refundPage from "../../elements/RefundPage";
 
 describe('Refund suit', () => {
 
@@ -27,6 +28,7 @@ describe('Refund suit', () => {
         transactionsPage.getButtonCreateRefund().click();
         transactionsPage.getButtonCreateRefundOk().click();
         transactionsPage.checkCreateRefund();
+        refundPage.rejectRefund();
     });
 
     it("Full refund, product amount " + refund.payamount + " USD", () => {
@@ -42,6 +44,7 @@ describe('Refund suit', () => {
         transactionsPage.confirmRefund().click();
         transactionsPage.getButtonCreateRefundOk().click();
         transactionsPage.checkCreateRefund();
+        refundPage.rejectRefund();
     });
 
     it('Partial refund, refund amount is more than the product amount', () => {

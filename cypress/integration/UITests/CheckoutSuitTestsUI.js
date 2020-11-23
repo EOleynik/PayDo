@@ -112,7 +112,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
             it('Checkout, product currency is not USD, GBP, EUR, RUB', () => {
 
                 let payAmount = cy.getRandomArbitrary(300, 500);
-               // let payAmount = 426.62;
+                // let payAmount = 426.62;
 
                 loginPage.getButtonToAdminPanel().click();
                 cy.wait(5000);
@@ -289,7 +289,7 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                     it('Checkout, product currency is not USD, GBP, EUR, RUB', () => {
 
                         let payAmount = cy.getRandomArbitrary(300, 500);
-                        //let payAmount = 366.31;
+                       // et payAmount = 366.31;
 
                         loginPage.getButtonToAdminPanel().click();
                         cy.wait(5000);

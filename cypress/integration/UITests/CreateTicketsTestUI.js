@@ -25,7 +25,7 @@ describe('Ticket suit ', () => {
             cy.wait(2000);
             ticketsPage.getButtonSendTicket().click();
             ticketsPage.checkCreateTicket();
-            ticketsPage.closeAllert().click();
+            ticketsPage.closeAlert();
         })
 
     });
@@ -50,7 +50,7 @@ describe('Ticket suit ', () => {
             cy.wait(2000);
             ticketsPage.getButtonSendTicket().click();
             ticketsPage.checkCreateTicketFin();
-            ticketsPage.closeAlertFin().click();
+            ticketsPage.closeAlert();
        })
 
     });
@@ -74,7 +74,7 @@ describe('Ticket suit ', () => {
             cy.wait(2000);
             ticketsPage.getButtonSendTicket().click();
             ticketsPage.checkCreateTicketFin();
-            ticketsPage.closeAlertFin().click();
+            ticketsPage.closeAlert();
         })
 
     });

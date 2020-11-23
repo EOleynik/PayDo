@@ -3,6 +3,9 @@ import feen from "../fixtures/feen.json"
 import merchant from "../fixtures/merchant.json"
 import paymentMethod from "../fixtures/paymentMethod"
 import manajer from "../fixtures/manajer";
+import homePage from "./HomePage";
+import projectsPage from "./ProjectsPage";
+
 
 class FeenPage {
 
@@ -261,6 +264,21 @@ class FeenPage {
             }
         })
     }
+
+
+    rejectProject ()
+    {
+        feenPage.getLogin();
+        homePage.getMenuProjects().click();
+        projectsPage.getButton('Details').click();
+
+    }
+
+
 }
+
+
+
+
 
 export default new FeenPage();

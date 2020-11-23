@@ -41,8 +41,8 @@ class TicketsPage {
         });
     }
 
-    closeAllert() {
-        return cy.get ('.close-alert')
+    closeAlert() {
+        return cy.get ('.close-alert').click()
     }
 
     getInputRequestNameFin() {
@@ -52,10 +52,6 @@ class TicketsPage {
     selectTopicFin() {
         cy.get ('#mat-select-23 > .mat-select-trigger > .mat-select-arrow-wrapper').click();
         return cy.contains('span', ticket.department_3).click();
-    }
-
-    closeAlertFin() {
-        return cy.get ('.close-alert');
     }
 
     checkCreateTicketFin() {

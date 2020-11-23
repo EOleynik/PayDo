@@ -1,0 +1,12 @@
+{
+  "name": "MyNewProject",
+  "site": "https://app.stage.paydo.com/my.new.project",
+  "description": "non-specialized wholesale trade",
+  "callback_IPN": "https://non-specialized wholesale trade",
+  "min_tr_amount": 0.01,
+  "avg_tr_amount": 1000,
+  "max_tr_amount": 10000,
+  "exp_monthly_volume": 10000,
+  "number_input": [4, 6, 8, 9, 10, 11],
+  "number_allert": [0, 1, 2, 3, 4, 5]
+}

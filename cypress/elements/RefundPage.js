@@ -15,7 +15,6 @@ class RefundPage{
         }).then((response) => {
             expect(response).property('status').to.equal(200);
             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-            //expect(response.body).property('data').to.not.be.oneOf([null, ""]);
             let ref_ID = response.body.data[0].identifier;
 
             //Reject last refund

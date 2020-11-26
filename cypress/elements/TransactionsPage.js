@@ -32,10 +32,10 @@ class TransactionsPage {
             let perscom = response.body.data[7].value.GBP[1];
             let strateg = response.body.data[7].strategy;
 
-            cy.wait(3000);
+            cy.wait(5000);
 
             //Check status tranzaction
-            cy.get(':nth-child(1) > .cdk-column-state > .mat-chip').invoke('text').should((text) => {
+                cy.get('[class="mat-cell cdk-cell cdk-column-state mat-column-state ng-star-inserted"]').eq(0).invoke('text').should((text) => {
                 expect(text).to.eq(' Accepted ')
             });
 
@@ -1273,10 +1273,6 @@ class TransactionsPage {
         })
     }
 
-    closeAlert() {
-        cy.get('[class="close-alert ng-tns-c71-0"]').click();
-    }
-
     isErrorAlertDisplayed(alert) {
         cy.get('li.ng-tns-c71-0').invoke('text').should((text) => {
             expect(text).to.eq(alert)
@@ -1748,6 +1744,35 @@ class TransactionsPage {
                         })
                     })
                 })
+            })
+        })
+    }
+
+    createChargeback() {
+        // Get ID last transaction for merchant
+        cy.request({
+            method: 'GET',
+            url: "https://app.stage.paydo.com/v1/transactions/filter?query[userIdentifier]=" + merchant.bussiness_account,
+            headers: {
+                token: feen.token
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let transaction_ID = response.body.data[0].identifier;
+
+            //Create chargeback
+            cy.request({
+                method: 'POST',
+                url: "https://app.stage.paydo.com/v1/chargebacks/create",
+                headers: {
+                    token: feen.token
+                },
+                body: {
+                    "transactionIdentifier": transaction_ID
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(201);
             })
         })
     }

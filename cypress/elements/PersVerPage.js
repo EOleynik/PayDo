@@ -11,7 +11,7 @@ class PersVerPage {
     }
 
     getBirthdayField() {
-        cy.get('#mat-input-58').click()
+        cy.get('#mat-input-58').click();
         return cy.get('.mat-calendar-body-active > .mat-calendar-body-cell-content').click();
     }
 

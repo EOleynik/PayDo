@@ -20,7 +20,7 @@ class HomePage{
     }
 
     getChangeAccount() {
-         cy.get('[class="acc-active__info_acc-type"]').click()
+         cy.get('[class="acc-active__info_acc-type"]').click();
        return cy.contains('Personal account').click()
     }
 

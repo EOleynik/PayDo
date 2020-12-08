@@ -9,6 +9,13 @@ class ParentPage {
         return cy.contains('span',  name );
     }
 
+    getMenu(name) {
+        return cy.contains(name);
+    }
+
+    getSubMenu(name) {
+        return cy.contains ('p', name);
+    }
 
 }
 

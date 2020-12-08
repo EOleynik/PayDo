@@ -16,12 +16,12 @@ describe('Refund suit', () => {
     });
 
     it("Partial refund for " + refund.amount_1 + " USD, product amount " + refund.checkout_amount + " USD", () => {
-        loginPage.getButtonToAdminPanel().click();
+        parentPage.getButton('To Admin Panel').click();
         cy.wait(2000);
         homePage.getCheckUrl();
         cy.wait(2000);
-        homePage.getMenuPaymentHistory().click();
-        cy.wait(3000);
+        parentPage.getMenu('Payments History').click();
+        cy.wait(5000);
         transactionsPage.getButtonDetails().click();
         cy.wait(2000);
         transactionsPage.getButtonPartialRefund().click();
@@ -33,11 +33,11 @@ describe('Refund suit', () => {
     });
 
     it("Full refund, product amount " + refund.payamount + " USD", () => {
-        loginPage.getButtonToAdminPanel().click();
+        parentPage.getButton('To Admin Panel').click();
         cy.wait(2000);
         homePage.getCheckUrl();
         cy.wait(2000);
-        homePage.getMenuPaymentHistory().click();
+        parentPage.getMenu('Payments History').click();
         cy.wait(3000);
         transactionsPage.getButtonDetails().click();
         cy.wait(2000);
@@ -49,11 +49,11 @@ describe('Refund suit', () => {
     });
 
     it('Partial refund, refund amount is more than the product amount', () => {
-        loginPage.getButtonToAdminPanel().click();
+        parentPage.getButton('To Admin Panel').click();
         cy.wait(2000);
         homePage.getCheckUrl();
         cy.wait(2000);
-        homePage.getMenuPaymentHistory().click();
+        parentPage.getMenu('Payments History').click();
         cy.wait(3000);
         transactionsPage.getButtonDetails().click();
         cy.wait(2000);
@@ -65,11 +65,11 @@ describe('Refund suit', () => {
     });
 
     it('Several partial refunds exceed the product amount', () => {
-        loginPage.getButtonToAdminPanel().click();
+        parentPage.getButton('To Admin Panel').click();
         cy.wait(2000);
         homePage.getCheckUrl();
         cy.wait(2000);
-        homePage.getMenuPaymentHistory().click();
+        parentPage.getMenu('Payments History').click();
         cy.wait(3000);
         transactionsPage.getButtonDetails().click();
         cy.wait(2000);
@@ -78,7 +78,7 @@ describe('Refund suit', () => {
         transactionsPage.getButtonCreateRefund().click();
         cy.wait(2000);
         transactionsPage.getButtonCreateRefundOk().click();
-        cy.wait(2000);
+        cy.wait(4000);
         transactionsPage.getButtonPartialRefund().click();
         transactionsPage.getInputPartialRefundAmountRepeat().type(refund.amount_1);
         transactionsPage.getButtonCreateRefund().click();

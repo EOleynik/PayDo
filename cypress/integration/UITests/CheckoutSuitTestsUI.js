@@ -7,6 +7,7 @@ import paymentPage from "../../elements/PaymentPage";
 import card from "../../fixtures/card";
 import transactionsPage from "../../elements/TransactionsPage";
 import checkout from "../../fixtures/checkout";
+import parentPage from "../../elements/ParentPage";
 
 cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
     return (Math.random() * (max - min) + min).toFixed(2);
@@ -34,12 +35,12 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                 //let payAmount = 400;
                 let payCurrency = 'GBP';
 
-                loginPage.getButtonToAdminPanel().click();
+                parentPage.getButton('To Admin Panel').click();
                 cy.wait(5000);
                 homePage.getCheckUrl();
-                homePage.getMenuProjects().click();
+                parentPage.getMenu('Projects').click();
                 cy.wait(5000);
-                homePage.getSubMenuRest().click();
+                parentPage.getSubMenu('REST').click();
 
                 restPage.getInputOrderID().type('C1GBP');
                 restPage.getInputOrderAmount().type(payAmount);
@@ -61,9 +62,9 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                 loginPage.visit('/');
                 cy.wait(5000);
-                loginPage.getButtonToAdminPanel().click();
+                parentPage.getButton('To Admin Panel').click();
                 cy.wait(5000);
-                homePage.getMenuPaymentHistory().click();
+                parentPage.getMenu('Payments History').click();
                 transactionsPage.checkAmountUIGBP(payAmount);
             });
 
@@ -74,12 +75,12 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                 let payAmount = cy.getRandomArbitrary(300, 500);
                 //let payAmount = 400;
 
-                loginPage.getButtonToAdminPanel().click();
+                parentPage.getButton('To Admin Panel').click();
                 cy.wait(5000);
                 homePage.getCheckUrl();
-                homePage.getMenuProjects().click();
+                parentPage.getMenu('Projects').click();
                 cy.wait(5000);
-                homePage.getSubMenuRest().click();
+                parentPage.getSubMenu('REST').click();
 
                 restPage.getInputOrderID().type("C2" + checkout.product_currency_c2);
                 restPage.getInputOrderAmount().type(payAmount);
@@ -101,9 +102,9 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                 loginPage.visit('/');
                 cy.wait(5000);
-                loginPage.getButtonToAdminPanel().click();
+                parentPage.getButton('To Admin Panel').click();
                 cy.wait(5000);
-                homePage.getMenuPaymentHistory().click();
+                parentPage.getMenu('Payments History').click();
                 transactionsPage.checkAmountUIUSD(payAmount);
             });
 
@@ -114,12 +115,12 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                 let payAmount = cy.getRandomArbitrary(300, 500);
                 // let payAmount = 426.62;
 
-                loginPage.getButtonToAdminPanel().click();
+                parentPage.getButton('To Admin Panel').click();
                 cy.wait(5000);
                 homePage.getCheckUrl();
-                homePage.getMenuProjects().click();
+                parentPage.getMenu('Projects').click();
                 cy.wait(5000);
-                homePage.getSubMenuRest().click();
+                parentPage.getSubMenu('REST').click();
 
                 restPage.getInputOrderID().type("C3" + checkout.product_currency_c3);
                 restPage.getInputOrderAmount().type(payAmount);
@@ -141,9 +142,9 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                 loginPage.visit('/');
                 cy.wait(5000);
-                loginPage.getButtonToAdminPanel().click();
+                parentPage.getButton('To Admin Panel').click();
                 cy.wait(5000);
-                homePage.getMenuPaymentHistory().click();
+                parentPage.getMenu('Payments History').click();
                 transactionsPage.checkAmountUIALL(payAmount);
             });
 
@@ -154,12 +155,12 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                 let payAmount = cy.getRandomArbitrary(500, 1500);
                 //let payAmount = 419.94;
 
-                loginPage.getButtonToAdminPanel().click();
+                parentPage.getButton('To Admin Panel').click();
                 cy.wait(5000);
                 homePage.getCheckUrl();
-                homePage.getMenuProjects().click();
+                parentPage.getMenu('Projects').click();
                 cy.wait(5000);
-                homePage.getSubMenuRest().click();
+                parentPage.getSubMenu('REST').click();
 
                 restPage.getInputOrderID().type("C4" + checkout.product_currency_c4);
                 restPage.getInputOrderAmount().type(payAmount);
@@ -182,9 +183,9 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                 loginPage.visit('/');
                 cy.wait(5000);
-                loginPage.getButtonToAdminPanel().click();
+                parentPage.getButton('To Admin Panel').click();
                 cy.wait(5000);
-                homePage.getMenuPaymentHistory().click();
+                parentPage.getMenu('Payments History').click();
                 transactionsPage.checkAmountUICUP(payAmount);
             });
         });
@@ -211,12 +212,12 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                         //let payAmount = 400;
                         let payCurrency = 'GBP';
 
-                        loginPage.getButtonToAdminPanel().click();
+                        parentPage.getButton('To Admin Panel').click();
                         cy.wait(5000);
                         homePage.getCheckUrl();
-                        homePage.getMenuProjects().click();
+                        parentPage.getMenu('Projects').click();
                         cy.wait(5000);
-                        homePage.getSubMenuRest().click();
+                        parentPage.getSubMenu('REST').click();
 
                         restPage.getInputOrderID().type('C1GBP');
                         restPage.getInputOrderAmount().type(payAmount);
@@ -238,9 +239,9 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                         loginPage.visit('/');
                         cy.wait(5000);
-                        loginPage.getButtonToAdminPanel().click();
+                        parentPage.getButton('To Admin Panel').click();
                         cy.wait(5000);
-                        homePage.getMenuPaymentHistory().click();
+                        parentPage.getMenu('Payments History').click();
                         transactionsPage.checkAmountUIGBP(payAmount);
                     });
 
@@ -251,12 +252,12 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                         let payAmount = cy.getRandomArbitrary(300, 500);
                         //let payAmount = 400;
 
-                        loginPage.getButtonToAdminPanel().click();
+                        parentPage.getButton('To Admin Panel').click();
                         cy.wait(5000);
                         homePage.getCheckUrl();
-                        homePage.getMenuProjects().click();
+                        parentPage.getMenu('Projects').click();
                         cy.wait(5000);
-                        homePage.getSubMenuRest().click();
+                        parentPage.getSubMenu('REST').click();
 
                         restPage.getInputOrderID().type("C2" + checkout.product_currency_c2);
                         restPage.getInputOrderAmount().type(payAmount);
@@ -278,9 +279,9 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                         loginPage.visit('/');
                         cy.wait(5000);
-                        loginPage.getButtonToAdminPanel().click();
+                        parentPage.getButton('To Admin Panel').click();
                         cy.wait(5000);
-                        homePage.getMenuPaymentHistory().click();
+                        parentPage.getMenu('Payments History').click();
                         transactionsPage.checkAmountUIUSD(payAmount);
                     });
 
@@ -291,12 +292,12 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                         let payAmount = cy.getRandomArbitrary(300, 500);
                        // et payAmount = 366.31;
 
-                        loginPage.getButtonToAdminPanel().click();
+                        parentPage.getButton('To Admin Panel').click();
                         cy.wait(5000);
                         homePage.getCheckUrl();
-                        homePage.getMenuProjects().click();
+                        parentPage.getMenu('Projects').click();
                         cy.wait(5000);
-                        homePage.getSubMenuRest().click();
+                        parentPage.getSubMenu('REST').click();
 
                         restPage.getInputOrderID().type("C3" + checkout.product_currency_c3);
                         restPage.getInputOrderAmount().type(payAmount);
@@ -318,9 +319,9 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                         loginPage.visit('/');
                         cy.wait(5000);
-                        loginPage.getButtonToAdminPanel().click();
+                        parentPage.getButton('To Admin Panel').click();
                         cy.wait(5000);
-                        homePage.getMenuPaymentHistory().click();
+                        parentPage.getMenu('Payments History').click();
                         transactionsPage.checkAmountUIALL(payAmount);
                     });
 
@@ -331,12 +332,12 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
                         let payAmount = cy.getRandomArbitrary(500, 1500);
                         //let payAmount = 419.94;
 
-                        loginPage.getButtonToAdminPanel().click();
+                        parentPage.getButton('To Admin Panel').click();
                         cy.wait(5000);
                         homePage.getCheckUrl();
-                        homePage.getMenuProjects().click();
+                        parentPage.getMenu('Projects').click();
                         cy.wait(5000);
-                        homePage.getSubMenuRest().click();
+                        parentPage.getSubMenu('REST').click();
 
                         restPage.getInputOrderID().type("C4" + checkout.product_currency_c4);
                         restPage.getInputOrderAmount().type(payAmount);
@@ -359,9 +360,9 @@ cy.getRandomArbitrary = function getRandomArbitrary(min, max) {
 
                         loginPage.visit('/');
                         cy.wait(5000);
-                        loginPage.getButtonToAdminPanel().click();
+                        parentPage.getButton('To Admin Panel').click();
                         cy.wait(5000);
-                        homePage.getMenuPaymentHistory().click();
+                        parentPage.getMenu('Payments History').click();
                         transactionsPage.checkAmountUICUP(payAmount);
                      })
                 });

@@ -26,9 +26,9 @@ class LoginPage {
     }
 
 
-    getButtonToAdminPanel() {
-        return cy.contains('To Admin Panel');
-    }
+    // getButtonToAdminPanel() {
+    //     return cy.contains('To Admin Panel');
+    // }
 
     getAuthorization() {
         window.localStorage.setItem('user-session', '{"id":"1812","email":"eugeniy.o+4avtotest@payop.com","token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE4MTIiLCJhY2Nlc3NUb2tlbiI6IjY0YjE2NGUxOTMyMzA0ODFjNmZlY2VmYiIsInRva2VuSWQiOm51bGwsIndhbGxldElkIjoiMTgwNiIsInRpbWUiOjE1OTcxNTUyMjgsImV4cGlyZWRBdCI6bnVsbCwicm9sZXMiOltdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjp0cnVlfX0.joNZH9X5Eh06F1xU29qggzQ3R_Q0l4iwjbBeJPCSJSY","role":1,"moduleUrl":"profile","status":1,"type":2,"accountType":1,"availableAccounts":[{"id":"1812","personalInformation":{"email":"eugeniy.o+4avtotest@payop.com"},"systemInformation":{"role":1,"approvedStatus":0},"type":2,"status":1,"dateTime":{"createdAt":1597125347,"updatedAt":1597125608},"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE4MTIiLCJhY2Nlc3NUb2tlbiI6IjY0YjE2NGUxOTMyMzA0ODFjNmZlY2VmYiIsInRva2VuSWQiOm51bGwsIndhbGxldElkIjoiMTgwNiIsInRpbWUiOjE1OTcxNTUyMjksImV4cGlyZWRBdCI6bnVsbCwicm9sZXMiOltdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjp0cnVlfX0.9eYpkbfS2lkGIp2b5PnoI-kHRMDZHF57lz4PfvfhP8c"},{"id":"1811","personalInformation":{"email":"eugeniy.o+4avtotest@payop.com"},"systemInformation":{"role":1,"approvedStatus":0},"type":1,"status":1,"dateTime":{"createdAt":1597125344,"updatedAt":1597125608},"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE4MTEiLCJhY2Nlc3NUb2tlbiI6IjY0YjE2NGUxOTMyMzA0ODFjNmZlY2VmYiIsInRva2VuSWQiOm51bGwsIndhbGxldElkIjoiMTgwNSIsInRpbWUiOjE1OTcxNTUyMjksImV4cGlyZWRBdCI6bnVsbCwicm9sZXMiOltdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjp0cnVlfX0.LcTt4EXDESxtKfBPXxBTkcQBSaaKsQHHUY56hUkdnLw"}],"stayLogin":true,"isLoggedIn":true}')

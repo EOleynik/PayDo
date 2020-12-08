@@ -25,7 +25,7 @@ class RefundPage{
                     token: feen.token
                 },
                 body: {
-
+                    "withcommission": false
                 }
             }).then((response) => {
                 expect(response).property('status').to.equal(201);

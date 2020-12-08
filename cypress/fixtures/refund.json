@@ -1,6 +1,7 @@
 {
   "exchange_percentage": 3.5,
   "currency": ["GBP", "USD", "EUR", "RUB"],
+  "checkout_amount": 300,
   "amount_1": 160,
   "amount_2": 301,
   "alert_1": "Refund amount is bigger than transaction amount",

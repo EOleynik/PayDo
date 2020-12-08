@@ -25,7 +25,7 @@ describe('Create project suit', () => {
             homePage.getCheckUrl();
             cy.wait(2000);
             homePage.getMenuProjects().click();
-            cy.wait(2000);
+            cy.wait(3000);
             parentPage.getButton('Add new').click();
             projectsPage.attachLogo();
             projectsPage.getInputProjectName().type(project.name + " " + time);
@@ -52,7 +52,7 @@ describe('Create project suit', () => {
             homePage.getCheckUrl();
             cy.wait(2000);
             homePage.getMenuProjects().click();
-            cy.wait(2000);
+            cy.wait(3000);
             parentPage.getButton(' Add new ').click();
             for(let i = 0; i < 6; i++) {
                 let number = project.number_input[i];
@@ -73,7 +73,7 @@ describe('Create project suit', () => {
             homePage.getCheckUrl();
             cy.wait(2000);
             homePage.getMenuProjects().click();
-            cy.wait(2000);
+            cy.wait(3000);
             parentPage.getButton(' Add new ').click();
             projectsPage.attachLogo();
             projectsPage.getInputProjectName().type(project.name + " " + time);

@@ -4,6 +4,7 @@ import paymentMethod from "../fixtures/paymentMethod.json"
 import checkout from "../fixtures/checkout";
 import refund from "../fixtures/refund";
 import manajer from "../fixtures/manajer";
+import chargeback from "../fixtures/chargeback";
 
 cy.getDelta = function getDelta(n1, n2) {
     return Math.abs(n1 - n2) <= checkout.precision;
@@ -32,10 +33,10 @@ class TransactionsPage {
             let perscom = response.body.data[7].value.GBP[1];
             let strateg = response.body.data[7].strategy;
 
-            cy.wait(3000);
+            cy.wait(5000);
 
             //Check status tranzaction
-            cy.get(':nth-child(1) > .cdk-column-state > .mat-chip').invoke('text').should((text) => {
+                cy.get('[class="mat-cell cdk-cell cdk-column-state mat-column-state ng-star-inserted"]').eq(0).invoke('text').should((text) => {
                 expect(text).to.eq(' Accepted ')
             });
 
@@ -1194,10 +1195,6 @@ class TransactionsPage {
     }
 
 
-    getButtonDetails() {
-        return cy.contains('span', 'Details').eq(0);
-    }
-
     getButtonPartialRefund() {
         return cy.contains('div', 'Partial Refund');
     }
@@ -1271,10 +1268,6 @@ class TransactionsPage {
         cy.get('[class="alert__title ng-tns-c71-0"]').invoke('text').should((text) => {
             expect(text).to.eq('Success');
         })
-    }
-
-    closeAlert() {
-        cy.get('[class="close-alert ng-tns-c71-0"]').click();
     }
 
     isErrorAlertDisplayed(alert) {
@@ -1742,6 +1735,259 @@ class TransactionsPage {
                                 cy.log("payCurrency " + payCurrency);
                                 cy.log("refund_fixcom " + refund_fixcom);
                                 cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
+                                cy.log("available_balance " + available_main_currency);
+                                cy.log("available_balance_after " + available_balance_after);
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    }
+
+    createChargeback() {
+        // Get ID last transaction for merchant
+        cy.request({
+            method: 'GET',
+            url: "https://app.stage.paydo.com/v1/transactions/filter?query[userIdentifier]=" + merchant.bussiness_account,
+            headers: {
+                token: feen.token
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let transaction_ID = response.body.data[0].identifier;
+
+            //Create chargeback
+            cy.request({
+                method: 'POST',
+                url: "https://app.stage.paydo.com/v1/chargebacks/create",
+                headers: {
+                    token: feen.token
+                },
+                body: {
+                    "transactionIdentifier": transaction_ID
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(201);
+            })
+        })
+    }
+
+    createChargebackAndCheckAmount(payAmount, payCurrency) {
+        // Get ID last transaction
+        cy.request({
+            method: 'GET',
+            url: "https://app.stage.paydo.com/v1/transactions/user-transactions",
+            headers: {
+                token: merchant.token
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let transaction_ID = response.body.data[0].identifier;
+
+            // Get available balance amount
+            cy.request({
+                method: 'GET',
+                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                headers: {
+                    token: merchant.token,
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200);
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                let available_balance = response.body.data[payCurrency].available.actual;
+
+                //Create chargeback
+                cy.request({
+                    method: 'POST',
+                    url: "https://app.stage.paydo.com/v1/chargebacks/create",
+                    headers: {
+                        token: feen.token
+                    },
+                    body: {
+                        "transactionIdentifier": transaction_ID
+                    }
+                }).then((response) => {
+                    expect(response).property('status').to.equal(201);
+
+                    // Get commission for chargeback
+                    cy.request({
+                        method: 'GET',
+                        url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+                        headers: {
+                            token: feen.token,
+                        }
+                    }).then((response) => {
+                        expect(response).property('status').to.equal(200);
+                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                        let chargeback_fixcom = response.body.data[6].value[payCurrency][0];
+                        let chargeback_perscom = response.body.data[6].value[payCurrency][1];
+
+                        // Сalculation mathematics
+
+                        // Chargeback commission percentage
+                        let perscom = (payAmount / 100 * chargeback_perscom).toFixed(2);
+
+                        if (payCurrency === 'GBP') {
+
+                            // Will be debited from the account
+                            let final = (+payAmount + (+chargeback_fixcom) + (+perscom)).toFixed(2);
+
+                            // Checking the balance of the merchant
+                            cy.request({
+                                method: 'GET',
+                                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                headers: {
+                                    token: merchant.token,
+                                }
+                            }).then((response) => {
+                                expect(response).property('status').to.equal(200);
+                                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                let available_balance_after = response.body.data[payCurrency].available.actual;
+                                expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
+
+                                cy.log("payAmount " + payAmount);
+                                cy.log("payCurrency " + payCurrency);
+                                cy.log("refund_fixcom " + chargeback_fixcom);
+                                cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
+                                cy.log("available_balance " + available_balance);
+                                cy.log("available_balance_after " + available_balance_after);
+                            })
+                        } else {
+
+                            // Will be one conversion
+                            let conv = ((+payAmount + +chargeback_fixcom + +perscom) / 100 * chargeback.exchange_percentage).toFixed(2);
+
+                            // Will be debited from the account
+                            let final = (+payAmount + (+chargeback_fixcom) + (+perscom) + (+conv)).toFixed(2);
+
+                            // Checking the balance of the merchant
+                            cy.request({
+                                method: 'GET',
+                                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                headers: {
+                                    token: merchant.token,
+                                }
+                            }).then((response) => {
+                                expect(response).property('status').to.equal(200);
+                                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                let available_balance_after = response.body.data[payCurrency].available.actual;
+                                expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
+
+                                cy.log("payAmount " + payAmount);
+                                cy.log("payCurrency " + payCurrency);
+                                cy.log("refund_fixcom " + chargeback_fixcom);
+                                cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
+                                cy.log("available_balance " + available_balance);
+                                cy.log("available_balance_after " + available_balance_after);
+
+                            })
+                        }
+                    })
+                })
+            })
+        })
+    }
+
+    createChargebackUAHAndCheckAmount(payAmount, payCurrency) {
+        // Get ID last transaction
+        cy.request({
+            method: 'GET',
+            url: "https://app.stage.paydo.com/v1/transactions/user-transactions",
+            headers: {
+                token: merchant.token
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let transaction_ID = response.body.data[0].identifier;
+
+            // Get the rate in the main currency
+            cy.request({
+                method: 'GET',
+                url: "https://app.stage.paydo.com/v1/transactions/" + transaction_ID,
+                headers: {
+                    token: feen.token,
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200);
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                let rate = response.body.data.exchanges[0].rate;
+
+                // Get available balance main currency
+                cy.request({
+                    method: 'GET',
+                    url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                    headers: {
+                        token: merchant.token,
+                    }
+                }).then((response) => {
+                    expect(response).property('status').to.equal(200);
+                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                    let available_main_currency = response.body.data[merchant.main_currency].available.actual;
+
+                    // Create chargeback
+                    cy.request({
+                        method: 'POST',
+                        url: "https://app.stage.paydo.com/v1/chargebacks/create",
+                        headers: {
+                            token: feen.token,
+                        },
+                        body: {
+                            "transactionIdentifier": transaction_ID
+                        }
+                    }).then((response) => {
+                        expect(response).property('status').to.equal(201);
+
+                        // Get commission for chargeback
+                        cy.request({
+                            method: 'GET',
+                            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+                            headers: {
+                                token: feen.token,
+                            }
+                        }).then((response) => {
+                            expect(response).property('status').to.equal(200);
+                            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                            let chargeback_fixcom = response.body.data[6].value[merchant.main_currency][0];
+                            let chargeback_perscom = response.body.data[6].value[merchant.main_currency][1];
+
+                            // Сalculation mathematics
+
+                            // Chargeback commission percentage
+                            let perscom = (payAmount / 100 * chargeback_perscom).toFixed(2);
+
+                            // Converting the chargeback  amount into the seller's main currency
+                            let conv = (+payAmount  * rate).toFixed(2);
+
+                            // Adding conversion interest and commissions to the chargeback amount
+                            let sum = (+conv + +chargeback_fixcom + +perscom).toFixed(2);
+
+                            // Percentage for conversion
+                            let conv_pers = (+sum / 100 * chargeback.exchange_percentage).toFixed(2);
+
+                            // Will be debited from the account
+                            let final = (+sum + +conv_pers).toFixed(2);
+
+                            // Checking the balance of the merchant
+                            cy.request({
+                                method: 'GET',
+                                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                headers: {
+                                    token: merchant.token,
+                                }
+                            }).then((response) => {
+                                expect(response).property('status').to.equal(200);
+                                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                let available_balance_after = response.body.data[merchant.main_currency].available.actual;
+                                expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_main_currency - final).toFixed(2));
+
+                                cy.log("payAmount " + payAmount);
+                                cy.log("payCurrency " + payCurrency);
+                                cy.log("refund_fixcom " + chargeback_fixcom);
+                                cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
                                 cy.log("available_balance " + available_main_currency);
                                 cy.log("available_balance_after " + available_balance_after);
                             })

@@ -20,7 +20,7 @@ class HomePage{
     }
 
     getChangeAccount() {
-         cy.get('[class="acc-active__info_acc-type"]').click()
+         cy.get('[class="acc-active__info_acc-type"]').click();
        return cy.contains('Personal account').click()
     }
 
@@ -29,17 +29,17 @@ class HomePage{
     }
 
 
-    getMenuProjects() {
-        return cy.contains('Projects');
-    }
+    // getMenuProjects() {
+    //     return cy.contains('Projects');
+    // }
 
-    getSubMenuRest() {
-        return cy.contains ('p', 'REST');
-    }
+    // getSubMenuRest() {
+    //     return cy.contains ('p', 'REST');
+    // }
 
-    getMenuPaymentHistory() {
-        return cy.contains('Payments History');
-    }
+    // getMenuPaymentHistory() {
+    //     return cy.contains('Payments History');
+    // }
 
     getMenuTransactions() {
         return cy.contains('Transactions');
@@ -72,9 +72,9 @@ class HomePage{
         })
     }
 
-    getMenuChargebacks() {
-        return cy.contains('Chargebacks');
-    }
+    // getMenuChargebacks() {
+    //     return cy.contains('Chargebacks');
+    // }
 }
 
 export default new HomePage();

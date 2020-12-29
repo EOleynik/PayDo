@@ -56,7 +56,7 @@ class PersVerPage {
     sendMainInformationPersonalDocuments() {
         cy.request({
             method: 'POST',
-            url: `https://app.stage.paydo.com/v1/users/verification/create`,
+            url: `https://account.stage.paydo.com/v1/users/verification/create`,
             headers: {
                 token: merchant.personal_token,
             },
@@ -152,7 +152,7 @@ class PersVerPage {
     sendRequestIban() {
         cy.request({
             method: 'POST',
-            url: `https://app.stage.paydo.com/v1/ibans/requests/create`,
+            url: `https://account.stage.paydo.com/v1/ibans/requests/create`,
             headers: {
                 token: merchant.personal_token,
             },

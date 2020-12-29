@@ -1,5 +1,6 @@
 import merchant from "../fixtures/merchant";
 import feen from "../fixtures/feen";
+import parentPage from "../pages/ParentPage"
 
 class ChargebackPage {
 
@@ -7,20 +8,32 @@ class ChargebackPage {
         return cy.get('[formcontrolname="userIdentifier"]').click();
     }
 
-    chooseStatus(status) {
+    chooseStatusChargeback(status) {
         cy.get('[formcontrolname="status"]').click();
         cy.contains('span', status).click();
 
     }
 
-    getButtonFilter() {
-       return cy.get('[class="mat-focus-indicator button-filter mat-raised-button mat-button-base mat-primary"]')
+    clickButtonFilter() {
+        return cy.get('[class="mat-focus-indicator button-filter mat-raised-button mat-button-base mat-primary"]').click()
     }
 
     checkStatusFirstChargeback(status) {
         cy.get('[class="mat-cell cdk-cell cdk-column-status mat-column-status ng-star-inserted"]').first().invoke('text').should((text) => {
             expect(text).to.eq(status);
         })
+    }
+
+    checkUrl (Url) {
+        parentPage.checkUrl(Url)
+    }
+
+    clickFilter(name) {
+        parentPage.clickButton(' Filter ').click()
+    }
+
+    enterTextInToFilter(text) {
+        parentPage.getInput('userIdentifier').clear().type(text)
     }
 
     checkStatusLastChargeback(status) {
@@ -33,7 +46,7 @@ class ChargebackPage {
         //Get ID last created chargeback
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/chargebacks/filters?query[userIdentifier]=" + merchant.bussiness_account + "&query[status]=1",
+            url: "https://account.stage.paydo.com/v1/chargebacks/filters?query[userIdentifier]=" + merchant.bussiness_account + "&query[status]=1",
             headers: {
                 token: feen.token
             }
@@ -84,6 +97,8 @@ class ChargebackPage {
             })
         })
     }
+
+
 }
 
 export default new ChargebackPage();

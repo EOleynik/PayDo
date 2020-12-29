@@ -8,7 +8,7 @@ class RefundPage{
         //Get ID last created refund
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/refunds/filters?query[userIdentifier]=" + merchant.bussiness_account + "&query[status]=1",
+            url: "https://account.stage.paydo.com/v1/refunds/filters?query[userIdentifier]=" + merchant.bussiness_account + "&query[status]=1",
             headers: {
                 token: feen.token
             }
@@ -20,7 +20,7 @@ class RefundPage{
             //Reject last refund
             cy.request({
                 method: 'POST',
-                url: "https://app.stage.paydo.com/v1/refunds/" + ref_ID + "/reject",
+                url: "https://account.stage.paydo.com/v1/refunds/" + ref_ID + "/reject",
                 headers: {
                     token: feen.token
                 },

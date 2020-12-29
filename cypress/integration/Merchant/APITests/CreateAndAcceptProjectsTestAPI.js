@@ -1,6 +1,5 @@
-
-import projectsPage from "../../elements/ProjectsPage";
-import feenPage from "../../elements/FeenPage";
+import projectsPage from "../../../pages/ProjectsPage";
+import feenPage from "../../../pages/FeenPage";
 
     describe('Create and Accept Project', () => {
 

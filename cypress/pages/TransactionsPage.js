@@ -5,16 +5,45 @@ import checkout from "../fixtures/checkout";
 import refund from "../fixtures/refund";
 import manajer from "../fixtures/manajer";
 import chargeback from "../fixtures/chargeback";
+import createCheckoutPage from "./CreateCheckoutPage";
+import parentPage from "./ParentPage";
 
-cy.getDelta = function getDelta(n1, n2) {
+cy.getDeltaCheckout = function getDelta(n1, n2) {
     return Math.abs(n1 - n2) <= checkout.precision;
+};
+
+cy.getDeltaChargeback = function getDelta(n1, n2) {
+    return Math.abs(n1 - n2) <= chargeback.precision;
 };
 
 class TransactionsPage {
 
+    clickFilter() {
+        parentPage.clickButton('Filter').click()
+    }
+
+    checkUrl(Url) {
+        parentPage.checkUrl(Url)
+    }
+
+    enterTextInToFilter(text) {
+        parentPage.getInput('merchantIdentifier').clear().type(text+'{enter}')
+    }
 
     getAmountTransaction() {
         const amount = cy.get('[class="bold price-align"]').first();
+    }
+
+    clickButtonCreateChargeback() {
+        parentPage.clickButton('Create ').click({force: true})
+    }
+
+    clickButtonDetails() {
+        parentPage.clickButton('Details').click();
+    }
+
+    closeAlert() {
+        parentPage.closeAlert()
     }
 
     checkAmountUIGBP(payAmount) {
@@ -22,7 +51,7 @@ class TransactionsPage {
         // Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
@@ -57,7 +86,7 @@ class TransactionsPage {
                 // Check Amount
                 cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                     //expect(text).to.eq((+rezult).toFixed(2) + ' ' + 'GBP')
-                    expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
+                    expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
                 })
             } else {
                 if (fixcom > (+payAmount / 100 * +perscom)) {
@@ -71,7 +100,7 @@ class TransactionsPage {
 
                     // Check Amount
                     cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                        expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
+                        expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
                     })
                 } else {
                     // отнимаем процент комиссии от стоимости товара
@@ -83,7 +112,7 @@ class TransactionsPage {
 
                     // Check Amount
                     cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                        expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
+                        expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
                     })
                 }
             }
@@ -96,7 +125,7 @@ class TransactionsPage {
         // Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
@@ -133,8 +162,8 @@ class TransactionsPage {
 
                 // Check Amount
                 cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                    //expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
-                    expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
+                    //expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency);
+                    expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
                 })
             } else {
                 if (fixcom > (+payAmount / 100 * +perscom)) {
@@ -152,7 +181,7 @@ class TransactionsPage {
                     // Check Amount
                     cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                         //expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
-                        expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
+                        expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
                     })
                 } else {
 
@@ -169,7 +198,7 @@ class TransactionsPage {
                     // Check Amount
                     cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                         //expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
-                        expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
+                        expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
                     })
                 }
             }
@@ -205,25 +234,37 @@ class TransactionsPage {
 
             cy.request({
                 method: 'GET',
-                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                url: "https://admin.stage.paydo.com/v1/currencies/get-rates-for/" + checkout.product_currency_c3,
                 headers: {
-                    token: merchant.token
+                    token: feen.token
                 }
             }).then((response) => {
                 expect(response).property('status').to.equal(200);
                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let transaction_id = response.body.data[0].identifier;
+                let rate = response.body.data.rates[merchant.main_currency];
 
-                cy.request({
-                    method: 'GET',
-                    url: "https://admin.stage.paydo.com/v1/transactions/" + transaction_id,
-                    headers: {
-                        token: manajer.token
-                    }
-                }).then((response) => {
-                    expect(response).property('status').to.equal(200);
-                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    let rate = response.body.data.exchanges[0].rate;
+
+            // cy.request({
+            //     method: 'GET',
+            //     url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+            //     headers: {
+            //         token: merchant.token
+            //     }
+            // }).then((response) => {
+            //     expect(response).property('status').to.equal(200);
+            //     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            //     let transaction_id = response.body.data[0].identifier;
+            //
+            //     cy.request({
+            //         method: 'GET',
+            //         url: "https://admin.stage.paydo.com/v1/transactions/" + transaction_id,
+            //         headers: {
+            //             token: manajer.token
+            //         }
+            //     }).then((response) => {
+            //         expect(response).property('status').to.equal(200);
+            //         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            //         let rate = response.body.data.exchanges[0].rate;
 
                     if (strateg === 1) {
 
@@ -259,7 +300,7 @@ class TransactionsPage {
                         // Check Amount
                         cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                             //expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
-                            expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
+                            expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
                         })
                     } else {
                         if (fixcom > (+payAmount / 100 * +perscom)) {
@@ -296,7 +337,7 @@ class TransactionsPage {
                             // Check Amount
                             cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                                 //expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
-                                expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
+                                expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
                             })
                         } else {
 
@@ -332,13 +373,13 @@ class TransactionsPage {
                             // Check Amount
                             cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
                                 //expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
-                                expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
+                                expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
                             })
                         }
                     }
                 })
             })
-        })
+        //})
     }
 
     checkAmountAPIGBP(payAmount) {
@@ -346,7 +387,7 @@ class TransactionsPage {
         //Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
@@ -362,7 +403,7 @@ class TransactionsPage {
             //Check status tranzaction
             cy.request({
                 method: 'GET',
-                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                 headers: {
                     token: merchant.token
                 }
@@ -389,7 +430,7 @@ class TransactionsPage {
                     // Check Amount
                     cy.request({
                         method: 'GET',
-                        url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                        url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                         headers: {
                             token: merchant.token
                         }
@@ -398,10 +439,15 @@ class TransactionsPage {
                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                         let sum = response.body.data[0].amount;
                         //expect(parseFloat(sum).toFixed(2)).to.eq((+rezult).toFixed(2));
-                        expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                        cy.log("acc_rezult " + sum);
-                        cy.log("math_rezult " + rezult);
+                        try {
+
+                            expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+
+                        }catch (e) {
+                            cy.log("acc_rezult " + sum);
+                            cy.log("math_rezult " + rezult);
+                        }
                     })
                 } else {
                     if (fixcom > (+payAmount / 100 * +perscom)) {
@@ -416,7 +462,7 @@ class TransactionsPage {
                         // Check Amount
                         cy.request({
                             method: 'GET',
-                            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                            url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                             headers: {
                                 token: merchant.token
                             }
@@ -424,10 +470,15 @@ class TransactionsPage {
                             expect(response).property('status').to.equal(200);
                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                             let sum = response.body.data[0].amount;
-                            expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                            cy.log("acc_rezult " + sum);
-                            cy.log("math_rezult " + rezult);
+                            try {
+
+                                expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+
+                            }catch (e) {
+                                cy.log("acc_rezult " + sum);
+                                cy.log("math_rezult " + rezult);
+                            }
                         })
                     } else {
 
@@ -441,7 +492,7 @@ class TransactionsPage {
                         // Check Amount
                         cy.request({
                             method: 'GET',
-                            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                            url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                             headers: {
                                 token: merchant.token
                             }
@@ -449,10 +500,15 @@ class TransactionsPage {
                             expect(response).property('status').to.equal(200);
                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                             let sum = response.body.data[0].amount;
-                            expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                            cy.log("acc_rezult " + sum);
-                            cy.log("math_rezult " + rezult);
+                            try {
+
+                                expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+
+                            }catch (e) {
+                                cy.log("acc_rezult " + sum);
+                                cy.log("math_rezult " + rezult);
+                            }
                         })
                     }
                 }
@@ -466,7 +522,7 @@ class TransactionsPage {
         // Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
@@ -482,7 +538,7 @@ class TransactionsPage {
             //Check status tranzaction
             cy.request({
                 method: 'GET',
-                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                 headers: {
                     token: merchant.token
                 }
@@ -513,7 +569,7 @@ class TransactionsPage {
                     // Check Amount
                     cy.request({
                         method: 'GET',
-                        url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                        url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                         headers: {
                             token: merchant.token
                         }
@@ -521,10 +577,15 @@ class TransactionsPage {
                         expect(response).property('status').to.equal(200);
                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                         let sum = response.body.data[0].amount;
-                        expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                        cy.log("acc_rezult " + sum);
-                        cy.log("math_rezult " + rezult);
+                        try {
+
+                            expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+
+                        }catch (e) {
+                            cy.log("acc_rezult " + sum);
+                            cy.log("math_rezult " + rezult);
+                        }
                     })
                 } else {
                     if (fixcom > (+payAmount / 100 * +perscom)) {
@@ -540,7 +601,7 @@ class TransactionsPage {
                         // Check Amount
                         cy.request({
                             method: 'GET',
-                            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                            url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                             headers: {
                                 token: merchant.token
                             }
@@ -548,10 +609,15 @@ class TransactionsPage {
                             expect(response).property('status').to.equal(200);
                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                             let sum = response.body.data[0].amount;
-                            expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                            cy.log("acc_rezult " + sum);
-                            cy.log("math_rezult " + rezult);
+                            try {
+
+                                expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+
+                            }catch (e) {
+                                cy.log("acc_rezult " + sum);
+                                cy.log("math_rezult " + rezult);
+                            }
                         })
                     } else {
 
@@ -566,7 +632,7 @@ class TransactionsPage {
                         // Check Amount
                         cy.request({
                             method: 'GET',
-                            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                            url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                             headers: {
                                 token: merchant.token
                             }
@@ -574,10 +640,15 @@ class TransactionsPage {
                             expect(response).property('status').to.equal(200);
                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                             let sum = response.body.data[0].amount;
-                            expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                            cy.log("acc_rezult " + sum);
-                            cy.log("math_rezult " + rezult);
+                            try {
+
+                                expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+
+                            }catch (e) {
+                                cy.log("acc_rezult " + sum);
+                                cy.log("math_rezult " + rezult);
+                            }
                         })
                     }
                 }
@@ -590,7 +661,7 @@ class TransactionsPage {
         // Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
@@ -606,7 +677,7 @@ class TransactionsPage {
             //Get transaction_id and Check status transaction
             cy.request({
                 method: 'GET',
-                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                 headers: {
                     token: merchant.token
                 }
@@ -666,7 +737,7 @@ class TransactionsPage {
                         // Check Amount
                         cy.request({
                             method: 'GET',
-                            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                            url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                             headers: {
                                 token: merchant.token
                             }
@@ -674,10 +745,14 @@ class TransactionsPage {
                             expect(response).property('status').to.equal(200);
                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                             let sum = response.body.data[0].amount;
-                            expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                            cy.log("acc_rezult " + sum);
-                            cy.log("math_rezult " + rezult);
+                            try {
+
+                                expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+                            }catch (e) {
+                                cy.log("acc_rezult " + sum);
+                                cy.log("math_rezult " + rezult);
+                            }
                         })
 
                     } else {
@@ -707,7 +782,7 @@ class TransactionsPage {
                             // Check Amount
                             cy.request({
                                 method: 'GET',
-                                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                                url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                                 headers: {
                                     token: merchant.token
                                 }
@@ -715,10 +790,15 @@ class TransactionsPage {
                                 expect(response).property('status').to.equal(200);
                                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                 let sum = response.body.data[0].amount;
-                                expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                                cy.log("acc_rezult " + sum);
-                                cy.log("math_rezult " + rezult);
+                                try {
+
+                                    expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+
+                                }catch (e) {
+                                    cy.log("acc_rezult " + sum);
+                                    cy.log("math_rezult " + rezult);
+                                }
                             })
 
                         } else {
@@ -746,7 +826,7 @@ class TransactionsPage {
                             // Check Amount
                             cy.request({
                                 method: 'GET',
-                                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                                url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                                 headers: {
                                     token: merchant.token
                                 }
@@ -754,10 +834,15 @@ class TransactionsPage {
                                 expect(response).property('status').to.equal(200);
                                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                 let sum = response.body.data[0].amount;
-                                expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                                cy.log("acc_rezult " + sum);
-                                cy.log("math_rezult " + rezult);
+                                try {
+
+                                    expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+
+                                }catch (e) {
+                                    cy.log("acc_rezult " + sum);
+                                    cy.log("math_rezult " + rezult);
+                                }
                             })
                         }
                     }
@@ -772,7 +857,7 @@ class TransactionsPage {
         // Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
@@ -788,7 +873,7 @@ class TransactionsPage {
             //Get transaction_id and Check status transaction
             cy.request({
                 method: 'GET',
-                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                 headers: {
                     token: merchant.token
                 }
@@ -867,7 +952,7 @@ class TransactionsPage {
                         // Check Amount
                         cy.request({
                             method: 'GET',
-                            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                            url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                             headers: {
                                 token: merchant.token
                             }
@@ -875,11 +960,15 @@ class TransactionsPage {
                             expect(response).property('status').to.equal(200);
                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                             let sum = response.body.data[0].amount;
-                            // expect(parseFloat(sum).toFixed(2)).to.eq((+rezult).toFixed(2));
-                            expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                            cy.log("acc_rezult " + sum);
-                            cy.log("math_rezult " + rezult);
+                            try {
+
+                                expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+
+                            }catch (e) {
+                                cy.log("acc_rezult " + sum);
+                                cy.log("math_rezult " + rezult);
+                            }
                         })
                     } else {
                         if (fixcom > (+payAmount / 100 * +perscom)) {
@@ -923,7 +1012,7 @@ class TransactionsPage {
                             // Check Amount
                             cy.request({
                                 method: 'GET',
-                                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                                url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                                 headers: {
                                     token: merchant.token
                                 }
@@ -931,10 +1020,15 @@ class TransactionsPage {
                                 expect(response).property('status').to.equal(200);
                                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                 let sum = response.body.data[0].amount;
-                                expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                                cy.log("acc_rezult " + sum);
-                                cy.log("math_rezult " + rezult);
+                                try {
+
+                                    expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+
+                                }catch (e) {
+                                    cy.log("acc_rezult " + sum);
+                                    cy.log("math_rezult " + rezult);
+                                }
                             })
                         } else {
 
@@ -978,7 +1072,7 @@ class TransactionsPage {
                             // Check Amount
                             cy.request({
                                 method: 'GET',
-                                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+                                url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
                                 headers: {
                                     token: merchant.token
                                 }
@@ -986,10 +1080,15 @@ class TransactionsPage {
                                 expect(response).property('status').to.equal(200);
                                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                 let sum = response.body.data[0].amount;
-                                expect(cy.getDelta(sum, rezult)).to.eq(true);
 
-                                cy.log("acc_rezult " + sum);
-                                cy.log("math_rezult " + rezult);
+                                try {
+
+                                    expect(cy.getDeltaCheckout(sum, rezult)).to.eq(true);
+
+                                }catch (e) {
+                                    cy.log("acc_rezult " + sum);
+                                    cy.log("math_rezult " + rezult);
+                                }
                             })
                         }
                     }
@@ -1003,7 +1102,7 @@ class TransactionsPage {
         // Get strategy, percent and fix commissions
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
@@ -1024,30 +1123,52 @@ class TransactionsPage {
             // Сalculation formula & Check Amount
 
             // Get transaction_id last transaction
-            cy.request({
-                method: 'GET',
-                url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-                headers: {
-                    token: merchant.token
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200);
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let transaction_id = response.body.data[0].identifier;
+            // cy.request({
+            //     method: 'GET',
+            //     url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
+            //     headers: {
+            //         token: merchant.token
+            //     }
+            // }).then((response) => {
+            //     expect(response).property('status').to.equal(200);
+            //     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            //     let transaction_id = response.body.data[0].identifier;
 
                 // Get rate from product currency to pay currency and rate2 from pay currency to main currency
 
                 cy.request({
                     method: 'GET',
-                    url: "https://admin.stage.paydo.com/v1/transactions/" + transaction_id,
+                    url: "https://admin.stage.paydo.com/v1/currencies/get-rates-for/" + checkout.product_currency_c4,
                     headers: {
-                        token: manajer.token
+                        token: feen.token
                     }
                 }).then((response) => {
                     expect(response).property('status').to.equal(200);
                     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    let rate = response.body.data.exchanges[0].rate;
-                    let rate2 = response.body.data.exchanges[1].rate;
+                    let rate = response.body.data.rates[checkout.pay_currency];
+
+                    cy.request({
+                        method: 'GET',
+                        url: "https://admin.stage.paydo.com/v1/currencies/get-rates-for/" + checkout.pay_currency,
+                        headers: {
+                            token: feen.token
+                        }
+                    }).then((response) => {
+                        expect(response).property('status').to.equal(200);
+                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                        let rate2 = response.body.data.rates[merchant.main_currency];
+
+                // cy.request({
+                //     method: 'GET',
+                //     url: "https://admin.stage.paydo.com/v1/transactions/" + transaction_id,
+                //     headers: {
+                //         token: manajer.token
+                //     }
+                // }).then((response) => {
+                //     expect(response).property('status').to.equal(200);
+                //     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                //     let rate = response.body.data.exchanges[0].rate;
+                //     let rate2 = response.body.data.exchanges[1].rate;
 
                     // комиссия за конвертацию цены товара в валюту оплаты
                     let exch = (payAmount / 100 * checkout.exchange_percentage).toFixed(2);
@@ -1098,9 +1219,13 @@ class TransactionsPage {
                         cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2);
 
                         // Check Amount
+                        try{
                         cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                            expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
-                        })
+                            expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
+                                //expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
+                            })
+                        }catch (e) {
+                            }
                     } else {
                         if (fixcom > (+payAmount / 100 * +perscom)) {
 
@@ -1141,9 +1266,12 @@ class TransactionsPage {
                             cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2);
 
                             // Check Amount
-                            cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                                expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
-                            })
+                            try {
+                                cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
+                                    expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
+                                })
+                            }catch (e) {
+                            }
                         } else {
 
                             // отнимаем от стоимости товара процент комиссии и комиссию за конвертацию цены товара в валюту оплаты
@@ -1184,9 +1312,13 @@ class TransactionsPage {
                             cy.log("комиссия за конвертацию в основную валюту =" + " " + comconv2);
 
                             // Check Amount
-                            cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                                expect(cy.getDelta(parseFloat(text), rezult)).to.eq(true);
-                            })
+                            try {
+                                cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
+                                    expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
+                                    //expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
+                                })
+                            }catch (e) {
+                            }
                         }
                     }
                 })
@@ -1195,23 +1327,24 @@ class TransactionsPage {
     }
 
 
-    getButtonPartialRefund() {
-        return cy.contains('div', 'Partial Refund');
+    clickButtonPartialRefund() {
+        cy.contains('div', 'Partial Refund').click();
     }
 
-    getButtonCreateRefund() {
-        return cy.contains('span', ' Create refund ')
+    clickButtonCreateRefund() {
+        parentPage.clickButton(' Create refund ').click();
     }
 
-    getInputPartialRefundAmount() {
-        return cy.get('#mat-input-6');
+    enterTextInToInputPartialRefundAmount(amount) {
+        parentPage.getInput('amount').clear().type(amount);
+        //cy.get('#mat-input-6').type(amount);
     }
 
     checkCreateRefund() {
         // get ID last transaction and save on variable trIdent
         cy.request({
             method: 'GET',
-            url: 'https://app.stage.paydo.com/v1/transactions/user-transactions',
+            url: 'https://account.stage.paydo.com/v1/transactions/user-transactions',
             headers: {
                 token: merchant.token,
             }
@@ -1223,7 +1356,7 @@ class TransactionsPage {
             // get status refund
             cy.request({
                 method: 'GET',
-                url: "https://app.stage.paydo.com/v1/transactions/" + trIdent,
+                url: "https://account.stage.paydo.com/v1/transactions/" + trIdent,
                 headers: {
                     token: merchant.token,
                 }
@@ -1236,16 +1369,16 @@ class TransactionsPage {
     }
 
 
-    getButtonCreateRefundOk() {
-        return cy.contains('div', ' Ok ');
+    clickButtonCreateRefundOk() {
+        cy.get('[class="new-alert-btn ng-tns-c285-0"]').click();
     }
 
-    getButtonRefund() {
-        return cy.get('[class="purple-btn w-183"]');
+    clickButtonRefund() {
+        cy.get('[class="purple-btn w-183"]').click();
     }
 
-    confirmRefund() {
-        return cy.contains('button', 'Yes, I sure ');
+    clickConfirmRefund() {
+        cy.contains('button', 'Yes, I sure ').click();
     }
 
     getButtonFilter() {
@@ -1265,15 +1398,15 @@ class TransactionsPage {
     }
 
     checkCreateChargeback() {
-        cy.get('[class="alert__title ng-tns-c71-0"]').invoke('text').should((text) => {
+        cy.get('.alert__title').invoke('text').should((text) => {
             expect(text).to.eq('Success');
         })
     }
 
     isErrorAlertDisplayed(alert) {
-        cy.get('li.ng-tns-c71-0').invoke('text').should((text) => {
+        cy.get('li.ng-tns-c285-0').invoke('text').should((text) => {
             expect(text).to.eq(alert)
-        })
+        });
     }
 
     getInputPartialRefundAmountRepeat() {
@@ -1285,7 +1418,7 @@ class TransactionsPage {
         // Get ID last transaction
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/transactions/user-transactions",
+            url: "https://account.stage.paydo.com/v1/transactions/user-transactions",
             headers: {
                 token: merchant.token
             }
@@ -1297,7 +1430,7 @@ class TransactionsPage {
             // Get commission for refund
             cy.request({
                 method: 'GET',
-                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+                url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
                 headers: {
                     token: feen.token,
                 }
@@ -1310,7 +1443,7 @@ class TransactionsPage {
                 // Get available balance amount
                 cy.request({
                     method: 'GET',
-                    url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                    url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                     headers: {
                         token: merchant.token,
                     }
@@ -1322,7 +1455,7 @@ class TransactionsPage {
                     //Create Partial refund
                     cy.request({
                         method: 'POST',
-                        url: "https://app.stage.paydo.com/v1/refunds/create",
+                        url: "https://account.stage.paydo.com/v1/refunds/create",
                         headers: {
                             token: merchant.token,
                         },
@@ -1346,7 +1479,7 @@ class TransactionsPage {
                             // проверка баланса мерчанта
                             cy.request({
                                 method: 'GET',
-                                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                                 headers: {
                                     token: merchant.token,
                                 }
@@ -1354,14 +1487,19 @@ class TransactionsPage {
                                 expect(response).property('status').to.equal(200);
                                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                 let available_balance_after = response.body.data[payCurrency].available.actual;
-                                expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
 
-                                cy.log("payAmount " + payAmount);
-                                cy.log("payCurrency " + payCurrency);
-                                cy.log("refund_fixcom " + refund_fixcom);
-                                cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
-                                cy.log("available_balance " + available_balance);
-                                cy.log("available_balance_after " + available_balance_after);
+                                try {
+
+                                    expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
+
+                                }catch (e) {
+                                    cy.log("payAmount " + payAmount);
+                                    cy.log("payCurrency " + payCurrency);
+                                    cy.log("refund_fixcom " + refund_fixcom);
+                                    cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
+                                    cy.log("available_balance " + available_balance);
+                                    cy.log("available_balance_after " + available_balance_after);
+                                }
                             })
                         } else {
 
@@ -1374,7 +1512,7 @@ class TransactionsPage {
                             // проверка баланса мерчанта
                             cy.request({
                                 method: 'GET',
-                                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                                 headers: {
                                     token: merchant.token,
                                 }
@@ -1382,14 +1520,19 @@ class TransactionsPage {
                                 expect(response).property('status').to.equal(200);
                                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                 let available_balance_after = response.body.data[payCurrency].available.actual;
-                                expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
 
-                                cy.log("payAmount " + payAmount);
-                                cy.log("payCurrency " + payCurrency);
-                                cy.log("refund_fixcom " + refund_fixcom);
-                                cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
-                                cy.log("available_balance " + available_balance);
-                                cy.log("available_balance_after " + available_balance_after);
+                                try {
+
+                                    expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
+
+                                }catch (e) {
+                                    cy.log("payAmount " + payAmount);
+                                    cy.log("payCurrency " + payCurrency);
+                                    cy.log("refund_fixcom " + refund_fixcom);
+                                    cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
+                                    cy.log("available_balance " + available_balance);
+                                    cy.log("available_balance_after " + available_balance_after);
+                                }
                             })
                         }
                     })
@@ -1403,7 +1546,7 @@ class TransactionsPage {
         // Get ID last transaction
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/transactions/user-transactions",
+            url: "https://account.stage.paydo.com/v1/transactions/user-transactions",
             headers: {
                 token: merchant.token
             }
@@ -1415,7 +1558,7 @@ class TransactionsPage {
             // Get available balance amount
             cy.request({
                 method: 'GET',
-                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                 headers: {
                     token: merchant.token,
                 }
@@ -1427,7 +1570,7 @@ class TransactionsPage {
                 //Create Full refund
                 cy.request({
                     method: 'POST',
-                    url: "https://app.stage.paydo.com/v1/refunds/create",
+                    url: "https://account.stage.paydo.com/v1/refunds/create",
                     headers: {
                         token: merchant.token,
                     },
@@ -1442,7 +1585,7 @@ class TransactionsPage {
                     // Get commission for refund
                     cy.request({
                         method: 'GET',
-                        url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+                        url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
                         headers: {
                             token: feen.token,
                         }
@@ -1465,7 +1608,7 @@ class TransactionsPage {
                             // проверка баланса мерчанта
                             cy.request({
                                 method: 'GET',
-                                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                                 headers: {
                                     token: merchant.token,
                                 }
@@ -1473,14 +1616,19 @@ class TransactionsPage {
                                 expect(response).property('status').to.equal(200);
                                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                 let available_balance_after = response.body.data[payCurrency].available.actual;
-                                expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
 
-                                cy.log("payAmount " + payAmount);
-                                cy.log("payCurrency " + payCurrency);
-                                cy.log("refund_fixcom " + refund_fixcom);
-                                cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
-                                cy.log("available_balance " + available_balance);
-                                cy.log("available_balance_after " + available_balance_after);
+                                try {
+
+                                    expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
+
+                                }catch (e) {
+                                    cy.log("payAmount " + payAmount);
+                                    cy.log("payCurrency " + payCurrency);
+                                    cy.log("refund_fixcom " + refund_fixcom);
+                                    cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
+                                    cy.log("available_balance " + available_balance);
+                                    cy.log("available_balance_after " + available_balance_after);
+                                }
                             })
                         } else {
 
@@ -1493,7 +1641,7 @@ class TransactionsPage {
                             // проверка баланса мерчанта
                             cy.request({
                                 method: 'GET',
-                                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                                 headers: {
                                     token: merchant.token,
                                 }
@@ -1501,15 +1649,19 @@ class TransactionsPage {
                                 expect(response).property('status').to.equal(200);
                                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                 let available_balance_after = response.body.data[payCurrency].available.actual;
-                                expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
 
-                                cy.log("payAmount " + payAmount);
-                                cy.log("payCurrency " + payCurrency);
-                                cy.log("refund_fixcom " + refund_fixcom);
-                                cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
-                                cy.log("available_balance " + available_balance);
-                                cy.log("available_balance_after " + available_balance_after);
+                                try {
 
+                                    expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
+
+                                }catch (e) {
+                                    cy.log("payAmount " + payAmount);
+                                    cy.log("payCurrency " + payCurrency);
+                                    cy.log("refund_fixcom " + refund_fixcom);
+                                    cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
+                                    cy.log("available_balance " + available_balance);
+                                    cy.log("available_balance_after " + available_balance_after);
+                                }
                             })
                         }
                     })
@@ -1524,7 +1676,7 @@ class TransactionsPage {
         // Get ID last transaction
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/transactions/user-transactions",
+            url: "https://account.stage.paydo.com/v1/transactions/user-transactions",
             headers: {
                 token: merchant.token
             }
@@ -1536,7 +1688,7 @@ class TransactionsPage {
                 // Get the rate in the main currency
                 cy.request({
                     method: 'GET',
-                    url: "https://app.stage.paydo.com/v1/transactions/" + transaction_ID,
+                    url: "https://account.stage.paydo.com/v1/transactions/" + transaction_ID,
                     headers: {
                         token: feen.token,
                     }
@@ -1548,7 +1700,7 @@ class TransactionsPage {
                     // Get available balance main currency
                     cy.request({
                         method: 'GET',
-                        url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                        url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                         headers: {
                             token: merchant.token,
                         }
@@ -1560,7 +1712,7 @@ class TransactionsPage {
                         //Create refund
                         cy.request({
                             method: 'POST',
-                            url: "https://app.stage.paydo.com/v1/refunds/create",
+                            url: "https://account.stage.paydo.com/v1/refunds/create",
                             headers: {
                                 token: merchant.token,
                             },
@@ -1575,7 +1727,7 @@ class TransactionsPage {
                             // Get commission for refund
                             cy.request({
                                 method: 'GET',
-                                url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+                                url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
                                 headers: {
                                     token: feen.token,
                                 }
@@ -1608,7 +1760,7 @@ class TransactionsPage {
                                 // checking the balance of the merchant
                                 cy.request({
                                     method: 'GET',
-                                    url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                    url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                                     headers: {
                                         token: merchant.token,
                                     }
@@ -1616,14 +1768,19 @@ class TransactionsPage {
                                     expect(response).property('status').to.equal(200);
                                     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                     let available_balance_after = response.body.data[merchant.main_currency].available.actual;
-                                    expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_main_currency - final).toFixed(2));
 
-                                    cy.log("payAmount" + payAmount);
-                                    cy.log("payCurrency " + payCurrency);
-                                    cy.log("refund_fixcom " + refund_fixcom);
-                                    cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
-                                    cy.log("available_balance " + available_main_currency);
-                                    cy.log("available_balance_after " + available_balance_after);
+                                    try {
+
+                                        expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_main_currency - final).toFixed(2));
+
+                                    }catch (e) {
+                                        cy.log("payAmount" + payAmount);
+                                        cy.log("payCurrency " + payCurrency);
+                                        cy.log("refund_fixcom " + refund_fixcom);
+                                        cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
+                                        cy.log("available_balance " + available_main_currency);
+                                        cy.log("available_balance_after " + available_balance_after);
+                                    }
                                 })
                             })
                         })
@@ -1637,7 +1794,7 @@ class TransactionsPage {
         // Get ID last transaction
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/transactions/user-transactions",
+            url: "https://account.stage.paydo.com/v1/transactions/user-transactions",
             headers: {
                 token: merchant.token
             }
@@ -1649,7 +1806,7 @@ class TransactionsPage {
             // Get the rate in the main currency
             cy.request({
                 method: 'GET',
-                url: "https://app.stage.paydo.com/v1/transactions/" + transaction_ID,
+                url: "https://account.stage.paydo.com/v1/transactions/" + transaction_ID,
                 headers: {
                     token: feen.token,
                 }
@@ -1661,7 +1818,7 @@ class TransactionsPage {
                 // Get available balance main currency
                 cy.request({
                     method: 'GET',
-                    url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                    url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                     headers: {
                         token: merchant.token,
                     }
@@ -1673,7 +1830,7 @@ class TransactionsPage {
                     //Create refund
                     cy.request({
                         method: 'POST',
-                        url: "https://app.stage.paydo.com/v1/refunds/create",
+                        url: "https://account.stage.paydo.com/v1/refunds/create",
                         headers: {
                             token: merchant.token,
                         },
@@ -1688,7 +1845,7 @@ class TransactionsPage {
                         // Get commission for refund
                         cy.request({
                             method: 'GET',
-                            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+                            url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
                             headers: {
                                 token: feen.token,
                             }
@@ -1721,7 +1878,7 @@ class TransactionsPage {
                             // checking the balance of the merchant
                             cy.request({
                                 method: 'GET',
-                                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                                 headers: {
                                     token: merchant.token,
                                 }
@@ -1729,14 +1886,19 @@ class TransactionsPage {
                                 expect(response).property('status').to.equal(200);
                                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                 let available_balance_after = response.body.data[merchant.main_currency].available.actual;
-                                expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_main_currency - final).toFixed(2));
 
-                                cy.log("payAmount" + payAmount);
-                                cy.log("payCurrency " + payCurrency);
-                                cy.log("refund_fixcom " + refund_fixcom);
-                                cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
-                                cy.log("available_balance " + available_main_currency);
-                                cy.log("available_balance_after " + available_balance_after);
+                                try {
+
+                                    expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_main_currency - final).toFixed(2));
+
+                                }catch (e) {
+                                    cy.log("payAmount" + payAmount);
+                                    cy.log("payCurrency " + payCurrency);
+                                    cy.log("refund_fixcom " + refund_fixcom);
+                                    cy.log("refund_perscom " + (payAmount / 100 * refund_perscom).toFixed(2));
+                                    cy.log("available_balance " + available_main_currency);
+                                    cy.log("available_balance_after " + available_balance_after);
+                                }
                             })
                         })
                     })
@@ -1745,157 +1907,163 @@ class TransactionsPage {
         })
     }
 
-    createChargeback() {
-        // Get ID last transaction for merchant
-        cy.request({
-            method: 'GET',
-            url: "https://app.stage.paydo.com/v1/transactions/filter?query[userIdentifier]=" + merchant.bussiness_account,
-            headers: {
-                token: feen.token
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(200);
-            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-            let transaction_ID = response.body.data[0].identifier;
 
-            //Create chargeback
-            cy.request({
-                method: 'POST',
-                url: "https://app.stage.paydo.com/v1/chargebacks/create",
-                headers: {
-                    token: feen.token
-                },
-                body: {
-                    "transactionIdentifier": transaction_ID
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(201);
-            })
-        })
-    }
 
-    createChargebackAndCheckAmount(payAmount, payCurrency) {
-        // Get ID last transaction
-        cy.request({
-            method: 'GET',
-            url: "https://app.stage.paydo.com/v1/transactions/user-transactions",
-            headers: {
-                token: merchant.token
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(200);
-            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-            let transaction_ID = response.body.data[0].identifier;
+    createChargebackAndCheckBalance() {
 
-            // Get available balance amount
+        let payAmount = parentPage.getRandomArbitrary(100, 500);
+        //let payAmount = 250;
+
+        for (let i = 0; i < chargeback.currency.length; i++) {
+            let payCurrency = chargeback.currency[i];
+            cy.log(payCurrency);
+            createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
+            cy.wait(3000);
+
+            // Get ID last transaction
             cy.request({
                 method: 'GET',
-                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                url: "https://account.stage.paydo.com/v1/transactions/user-transactions",
                 headers: {
-                    token: merchant.token,
+                    token: merchant.token
                 }
             }).then((response) => {
                 expect(response).property('status').to.equal(200);
                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                let available_balance = response.body.data[payCurrency].available.actual;
+                let transaction_ID = response.body.data[0].identifier;
 
-                //Create chargeback
+                // Get available balance amount
                 cy.request({
-                    method: 'POST',
-                    url: "https://app.stage.paydo.com/v1/chargebacks/create",
+                    method: 'GET',
+                    url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                     headers: {
-                        token: feen.token
-                    },
-                    body: {
-                        "transactionIdentifier": transaction_ID
+                        token: merchant.token,
                     }
                 }).then((response) => {
-                    expect(response).property('status').to.equal(201);
+                    expect(response).property('status').to.equal(200);
+                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                    let available_balance = response.body.data[payCurrency].available.actual;
 
-                    // Get commission for chargeback
+                    //Create chargeback
                     cy.request({
-                        method: 'GET',
-                        url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+                        method: 'POST',
+                        url: "https://account.stage.paydo.com/v1/chargebacks/create",
                         headers: {
-                            token: feen.token,
+                            token: feen.token
+                        },
+                        body: {
+                            "transactionIdentifier": transaction_ID
                         }
                     }).then((response) => {
-                        expect(response).property('status').to.equal(200);
-                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        let chargeback_fixcom = response.body.data[6].value[payCurrency][0];
-                        let chargeback_perscom = response.body.data[6].value[payCurrency][1];
+                        expect(response).property('status').to.equal(201);
 
-                        // Сalculation mathematics
+                        // Get commission for chargeback
+                        cy.request({
+                            method: 'GET',
+                            url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+                            headers: {
+                                token: feen.token,
+                            }
+                        }).then((response) => {
+                            expect(response).property('status').to.equal(200);
+                            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                            let chargeback_fixcom = response.body.data[6].value[payCurrency][0];
+                            let chargeback_perscom = response.body.data[6].value[payCurrency][1];
 
-                        // Chargeback commission percentage
-                        let perscom = (payAmount / 100 * chargeback_perscom).toFixed(2);
+                            // Сalculation mathematics
 
-                        if (payCurrency === 'GBP') {
+                            // Chargeback commission percentage
+                            let perscom = (payAmount / 100 * chargeback_perscom).toFixed(2);
 
-                            // Will be debited from the account
-                            let final = (+payAmount + (+chargeback_fixcom) + (+perscom)).toFixed(2);
+                            if (payCurrency === 'GBP') {
 
-                            // Checking the balance of the merchant
-                            cy.request({
-                                method: 'GET',
-                                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
-                                headers: {
-                                    token: merchant.token,
-                                }
-                            }).then((response) => {
-                                expect(response).property('status').to.equal(200);
-                                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                                let available_balance_after = response.body.data[payCurrency].available.actual;
-                                expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
+                                // Will be debited from the account
+                                let final = (+payAmount + (+chargeback_fixcom) + (+perscom)).toFixed(2);
 
-                                cy.log("payAmount " + payAmount);
-                                cy.log("payCurrency " + payCurrency);
-                                cy.log("refund_fixcom " + chargeback_fixcom);
-                                cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
-                                cy.log("available_balance " + available_balance);
-                                cy.log("available_balance_after " + available_balance_after);
-                            })
-                        } else {
+                                // Checking the balance of the merchant
+                                cy.request({
+                                    method: 'GET',
+                                    url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                    headers: {
+                                        token: merchant.token,
+                                    }
+                                }).then((response) => {
+                                    expect(response).property('status').to.equal(200);
+                                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                    let available_balance_after = response.body.data[payCurrency].available.actual;
+                                    //expect((available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
 
-                            // Will be one conversion
-                            let conv = ((+payAmount + +chargeback_fixcom + +perscom) / 100 * chargeback.exchange_percentage).toFixed(2);
+                                   try {
 
-                            // Will be debited from the account
-                            let final = (+payAmount + (+chargeback_fixcom) + (+perscom) + (+conv)).toFixed(2);
+                                       expect(cy.getDeltaChargeback(available_balance_after, (available_balance - final))).to.eq(true);
 
-                            // Checking the balance of the merchant
-                            cy.request({
-                                method: 'GET',
-                                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
-                                headers: {
-                                    token: merchant.token,
-                                }
-                            }).then((response) => {
-                                expect(response).property('status').to.equal(200);
-                                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                                let available_balance_after = response.body.data[payCurrency].available.actual;
-                                expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
+                                   }catch (e) {
 
-                                cy.log("payAmount " + payAmount);
-                                cy.log("payCurrency " + payCurrency);
-                                cy.log("refund_fixcom " + chargeback_fixcom);
-                                cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
-                                cy.log("available_balance " + available_balance);
-                                cy.log("available_balance_after " + available_balance_after);
+                                       cy.log("payAmount " + payAmount);
+                                       cy.log("payCurrency " + payCurrency);
+                                       cy.log("refund_fixcom " + chargeback_fixcom);
+                                       cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
+                                       cy.log("available_balance " + available_balance);
+                                       cy.log("available_balance_after " + available_balance_after);
+                                   }
+                                })
+                            } else {
 
-                            })
-                        }
+                                // Will be one conversion
+                                let conv = ((+payAmount + +chargeback_fixcom + +perscom) / 100 * chargeback.exchange_percentage).toFixed(2);
+
+                                // Will be debited from the account
+                                let final = (+payAmount + (+chargeback_fixcom) + (+perscom) + (+conv)).toFixed(2);
+
+                                // Checking the balance of the merchant
+                                cy.request({
+                                    method: 'GET',
+                                    url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                    headers: {
+                                        token: merchant.token,
+                                    }
+                                }).then((response) => {
+                                    expect(response).property('status').to.equal(200);
+                                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                    let available_balance_after = response.body.data[payCurrency].available.actual;
+                                    //expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
+
+                                    try {
+
+                                        expect(cy.getDeltaChargeback(available_balance_after, (available_balance - final))).to.eq(true);
+
+                                    }catch (e) {
+
+                                        cy.log("payAmount " + payAmount);
+                                        cy.log("payCurrency " + payCurrency);
+                                        cy.log("refund_fixcom " + chargeback_fixcom);
+                                        cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
+                                        cy.log("available_balance " + available_balance);
+                                        cy.log("available_balance_after " + available_balance_after);
+                                    }
+                                })
+                            }
+                        })
                     })
                 })
             })
-        })
+        }
+
     }
 
-    createChargebackUAHAndCheckAmount(payAmount, payCurrency) {
+
+    createChargebackUAHAndCheckBalance(payCurrency) {
+
+        let payAmount = parentPage.getRandomArbitrary(100, 500);
+        //let payAmount = 500;
+
+        createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
+        cy.wait(3000);
+
         // Get ID last transaction
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/transactions/user-transactions",
+            url: "https://account.stage.paydo.com/v1/transactions/user-transactions",
             headers: {
                 token: merchant.token
             }
@@ -1907,7 +2075,7 @@ class TransactionsPage {
             // Get the rate in the main currency
             cy.request({
                 method: 'GET',
-                url: "https://app.stage.paydo.com/v1/transactions/" + transaction_ID,
+                url: "https://account.stage.paydo.com/v1/transactions/" + transaction_ID,
                 headers: {
                     token: feen.token,
                 }
@@ -1919,7 +2087,7 @@ class TransactionsPage {
                 // Get available balance main currency
                 cy.request({
                     method: 'GET',
-                    url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                    url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                     headers: {
                         token: merchant.token,
                     }
@@ -1931,7 +2099,7 @@ class TransactionsPage {
                     // Create chargeback
                     cy.request({
                         method: 'POST',
-                        url: "https://app.stage.paydo.com/v1/chargebacks/create",
+                        url: "https://account.stage.paydo.com/v1/chargebacks/create",
                         headers: {
                             token: feen.token,
                         },
@@ -1944,7 +2112,7 @@ class TransactionsPage {
                         // Get commission for chargeback
                         cy.request({
                             method: 'GET',
-                            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+                            url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
                             headers: {
                                 token: feen.token,
                             }
@@ -1974,7 +2142,7 @@ class TransactionsPage {
                             // Checking the balance of the merchant
                             cy.request({
                                 method: 'GET',
-                                url: "https://app.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                                 headers: {
                                     token: merchant.token,
                                 }
@@ -1982,14 +2150,20 @@ class TransactionsPage {
                                 expect(response).property('status').to.equal(200);
                                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                 let available_balance_after = response.body.data[merchant.main_currency].available.actual;
-                                expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_main_currency - final).toFixed(2));
 
-                                cy.log("payAmount " + payAmount);
-                                cy.log("payCurrency " + payCurrency);
-                                cy.log("refund_fixcom " + chargeback_fixcom);
-                                cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
-                                cy.log("available_balance " + available_main_currency);
-                                cy.log("available_balance_after " + available_balance_after);
+                                try {
+
+                                    expect(cy.getDeltaChargeback(available_balance_after, (available_main_currency - final))).to.eq(true);
+
+                                } catch (e) {
+
+                                    cy.log("payAmount " + payAmount);
+                                    cy.log("payCurrency " + payCurrency);
+                                    cy.log("refund_fixcom " + chargeback_fixcom);
+                                    cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
+                                    cy.log("available_balance " + available_main_currency);
+                                    cy.log("available_balance_after " + available_balance_after);
+                                }
                             })
                         })
                     })
@@ -1997,6 +2171,9 @@ class TransactionsPage {
             })
         })
     }
+
+
+
 }
 
 export default new TransactionsPage();

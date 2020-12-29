@@ -3,9 +3,8 @@ import feen from "../fixtures/feen.json"
 import merchant from "../fixtures/merchant.json"
 import paymentMethod from "../fixtures/paymentMethod"
 import manajer from "../fixtures/manajer";
-import homePage from "./HomePage";
-import projectsPage from "./ProjectsPage";
-
+import parentPage from ".//ParentPage";
+import checkout from "../fixtures/checkout";
 
 class FeenPage {
 
@@ -48,7 +47,7 @@ class FeenPage {
         // Get identifier last project
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/apps/filters?query[userIdentifier]=" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/apps/filters?query[userIdentifier]=" + merchant.bussiness_account,
             params: {
                 "query[userIdentifier]": merchant.bussiness_account
             },
@@ -63,7 +62,7 @@ class FeenPage {
             // Add Project to MID
             cy.request({
                 method: 'POST',
-                url: `https://app.stage.paydo.com/v1/instrument-settings/mid/11/add-apps`,
+                url: `https://admin.stage.paydo.com/v1/instrument-settings/mid/for-apps/11/add-apps`,
                 headers: {
                     token: feen.token
                 },
@@ -88,7 +87,7 @@ class FeenPage {
             // Update MID
             cy.request({
                 method: 'POST',
-                url: `https://app.stage.paydo.com/v1/instrument-settings/mid/update`,
+                url: `https://admin.stage.paydo.com/v1/instrument-settings/mid/for-apps/update`,
                 headers: {
                     token: feen.token
                 },
@@ -134,7 +133,7 @@ class FeenPage {
     changeHoldPendingBalance() {
         cy.request({
             method: 'POST',
-            url: `https://app.stage.paydo.com/v1/instrument-settings/holds/custom`,
+            url: `https://account.stage.paydo.com/v1/instrument-settings/holds/custom`,
             headers: {
                 token: feen.token
             },
@@ -157,7 +156,7 @@ class FeenPage {
     setPaymentSettings() {
         cy.request({
             method: 'POST',
-            url: `https://app.stage.paydo.com/v1/instrument-settings/user-payment-settings/payment-methods/1/appoint-primary`,
+            url: `https://account.stage.paydo.com/v1/instrument-settings/user-payment-settings/payment-methods/1/appoint-primary`,
             headers: {
                 token: feen.token
             },
@@ -172,36 +171,14 @@ class FeenPage {
     }
 
     setNewCommissionsAndStrategy() {
-        cy.request({
-            method: 'POST',
-            url: `https://app.stage.paydo.com/v1/instrument-settings/commissions/custom`,
-            headers: {
-                token: feen.token,
-            },
-            body: {
-                "transactionType": 7,
-                "strategy": 2,
-                "source": 1,
-                "value": {
-                    "ALL": [
-                        feen.fix_commission,
-                        feen.percent_commission
-                    ]
-                },
-                "currency": "",
-                "paymentMethodIdentifier": paymentMethod.pm_id,
-                "userIdentifier": merchant.bussiness_account
-            }
-        }).then((response) => {
-            expect(response).property('status').to.equal(201)
-        })
+        parentPage.setCommissionsAndStrategy(checkout.tr_type, checkout.strategy,checkout.fix_com,checkout.perc_com,checkout.pm_id, merchant.bussiness_account);
     }
 
     changeCommissionsAndStrategy() {
         // Get a strategy for the moment
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + paymentMethod.pm_id + "/" + merchant.bussiness_account,
             headers: {
                 token: feen.token,
             }
@@ -213,7 +190,7 @@ class FeenPage {
             if (strateg === 1) {
                 cy.request({
                     method: 'POST',
-                    url: `https://app.stage.paydo.com/v1/instrument-settings/commissions/custom`,
+                    url: `https://account.stage.paydo.com/v1/instrument-settings/commissions/custom`,
                     headers: {
                         token: feen.token,
                     },
@@ -240,7 +217,7 @@ class FeenPage {
             } else {
                 cy.request({
                     method: 'POST',
-                    url: `https://app.stage.paydo.com/v1/instrument-settings/commissions/custom`,
+                    url: `https://account.stage.paydo.com/v1/instrument-settings/commissions/custom`,
                     headers: {
                         token: feen.token,
                     },
@@ -266,12 +243,33 @@ class FeenPage {
     }
 
 
-    rejectProject ()
-    {
-        feenPage.getLogin();
-        homePage.getMenuProjects().click();
-        projectsPage.getButton('Details').click();
+    createChargeback() {
+        // Get ID last transaction for merchant
+        cy.request({
+            method: 'GET',
+            url: "https://app.stage.paydo.com/v1/transactions/filter?query[userIdentifier]=" + merchant.bussiness_account,
+            headers: {
+                token: feen.token
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let transaction_ID = response.body.data[0].identifier;
 
+            //Create chargeback
+            cy.request({
+                method: 'POST',
+                url: "https://app.stage.paydo.com/v1/chargebacks/create",
+                headers: {
+                    token: feen.token
+                },
+                body: {
+                    "transactionIdentifier": transaction_ID
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(201);
+            })
+        })
     }
 
 

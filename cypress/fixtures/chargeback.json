@@ -1,4 +1,5 @@
 {
+  "precision": 0.01,
   "exchange_percentage": 3.5,
   "currency": ["GBP", "USD", "EUR", "RUB"]
 }

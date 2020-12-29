@@ -1,0 +1,15 @@
+{
+  "payment_method_ID": 1000005,
+  "BIC_code": "BIJORU66XXX",
+  "beneficiary_Bank": "BAIKALINVESTBANK",
+  "from_wallet": "EUR",
+  "IBAN":"GB59ECTC00992600000294",
+  "beneficiary_country": "AL",
+  "beneficiary_city": "Bilisht",
+  "beneficiary_name": "John Smith",
+  "beneficiary_address": "st. Avni Rustemi, 24",
+  "amount": "10.00",
+  "recipient_address": "456 Kent Street Sydney NSW 2000. Australia",
+  "document_type": [" Contract ", " Invoice ", " Shipping document ", " Other "],
+  "direction": "Voluntary contribution for a house for homeless piglets"
+}

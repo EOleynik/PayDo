@@ -1,0 +1,12 @@
+{
+  "wallet": ["GBP","USD", "EUR", "RUB"],
+  "amount": 100,
+  "exchange_percentage": 3.5,
+  "merchant_email": "eugeniy.o+test@payop.com",
+  "merchant_pass": "eugeniy.o+test!Q2w@payop.com",
+  "merch_id": 1602,
+  "authenticator": "57CVOMVEOY75U32D",
+  "payment_method_ID": 197,
+  "description": "Wallet top up",
+  "merch_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTYwMiwiYWNjZXNzVG9rZW4iOiJlOWI3OTgyM2JmNTczOTI3M2ZlMTA1ZDIiLCJ0b2tlbklkIjpudWxsLCJ3YWxsZXRJZCI6MTU5NiwidGltZSI6MTYwODAyMzcxOSwiZXhwaXJlZEF0IjpudWxsLCJyb2xlcyI6W10sInR3b0ZhY3RvciI6eyJwYXNzZWQiOnRydWV9fQ.HRMGmnAlvspY63QBlPUEZ9MwtMOZ5Xf9HnZ9VA68qio"
+}

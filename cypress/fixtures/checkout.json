@@ -4,5 +4,10 @@
   "product_currency_c3": "ALL",
   "product_currency_c4": "CUP",
   "pay_currency": "EUR",
-  "exchange_percentage": 3.5
+  "exchange_percentage": 3.5,
+  "pm_id": 300,
+  "fix_com": 1,
+  "perc_com": 6,
+  "tr_type": 7,
+  "strategy": 1
 }

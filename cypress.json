@@ -1,5 +1,5 @@
 {
-  "baseUrl": "https://app.stage.paydo.com/",
+  "baseUrl": "https://account.stage.paydo.com/",
   "waitForAnimations": true,
   "chromeWebSecurity": false,
   "projectId": "s4n8mx",

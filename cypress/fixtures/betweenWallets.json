@@ -1,0 +1,9 @@
+{
+  "payment_method_ID": 204,
+  "recipient_ID": 1602,
+  "wallet": "USD",
+  "amount_transfer": "5.00",
+  "currency": "USD",
+  "recipient_wallet": "USD",
+  "recipient_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTYwMiwiYWNjZXNzVG9rZW4iOiJlOWI3OTgyM2JmNTczOTI3M2ZlMTA1ZDIiLCJ0b2tlbklkIjpudWxsLCJ3YWxsZXRJZCI6MTU5NiwidGltZSI6MTYwNzY4MTg2OSwiZXhwaXJlZEF0IjpudWxsLCJyb2xlcyI6W10sInR3b0ZhY3RvciI6eyJwYXNzZWQiOnRydWV9fQ.wWZEbH0u8xltey64Q8gyAfeAGvHkB95hNHejOFBXJWY"
+}

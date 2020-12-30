@@ -8,7 +8,7 @@ import feen from "../../fixtures/feen";
 
     describe('Create ticket admin panels', () => {
 
-        it.only('Create ticket, Manager panel', () => {
+        it('Create ticket, Manager panel', () => {
 
             cy.visit('https://admin.stage.paydo.com');
             // loginPage.loginWithCred(manager.email, manager.pass);
@@ -18,8 +18,9 @@ import feen from "../../fixtures/feen";
             homePage.checkUrl('https://admin.stage.paydo.com');
             homePage.clickMenuTickets();
 
-            ticketsPage.checkUrl('https://admin.stage.paydo.com/en/tickets/list');
+            ticketsPage.checkUrl('https://admin.stage.paydo.com/tickets/list');
             ticketsPage.clickButtonCreateNewTicket();
+            cy.wait(1000);
             ticketsPage.enterTextInToInputUserID(merchant.bussiness_account);
             ticketsPage.enterTextInToInputRequestName(ticket.request_name);
             ticketsPage.selectTopicMan(ticket.department_2);
@@ -39,6 +40,7 @@ import feen from "../../fixtures/feen";
 
             homePage.checkUrl('https://admin.stage.paydo.com');
             homePage.clickMenuTickets();
+            cy.wait(1000);
             ticketsPage.clickButtonCreateNewTicket();
             ticketsPage.enterTextInToInputUserID(merchant.bussiness_account);
             ticketsPage.enterTextInToInputRequestName(ticket.request_name);

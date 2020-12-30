@@ -20,7 +20,7 @@ import merchant from "../../../fixtures/merchant";
                     loginPage.visit('/');
                     loginPage.loginWithCred(merchant.email, merchant.password);
                     loginPage.enter2FACode(merchant.authenticator);
-                    cy.wait(3000);
+                    cy.wait(5000);
                 });
 
                 // 1.Самый простой кейс. Цена товара совпадает с валютами которые в кабинете мерчанта (USD, EUR, GBP, RUB)

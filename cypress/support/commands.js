@@ -29,6 +29,8 @@
 
 import 'cypress-file-upload';
 
+import '@testing-library/cypress/add-commands';
+
 
 Cypress.Commands.add('form_request', (method, url, formData, done) => {
     const xhr = new XMLHttpRequest();

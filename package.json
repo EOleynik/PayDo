@@ -1,0 +1,29 @@
+{
+  "name": "paydo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cypress": "^6.0.0",
+    "gmail-tester": "^1.3.0",
+    "jquery": "^3.5.1",
+    "js-sha256": "^0.9.0",
+    "otplib": "^12.0.1"
+  },
+  "devDependencies": {
+    "cypress-file-upload": "^4.1.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EOleynik/PayDo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EOleynik/PayDo/issues"
+  },
+  "homepage": "https://github.com/EOleynik/PayDo#readme"
+}

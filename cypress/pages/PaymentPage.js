@@ -1,12 +1,12 @@
 import merchant from "../fixtures/merchant";
 import checkout from "../fixtures/checkout";
-import parentPage from ".//ParentPage";
-import loginPage from ".//LoginPage";
+import parentPage from "../pages/ParentPage";
+import loginPage from "../pages/LoginPage";
 
 class PaymentPage {
 
     clickButton(name) {
-        parentPage.getButton(name).click();
+        parentPage.clickButton(name);
     }
 
     enterCardData() {

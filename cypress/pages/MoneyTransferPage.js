@@ -32,7 +32,7 @@ class MoneyTransferPage {
     }
 
     clickButtonConfirmTransfer() {
-        parentPage.clickButton('Confirm transfer').click();
+        parentPage.clickButton('Confirm transfer');
     }
 
     clickTab(name) {

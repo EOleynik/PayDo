@@ -20,7 +20,7 @@ class ExchangePage {
     }
 
     clickButtonConvertCurrency() {
-        parentPage.clickButton('Convert currency').click();
+        parentPage.clickButton('Convert currency');
     }
 
     checkStatusExchange(message) {

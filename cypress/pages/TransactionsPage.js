@@ -39,7 +39,7 @@ class TransactionsPage {
     }
 
     clickButtonDetails() {
-        parentPage.clickButton('Details').click();
+        parentPage.clickButton('Details');
     }
 
     closeAlert() {
@@ -1221,8 +1221,8 @@ class TransactionsPage {
                         // Check Amount
                         try{
                         cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                            expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
-                                //expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
+                            //expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
+                                expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
                             })
                         }catch (e) {
                             }
@@ -1314,8 +1314,8 @@ class TransactionsPage {
                             // Check Amount
                             try {
                                 cy.get('[class="bold price-align"]').eq(0).invoke('text').should((text) => {
-                                    expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
-                                    //expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
+                                    //expect(text).to.eq((+rezult).toFixed(2) + ' ' + merchant.main_currency)
+                                    expect(cy.getDeltaCheckout(parseFloat(text), rezult)).to.eq(true);
                                 })
                             }catch (e) {
                             }
@@ -1332,7 +1332,7 @@ class TransactionsPage {
     }
 
     clickButtonCreateRefund() {
-        parentPage.clickButton(' Create refund ').click();
+        parentPage.clickButton(' Create refund ');
     }
 
     enterTextInToInputPartialRefundAmount(amount) {

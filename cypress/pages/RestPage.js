@@ -7,7 +7,7 @@ class RestPage{
     }
 
     clickButton(name) {
-        parentPage.clickButton(name).click();
+        parentPage.clickButton(name);
     }
 
 }

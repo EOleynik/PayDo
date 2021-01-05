@@ -48,12 +48,14 @@ class MoneyTransferPage {
     }
 
     enterTextInToInputBeneficiaryName(text) {
-        parentPage.getInput('name').clear().type(text);
+        parentPage.getInput('name').eq(0).clear().type(text);
     }
 
     selectCountry() {
-        cy.get ('#mat-input-11').click();
-        return cy.get ('#mat-option-5 > .mat-option-text').click();
+        //cy.get('[class="mat-form-field-infix ng-tns-c101-43"]').click();
+        cy.get ('#mat-input-13').click();
+        //return cy.get ('#mat-option-5 > .mat-option-text').click();
+        return cy.contains('span', 'Algeria').click();
     }
 
     enterTextInToInputCity(text) {
@@ -69,7 +71,7 @@ class MoneyTransferPage {
     }
 
     enterTextInToInputBeneficiaryBank(text) {
-        cy.get ('#mat-input-12').clear().type(text);
+        cy.get ('#mat-input-14').clear().type(text);
     }
 
     enterTextInToInputPurposePayment(text) {
@@ -77,7 +79,7 @@ class MoneyTransferPage {
     }
 
     InstallCheckboxPaymentNotCommercial() {
-        cy.get('[class="mat-checkbox-inner-container"]').click();
+        cy.get('[class="mat-checkbox-inner-container"]').eq(0).click();
         //cy.get ('#mat-checkbox-2 > .mat-checkbox-layout > .mat-checkbox-inner-container').click();
     }
 

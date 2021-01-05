@@ -10,7 +10,7 @@ class ProjectsPage {
     }
 
     clickButton(name) {
-        parentPage.clickButton(name).click();
+        parentPage.clickButton(name);
     }
 
     closeAlert() {

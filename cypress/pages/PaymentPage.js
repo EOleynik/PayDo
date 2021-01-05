@@ -34,7 +34,8 @@ class PaymentPage {
     }
 
     selectPayCurrency() {
-        cy.contains('span', merchant.main_currency).click();
+        cy.get('[class="mat-select-trigger ng-tns-c109-6"]').click();
+        //cy.contains('span', merchant.main_currency).click();
         return cy.contains('span', checkout.pay_currency).click();
     }
 
@@ -50,6 +51,24 @@ class PaymentPage {
         return cy.contains('Log in');
     }
 
+
+    checkLogIn() {
+        cy.get('body').then(($body) => {
+            if ($body.text().includes('Already have an account?')) {
+
+                cy.contains('a','Log in').click();
+                cy.get("[formcontrolname=email]").type(merchant.email);
+                cy.get("[formcontrolname=password]").type(merchant.password);
+                cy.contains('span', ' Log in ').click();
+                cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]')
+                    .clear().type(parentPage.get2FACode(merchant.authenticator));
+
+
+
+            } else {
+            }
+        })
+    }
 
 }
 

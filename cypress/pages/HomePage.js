@@ -41,7 +41,7 @@ class HomePage {
     }
 
     clickButtonAddNew() {
-        parentPage.clickButton('Add new').click();
+        parentPage.clickButton('Add new');
     }
 
     getMenuVerification() {

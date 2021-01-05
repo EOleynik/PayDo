@@ -20,12 +20,12 @@ import feen from "../../../fixtures/feen";
             cy.visit('https://admin.stage.paydo.com/en/auth/login');
             loginPage.checkUrl('/en/auth/login');
             loginPage.loginWithCred(feen.email, feen.pass);
-            loginPage.enter2FACode(feen.authenticator)
+            loginPage.enter2FACode(feen.authenticator);
 
             homePage.checkUrl('/');
             homePage.clickMenuPaymentsHistory();
 
-            transactionsPage.checkUrl('en/transactions/list');
+            transactionsPage.checkUrl('/transactions/list');
             transactionsPage.clickFilter();
             transactionsPage.enterTextInToFilter(merchant.bussiness_account);
             transactionsPage.clickButtonCreateChargeback();
@@ -60,7 +60,7 @@ import feen from "../../../fixtures/feen";
 
             homePage.checkUrl('/en/overview');
             homePage.clickMenuTransactions();
-            cy.wait(3000);
+            cy.wait(5000);
             homePage.clickMenuChargebacks();
             cy.wait(2000);
 

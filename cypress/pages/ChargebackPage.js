@@ -29,7 +29,7 @@ class ChargebackPage {
     }
 
     clickFilter(name) {
-        parentPage.clickButton(' Filter ').click()
+        parentPage.clickButton(' Filter ');
     }
 
     enterTextInToFilter(text) {

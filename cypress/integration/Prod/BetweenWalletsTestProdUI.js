@@ -11,10 +11,10 @@ describe('Between Wallets suit ', () => {
     it('Create transfer, all data is valid', () => {
 
         cy.visit('https://account.paydo.com/en/auth/login');
-        // loginPage.checkUrl('/auth/login');
-        // loginPage.loginWithCred(merchantProd.merchant_email, merchantProd.merchant_password);
-        // loginPage.enter2FACode(merchantProd.merchant_authenticator);
-        loginPage.clickButton('To Admin Panel')
+        loginPage.checkUrl('/auth/login');
+        loginPage.loginWithCred(merchantProd.merchant_email, merchantProd.merchant_password);
+        loginPage.enter2FACode(merchantProd.merchant_authenticator);
+        //loginPage.clickButton('To Admin Panel');
         cy.wait(3000);
 
         homePage.checkUrl('/overview');

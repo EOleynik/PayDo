@@ -13,7 +13,7 @@ class LoginPage {
     }
 
     clickButton(name){
-        parentPage.clickButton(name).click();
+        parentPage.clickButton(name);
     }
 
     getEmailField() {
@@ -90,9 +90,20 @@ class LoginPage {
     }
 
 
+    checkAuthorization() {
+        cy.get('body').then(($body) => {
+            if ($body.text().includes('Email Address')) {
 
-
-
+                cy.get("[formcontrolname=email]").clear().type(merchant.email);
+                cy.get("[formcontrolname=password]").clear().type(merchant.password);
+                cy.contains('span', ' Login ').click();
+                cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]')
+                    .clear().type(parentPage.get2FACode(merchant.authenticator));
+            } else {
+                parentPage.clickButton('To Admin Panel')
+            }
+        })
+    }
 }
 
 

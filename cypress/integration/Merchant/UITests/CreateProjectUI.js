@@ -43,7 +43,7 @@ describe('Create project suit', () => {
         cy.wait(2000);
 
         projectsPage.checkUrl('/projects/list');
-        projectsPage.checkStatusProjectUI(' Rejected ');
+        projectsPage.checkStatusProjectUI(' Not Verified ');
     });
 
     it("Required fields are empty", () => {
@@ -79,6 +79,7 @@ describe('Create project suit', () => {
         projectsPage.checkCreateProject();
         projectsPage.checkStatusProject(0);
         projectsPage.acceptProject();
+
         feenPage.addProjectToMid();
 
     });

@@ -17,7 +17,7 @@ describe('Between Wallets suit ', () => {
     it('Create transfer, all data is valid', () => {
 
         homePage.checkUrl('/en/overview');
-        homePage.clickMenuPaymentsHistory('Create Transfer');
+        homePage.clickMenuCreateTransfer('Create Transfer');
         cy.wait(3000);
 
         moneyTransferPage.checkUrl('/money-transfers');

@@ -152,7 +152,8 @@ class MoneyTransferPage {
             cy.get('#mat-select-value-5 > .mat-select-placeholder').click();
             let doc_type = withdraw.document_type[i];
             cy.contains('span', doc_type).click();
-            parentPage.attachFile();
+            cy.wait(1000);
+            parentPage.attachFile("2.jpeg");
             cy.wait(500);
         }
     }

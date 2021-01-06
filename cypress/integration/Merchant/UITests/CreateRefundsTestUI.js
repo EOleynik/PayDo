@@ -10,8 +10,7 @@ describe('Refund suit', () => {
 
     beforeEach('', () => {
         loginPage.visit('/');
-        loginPage.loginWithCred(merchant.email, merchant.password);
-        loginPage.enter2FACode(merchant.authenticator);
+        loginPage.checkAuthorization();
         createCheckoutPage.getCheckout2API(refund.checkout_amount);
         cy.wait(9000);
     });

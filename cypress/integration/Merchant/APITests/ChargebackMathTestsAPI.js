@@ -1,6 +1,5 @@
 import transactionsPage from "../../../pages/TransactionsPage";
 import chargebackPage  from "../../../pages/ChargebackPage";
-import parentPage from "../../../pages/ParentPage";
 
 describe('Chargeback math', () => {
 

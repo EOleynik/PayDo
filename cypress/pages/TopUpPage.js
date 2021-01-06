@@ -268,14 +268,21 @@ class TopUpPage {
         for (let i = 0; i < topUp.wallet.length; i++) {
             let wallet = topUp.wallet[i];
             cy.get('[class="shared-wallet-select"]').click();
+            cy.wait(2000);
             cy.get('[class="mat-option-text"]').contains(wallet).click();
+            cy.wait(2000);
             //topUpPage.chooseWalletTopUp(topUp.wallet[i]);
             parentPage.getInput('amount').clear().type(topUp.amount);
             parentPage.getInput('totalAmount').click();
             parentPage.enterCardData();
-            parentPage.clickButton('Top up wallet').click();
-            cy.wait(6000);
-        }
+            parentPage.clickButton('Top up wallet');
+            cy.wait(11000);
+            cy.get('[class="mat-dialog-title dialog-title"]').invoke('text').should((text) => {
+                expect(text).to.eq('Your top up is successful');
+            });
+                parentPage.clickButton(' Ok ');
+                cy.wait(2000);
+            }
     }
 
 

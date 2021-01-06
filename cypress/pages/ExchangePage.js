@@ -97,7 +97,7 @@ class ExchangePage {
                         }).then((response) => {
                             expect(response).property('status').to.equal(200);
                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                            let av_bal_from_wallet_after = response.body.data[exchange.exchange_from].available.actual;
+                            let av_bal_from_wallet_after = response.body.data[exchange.exchange_from].available.actual.toString();
 
                             try {
 
@@ -127,7 +127,7 @@ class ExchangePage {
                                     }).then((response) => {
                                         expect(response).property('status').to.equal(200);
                                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                                        let av_bal_to_wallet_after = response.body.data[exchange.exchange_to].available.actual;
+                                        let av_bal_to_wallet_after = response.body.data[exchange.exchange_to].available.actual.toString();
 
                                         try {
 

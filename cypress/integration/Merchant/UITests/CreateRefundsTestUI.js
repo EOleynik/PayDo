@@ -4,7 +4,6 @@ import transactionsPage from "../../../pages/TransactionsPage";
 import createCheckoutPage from "../../../pages/CreateCheckoutPage"
 import refund from "../../../fixtures/refund";
 import refundPage from "../../../pages/RefundPage";
-import parentPage from "../../../pages/ParentPage"
 import merchant from "../../../fixtures/merchant";
 
 describe('Refund suit', () => {

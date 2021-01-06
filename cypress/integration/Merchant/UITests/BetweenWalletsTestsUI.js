@@ -24,15 +24,18 @@ describe('Between Wallets suit ', () => {
         moneyTransferPage.clickTab('Between Wallets');
         moneyTransferPage.chooseCurrencyWallet(betweenWallets.wallet);
         moneyTransferPage.enterTextInToInputRecipient(betweenWallets.recipient_ID);
+        cy.wait(1000);
         moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         //moneyTransferPage.chooseCurrencyTransfer(betweenWallets.currency);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
+        cy.wait(3000);
         moneyTransferPage.clickButtonConfirmTransfer();
         moneyTransferPage.enter2FACode(merchant.authenticator);
         moneyTransferPage.checkStatusWithdraw('Withdraw created');
         moneyTransferPage.closeAlert();
         moneyTransferPage.clickButtonGoToMoneyTransferList();
+        cy.wait(1000);
         moneyTransferPage.checkUrl('/list-of-transfers/transfers-between-wallets');
         moneyTransferPage.checkTransferBetweenWallets('From wallet', ' You ', betweenWallets.recipient_ID, betweenWallets.amount_transfer, betweenWallets.currency);
     });

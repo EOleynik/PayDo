@@ -9,7 +9,7 @@ class TicketsPage {
     }
 
     clickButtonCreateNewTicket() {
-        parentPage.getMenu( 'Create new ticket').click();
+        parentPage.clickButton( 'Create new ticket');
     }
 
     enterTextInToInputUserID(text){
@@ -34,7 +34,7 @@ class TicketsPage {
     }
 
     clickButtonSendTicket() {
-        parentPage.clickButton(' Send ticket ').click();
+        parentPage.clickButton(' Send ticket ');
     }
 
     checkCreateTicket() {

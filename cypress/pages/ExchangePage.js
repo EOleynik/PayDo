@@ -101,7 +101,7 @@ class ExchangePage {
 
                             try {
 
-                                expect(av_bal_from_wallet_after).to.eq(av_bal_from_wallet - exchange.amount_exchange);
+                                expect(av_bal_from_wallet_after).to.eq((av_bal_from_wallet - exchange.amount_exchange).toFixed(2));
 
                             }catch (e) {
                                 cy.log(av_bal_from_wallet);
@@ -131,7 +131,7 @@ class ExchangePage {
 
                                         try {
 
-                                            expect(av_bal_to_wallet_after).to.eq(av_bal_to_wallet + ex_amount);
+                                            expect(av_bal_to_wallet_after).to.eq((+av_bal_to_wallet + ex_amount).toFixed(2));
 
                                         }catch (e) {
                                             cy.log(av_bal_to_wallet);

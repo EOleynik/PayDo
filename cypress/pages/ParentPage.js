@@ -75,11 +75,11 @@ class ParentPage {
     }
 
     closeAlert() {
-        return cy.get('.close-alert').click()
+        return cy.get('.close-alert').click({force: true})
     }
 
     clickButton(name) {
-        return cy.contains('span', name).click();
+        return cy.contains('span', name).click({force: true});
     }
 
     getMenu(name) {

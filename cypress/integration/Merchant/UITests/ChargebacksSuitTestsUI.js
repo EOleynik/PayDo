@@ -10,7 +10,7 @@ import feen from "../../../fixtures/feen";
 
     describe('Chargeback suit', () => {
 
-        beforeEach('Authorization and create checkout', () => {
+        beforeEach('Create checkout', () => {
             let payAmount = parentPage.getRandomArbitrary(300, 500);
             let payCurrency = "USD";
             createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
@@ -24,6 +24,7 @@ import feen from "../../../fixtures/feen";
 
             homePage.checkUrl('/');
             homePage.clickMenuPaymentsHistory();
+            cy.wait(3000);
 
             transactionsPage.checkUrl('/transactions/list');
             transactionsPage.clickFilter();
@@ -34,10 +35,11 @@ import feen from "../../../fixtures/feen";
             cy.wait(2000);
             transactionsPage.checkCreateChargeback();
             transactionsPage.closeAlert();
+            cy.wait(1000);
 
             homePage.clickMenuChargebacks();
-            cy.wait(2000);
-            chargebackPage.checkUrl('en/chargeback/list');
+            cy.wait(3000);
+            chargebackPage.checkUrl('/chargeback/list');
             chargebackPage.clickFilter();
             cy.wait(2000);
             chargebackPage.enterTextInToFilter(merchant.bussiness_account);
@@ -60,7 +62,7 @@ import feen from "../../../fixtures/feen";
 
             homePage.checkUrl('/en/overview');
             homePage.clickMenuTransactions();
-            cy.wait(5000);
+            cy.wait(6000);
             homePage.clickMenuChargebacks();
             cy.wait(2000);
 
@@ -90,9 +92,9 @@ import feen from "../../../fixtures/feen";
 
             homePage.checkUrl('/en/overview');
             homePage.clickMenuTransactions();
-            cy.wait(3000);
+            cy.wait(6000);
             homePage.clickMenuChargebacks();
-            cy.wait(2000);
+            cy.wait(3000);
 
             chargebackPage.checkUrl('transaction/chargeback/list');
             chargebackPage.clickFilter();

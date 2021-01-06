@@ -61,7 +61,7 @@ describe('Create project suit', () => {
 
         homePage.checkUrl('/en/overview');
         homePage.clickMenuProjects();
-        cy.wait(3000);
+        cy.wait(5000);
         homePage.clickButtonAddNew();
 
         projectsPage.checkUrl('/projects/create');

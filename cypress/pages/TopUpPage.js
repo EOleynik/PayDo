@@ -276,7 +276,7 @@ class TopUpPage {
             parentPage.getInput('totalAmount').click();
             parentPage.enterCardData();
             parentPage.clickButton('Top up wallet');
-            cy.wait(11000);
+            cy.wait(12000);
             cy.get('[class="mat-dialog-title dialog-title"]').invoke('text').should((text) => {
                 expect(text).to.eq('Your top up is successful');
             });

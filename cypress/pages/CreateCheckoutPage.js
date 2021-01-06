@@ -10,9 +10,9 @@ class CreateCheckoutPage {
         // Get secret key & public key last project
         cy.request({
             method: 'GET',
-            url: "https://account.stage.paydo.com/v1/apps/filters?query[userIdentifier]=" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/apps/user-apps",
             headers: {
-                token: manajer.token
+                token: merchant.token
             }
         }).then((response) => {
             expect(response).property('status').to.equal(200);
@@ -120,9 +120,9 @@ class CreateCheckoutPage {
         // Get secret key & public key last project
         cy.request({
             method: 'GET',
-            url: "https://admin.stage.paydo.com/v1/apps/filters?query[userIdentifier]=" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/apps/user-apps",
             headers: {
-                token: manajer.token
+                token: merchant.token
             }
         }).then((response) => {
             expect(response).property('status').to.equal(200);
@@ -227,9 +227,9 @@ class CreateCheckoutPage {
         // Get secret key & public key last project
         cy.request({
             method: 'GET',
-            url: "https://account.stage.paydo.com/v1/apps/filters?query[userIdentifier]=" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/apps/user-apps",
             headers: {
-                token: manajer.token
+                token: merchant.token
             }
         }).then((response) => {
             expect(response).property('status').to.equal(200);
@@ -334,9 +334,9 @@ class CreateCheckoutPage {
         // Get secret key & public key last project
         cy.request({
             method: 'GET',
-            url: "https://account.stage.paydo.com/v1/apps/filters?query[userIdentifier]=" + merchant.bussiness_account,
+            url: "https://account.stage.paydo.com/v1/apps/user-apps",
             headers: {
-                token: manajer.token
+                token: merchant.token
             }
         }).then((response) => {
             expect(response).property('status').to.equal(200);

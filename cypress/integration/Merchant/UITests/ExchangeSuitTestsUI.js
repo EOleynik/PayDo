@@ -21,6 +21,7 @@ describe('Exchange suit UI', () => {
         exchangePage.selectWalletExchangeTo(exchange.to_wallet);
         exchangePage.enterAmountForExchange(exchange.amount_exchange);
         exchangePage.clickButtonConvertCurrency();
+        cy.wait(500);
         exchangePage.checkStatusExchange('Exchange successful');
         exchangePage.closeAlert();
     });
@@ -32,6 +33,7 @@ describe('Exchange suit UI', () => {
         cy.wait(2000);
         exchangePage.enterAmountForExchange(1000000);
         exchangePage.clickButtonConvertCurrency();
+        cy.wait(500);
         exchangePage.checkStatusExchange('Not enough money to perform this operation');
         exchangePage.closeAlert();
     });

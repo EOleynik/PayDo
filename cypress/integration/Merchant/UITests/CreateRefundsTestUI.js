@@ -10,6 +10,7 @@ describe('Refund suit', () => {
 
     beforeEach('', () => {
         loginPage.visit('/');
+        cy.wait(2000);
         loginPage.checkAuthorization();
         createCheckoutPage.getCheckout2API(refund.checkout_amount);
         cy.wait(9000);

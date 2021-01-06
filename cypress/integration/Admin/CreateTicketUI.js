@@ -3,7 +3,6 @@ import homePage from "../../pages/HomePage";
 import ticketsPage from "../../pages/TicketsPage";
 import ticket from "../../fixtures/ticket";
 import merchant from "../../fixtures/merchant";
-import manager from "../../fixtures/manajer";
 import feen from "../../fixtures/feen";
 
     describe('Create ticket admin panels', () => {

@@ -18,7 +18,7 @@ describe('Withdraw suit ', () => {
 
         homePage.checkUrl('/en/overview');
         homePage.clickMenuCreateTransfer();
-        cy.wait(2000);
+        cy.wait(3000);
 
         moneyTransferPage.checkUrl('/money-transfers');
         moneyTransferPage.enterTextInToInputIBAN(withdraw.IBAN);
@@ -51,7 +51,7 @@ describe('Withdraw suit ', () => {
 
         homePage.checkUrl('/en/overview');
         homePage.clickMenuCreateTransfer();
-        cy.wait(2000);
+        cy.wait(3000);
 
         moneyTransferPage.checkUrl('/money-transfers');
         moneyTransferPage.enterTextInToInputIBAN(withdraw.IBAN);

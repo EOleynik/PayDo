@@ -58,7 +58,7 @@ class ChargebackPage {
             //Reject last chargeback
             cy.request({
                 method: 'POST',
-                url: "https://app.stage.paydo.com/v1/chargebacks/" + chargeback_ID + "/reject",
+                url: "https://admin.stage.paydo.com/v1/chargebacks/" + chargeback_ID + "/reject",
                 headers: {
                     token: feen.token
                 },

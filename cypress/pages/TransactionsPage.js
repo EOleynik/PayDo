@@ -19,7 +19,7 @@ cy.getDeltaChargeback = function getDelta(n1, n2) {
 class TransactionsPage {
 
     clickFilter() {
-        parentPage.clickButton('Filter').click()
+        parentPage.clickButton('Filter');
     }
 
     checkUrl(Url) {
@@ -35,7 +35,7 @@ class TransactionsPage {
     }
 
     clickButtonCreateChargeback() {
-        parentPage.clickButton('Create ').click({force: true})
+        parentPage.clickButton('Create ');
     }
 
     clickButtonDetails() {

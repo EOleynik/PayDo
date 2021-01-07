@@ -173,7 +173,7 @@ describe('Between Wallets suit ', () => {
                                             expect(response).property('status').to.equal(200);
                                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                             let av_bal_to_wallet_after = (response.body.data['USD'].available.actual).toString();
-                                                expect(av_bal_to_wallet_after).to.eq(rec_amount);
+                                                expect(parseFloat(av_bal_to_wallet_after).toFixed(2)).to.eq(rec_amount);
 
                                                 cy.log(av_bal_to_wallet);
                                                 cy.log(av_bal_to_wallet_after);

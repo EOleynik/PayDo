@@ -130,7 +130,7 @@ class MoneyTransferPage {
             expect(text).to.eq(" ID: "+recipient);
         });
         cy.get(':nth-child(1) > .text-right > .amount > .bold').invoke('text').should((text) => {
-            expect(text).to.eq(parseFloat(amount).toFixed(2)+" "+currency);
+            expect(parseFloat(text).toFixed(2)).to.eq(parseFloat(amount).toFixed(2)+" "+currency);
         });
     }
 

@@ -1,8 +1,6 @@
-
-import card from "../fixtures/card.json"
-import checkout from "../fixtures/checkout.json"
-import merchant from "../fixtures/merchant.json"
-import manajer from "../fixtures/manajer";
+import card from "../fixtures/card.json";
+import checkout from "../fixtures/checkout.json";
+import merchant from "../fixtures/merchant.json";
 
 class CreateCheckoutPage {
 
@@ -455,7 +453,7 @@ class CreateCheckoutPage {
             // Signature generation
             var sha256 = require('js-sha256');
             var hash = sha256.create();
-            hash.update(payAmount + ":" + payCurrency + ":" +payCurrency+ "API:" + secret_key);
+            hash.update(payAmount + ":" + payCurrency + ":" + payCurrency + "API:" + secret_key);
             hash.hex();
 
             // Create invoices, save to variable invID

@@ -1999,12 +1999,12 @@ class TransactionsPage {
 
                                    }catch (e) {
 
-                                       cy.log("payAmount " + payAmount);
-                                       cy.log("payCurrency " + payCurrency);
-                                       cy.log("refund_fixcom " + chargeback_fixcom);
-                                       cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
-                                       cy.log("available_balance " + available_balance);
-                                       cy.log("available_balance_after " + available_balance_after);
+                                       cy.log("product Amount " + payAmount);
+                                       cy.log("product Currency " + payCurrency);
+                                       cy.log("refund fixcom " + chargeback_fixcom);
+                                       cy.log("refund perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
+                                       cy.log("available balance " + available_balance);
+                                       cy.log("available balance_after " + available_balance_after);
                                    }
                                 })
                             } else {
@@ -2034,12 +2034,12 @@ class TransactionsPage {
 
                                     }catch (e) {
 
-                                        cy.log("payAmount " + payAmount);
-                                        cy.log("payCurrency " + payCurrency);
-                                        cy.log("refund_fixcom " + chargeback_fixcom);
-                                        cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
-                                        cy.log("available_balance " + available_balance);
-                                        cy.log("available_balance_after " + available_balance_after);
+                                        cy.log("product Amount " + payAmount);
+                                        cy.log("product Currency " + payCurrency);
+                                        cy.log("refund fixcom " + chargeback_fixcom);
+                                        cy.log("refund perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
+                                        cy.log("available balance " + available_balance);
+                                        cy.log("available balance_after " + available_balance_after);
                                     }
                                 })
                             }
@@ -2157,12 +2157,12 @@ class TransactionsPage {
 
                                 } catch (e) {
 
-                                    cy.log("payAmount " + payAmount);
-                                    cy.log("payCurrency " + payCurrency);
-                                    cy.log("refund_fixcom " + chargeback_fixcom);
-                                    cy.log("refund_perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
-                                    cy.log("available_balance " + available_main_currency);
-                                    cy.log("available_balance_after " + available_balance_after);
+                                    cy.log("product Amount " + payAmount);
+                                    cy.log("product Currency " + payCurrency);
+                                    cy.log("refund fixcom " + chargeback_fixcom);
+                                    cy.log("refund perscom " + (payAmount / 100 * chargeback_perscom).toFixed(2));
+                                    cy.log("available balance " + available_main_currency);
+                                    cy.log("available balance after " + available_balance_after);
                                 }
                             })
                         })

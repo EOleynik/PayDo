@@ -19,7 +19,7 @@ import merchant from "../../../fixtures/merchant";
                 beforeEach('', () => {
                     loginPage.visit('/');
                     cy.wait(2000);
-                     loginPage.checkAuthorization();
+                     loginPage.checkAuthorization(merchant.email, merchant.password, merchant.authenticator);
                     cy.wait(5000);
                 });
 

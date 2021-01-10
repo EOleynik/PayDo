@@ -301,8 +301,8 @@ class MoneyTransferPage {
                                             expect(av_bal_to_wallet_after).to.eq(av_bal_to_wallet + Number(betweenWallets.amount_transfer));
 
                                             }catch (e) {
-                                                cy.log(av_bal_from_wallet);
-                                                cy.log(av_bal_from_wallet_after);
+                                                cy.log(av_bal_to_wallet);
+                                                cy.log(av_bal_to_wallet_after);
                                                 cy.log(sum);
                                             }
                                         })

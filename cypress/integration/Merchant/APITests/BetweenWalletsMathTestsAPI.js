@@ -1,10 +1,10 @@
-import moneyTransfer from "../../../pages/MoneyTransferPage";
+import moneyTransferPage from "../../../pages/MoneyTransferPage";
 
 
 describe('Between Wallets math', () => {
 
     it('Between Wallets math, wallets match', () => {
-        moneyTransfer.createTransferAndCheckMath();
+        moneyTransferPage.createTransferAndCheckMath();
     });
 
 })

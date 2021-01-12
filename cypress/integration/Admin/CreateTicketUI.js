@@ -29,11 +29,12 @@ import manajer from "../../fixtures/manajer";
             ticketsPage.attachFile("2.jpeg");
             cy.wait(2000);
             ticketsPage.clickButtonSendTicket();
+            cy.wait(1000);
             ticketsPage.checkCreateTicketFin();
             ticketsPage.closeAlert();
         });
 
-        it('Create ticket, Feen panel', () => {
+        it.only('Create ticket, Feen panel', () => {
             cy.visit('https://admin.stage.paydo.com/en/auth/login');
             cy.wait(2000);
             loginPage.checkAuthorization(feen.email, feen.pass, feen.authenticator);
@@ -52,6 +53,7 @@ import manajer from "../../fixtures/manajer";
             ticketsPage.attachFile("2.jpeg");
             cy.wait(2000);
             ticketsPage.clickButtonSendTicket();
+            cy.wait(1000);
             ticketsPage.checkCreateTicketFin();
             ticketsPage.closeAlert();
         })

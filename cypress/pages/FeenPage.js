@@ -62,7 +62,7 @@ class FeenPage {
             // Add Project to MID
             cy.request({
                 method: 'POST',
-                url: `https://admin.stage.paydo.com/v1/instrument-settings/mid/11/add-apps`,
+                url: `https://admin.stage.paydo.com/v1/instrument-settings/mid/for-apps/11/add-apps`,
                 headers: {
                     token: feen.token
                 },
@@ -87,7 +87,7 @@ class FeenPage {
             // Update MID
             cy.request({
                 method: 'POST',
-                url: `https://admin.stage.paydo.com/v1/instrument-settings/mid/update`,
+                url: `https://admin.stage.paydo.com/v1/instrument-settings/mid/for-apps/update`,
                 headers: {
                     token: feen.token
                 },

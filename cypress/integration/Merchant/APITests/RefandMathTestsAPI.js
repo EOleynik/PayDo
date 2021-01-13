@@ -41,7 +41,7 @@ import parentPage from "../../../pages/ParentPage";
              let payCurrency = refund.currency[i];
              cy.log(payCurrency);
              createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
-             cy.wait(3000);
+             cy.wait(4000);
              transactionsPage.createPartialRefundAndCheckAmount(payAmount, payCurrency);
              refundPage.rejectRefund();
          }

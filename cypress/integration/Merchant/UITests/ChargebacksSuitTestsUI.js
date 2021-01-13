@@ -18,9 +18,9 @@ import feen from "../../../fixtures/feen";
 
         it('Create Chargeback', () => {
             cy.visit('https://admin.stage.paydo.com/en/auth/login');
+            cy.wait(2000);
             loginPage.checkUrl('/en/auth/login');
-            loginPage.loginWithCred(feen.email, feen.pass);
-            loginPage.enter2FACode(feen.authenticator);
+            loginPage.checkAuthorization(feen.email, feen.pass, feen.authenticator);
 
             homePage.checkUrl('/');
             homePage.clickMenuPaymentsHistory();
@@ -32,10 +32,10 @@ import feen from "../../../fixtures/feen";
             transactionsPage.clickButtonCreateChargeback();
             cy.wait(3000);
             transactionsPage.confirmChargeback();
-            cy.wait(2000);
+            cy.wait(3000);
             transactionsPage.checkCreateChargeback();
             transactionsPage.closeAlert();
-            cy.wait(1000);
+            cy.wait(2000);
 
             homePage.clickMenuChargebacks();
             cy.wait(3000);

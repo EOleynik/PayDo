@@ -48,6 +48,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.clickButton('Show payment page ');
                     cy.wait(7000);
 
+                    paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
 
                     paymentPage.clickButton('Cards');
@@ -89,6 +90,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.clickButton('Show payment page ');
                     cy.wait(7000);
 
+                    paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
 
                     paymentPage.clickButton('Cards');
@@ -131,6 +133,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.clickButton('Show payment page ');
                     cy.wait(7000);
 
+                    paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
 
                     paymentPage.clickButton('Cards');
@@ -173,9 +176,12 @@ import merchant from "../../../fixtures/merchant";
                     restPage.clickButton('Show payment page ');
                     cy.wait(7000);
 
+                    paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
+                    cy.wait(2000);
 
                     paymentPage.clickButton('Cards');
+                    cy.wait(1000);
                     paymentPage.selectPayCurrency();
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
@@ -233,6 +239,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.clickButton('Show payment page ');
                     cy.wait(7000);
 
+                    paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
 
                     paymentPage.clickButton('Cards');
@@ -274,6 +281,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.clickButton('Show payment page ');
                     cy.wait(7000);
 
+                    paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
 
                     paymentPage.clickButton('Cards');
@@ -316,6 +324,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.clickButton('Show payment page ');
                     cy.wait(7000);
 
+                    paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
 
                     paymentPage.clickButton('Cards');
@@ -358,9 +367,12 @@ import merchant from "../../../fixtures/merchant";
                     restPage.clickButton('Show payment page ');
                     cy.wait(7000);
 
+                    paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
+                    cy.wait(2000);
 
                     paymentPage.clickButton('Cards');
+                    cy.wait(1000);
                     paymentPage.selectPayCurrency();
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();

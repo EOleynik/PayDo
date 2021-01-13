@@ -5,6 +5,10 @@ import loginPage from "../pages/LoginPage";
 
 class PaymentPage {
 
+    checkUrlPaymentPage(Url) {
+        return cy.url().should('match', Url)
+    }
+
     clickButton(name) {
         parentPage.clickButton(name);
     }
@@ -34,8 +38,8 @@ class PaymentPage {
     }
 
     selectPayCurrency() {
-        cy.get('[class="mat-select-trigger ng-tns-c109-6"]').click();
-        //cy.contains('span', merchant.main_currency).click();
+        //cy.get('[class="mat-select-value ng-tns-c109-6"]').click();
+        cy.contains('span', merchant.main_currency).click();
         return cy.contains('span', checkout.pay_currency).click();
     }
 
@@ -62,8 +66,6 @@ class PaymentPage {
                 cy.contains('span', ' Log in ').click();
                 cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]')
                     .clear().type(parentPage.get2FACode(merchant.authenticator));
-
-
 
             } else {
             }

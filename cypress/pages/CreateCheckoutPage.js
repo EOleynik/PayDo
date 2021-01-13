@@ -18,101 +18,101 @@ class CreateCheckoutPage {
             let secret_key = response.body.data[0].secretKey;
             let public_key = response.body.data[0].publicKey;
 
-                // Signature generation
-                var sha256 = require('js-sha256');
-                var hash = sha256.create();
-                hash.update(payAmount + ':' + payCurrency + ':C1GBPAPI:' + secret_key);
-                hash.hex();
+            // Signature generation
+            var sha256 = require('js-sha256');
+            var hash = sha256.create();
+            hash.update(payAmount + ':' + payCurrency + ':C1GBPAPI:' + secret_key);
+            hash.hex();
 
-                // Create invoices, save to variable invID
+            // Create invoices, save to variable invID
+            cy.request({
+                method: 'POST',
+                url: `https://account.stage.paydo.com/v1/invoices/create`,
+                body: {
+                    "publicKey": public_key,
+                    "order": {
+                        "id": "C1GBPAPI",
+                        "amount": payAmount,
+                        "currency": payCurrency,
+                        "items": [
+                            {
+                                "id": "487",
+                                "name": "Item 1",
+                                "price": "3"
+                            },
+                            {
+                                "id": "358",
+                                "name": "Item 2",
+                                "price": "7"
+                            }
+                        ],
+                        "description": "case1"
+                    },
+                    "signature": hash.toString(),
+                    "payer": {
+                        "email": "eugeniy.o+4avtotest@payop.com",
+                        "phone": "",
+                        "name": ""
+                    },
+                    "paymentMethod": null,
+                    "language": "en",
+                    "resultUrl": "https://account.stage.paydo.com/",
+                    "failPath": "https://account.stage.paydo.com/",
+                    "productUrl": "https://account.stage.paydo.com/"
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200);
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                var invId = response.body.data;
+
+                // Create card token, save to variable tok
                 cy.request({
                     method: 'POST',
-                    url: `https://account.stage.paydo.com/v1/invoices/create`,
+                    url: `https://account.stage.paydo.com/v1/payment-tools/card-token/create`,
+
                     body: {
-                        "publicKey": public_key,
-                        "order": {
-                            "id": "C1GBPAPI",
-                            "amount": payAmount,
-                            "currency": payCurrency,
-                            "items": [
-                                {
-                                    "id": "487",
-                                    "name": "Item 1",
-                                    "price": "3"
-                                },
-                                {
-                                    "id": "358",
-                                    "name": "Item 2",
-                                    "price": "7"
-                                }
-                            ],
-                            "description": "case1"
-                        },
-                        "signature": hash.toString(),
-                        "payer": {
-                            "email": "eugeniy.o+4avtotest@payop.com",
-                            "phone": "",
-                            "name": ""
-                        },
-                        "paymentMethod": null,
-                        "language": "en",
-                        "resultUrl": "https://account.stage.paydo.com/",
-                        "failPath": "https://account.stage.paydo.com/",
-                        "productUrl": "https://account.stage.paydo.com/"
+
+                        "invoiceIdentifier": invId,
+                        "saveCard": null,
+                        "pan": card.card_number,
+                        "expirationDate": card.expiration_date,
+                        "cvv": card.CVC,
+                        "holderName": card.cardholder
                     }
                 }).then((response) => {
-                    expect(response).property('status').to.equal(200);
+                    expect(response).property('status').to.equal(201);
                     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    var invId = response.body.data;
+                    var tok = response.body.data.token;
 
-                    // Create card token, save to variable tok
+                    // Create checkout
                     cy.request({
                         method: 'POST',
-                        url: `https://account.stage.paydo.com/v1/payment-tools/card-token/create`,
-
+                        url: `https://account.stage.paydo.com/v1/checkout/create`,
                         body: {
 
                             "invoiceIdentifier": invId,
-                            "saveCard": null,
-                            "pan": card.card_number,
-                            "expirationDate": card.expiration_date,
-                            "cvv": card.CVC,
-                            "holderName": card.cardholder
+                            "paymentMethod": 1,
+                            "payCurrency": payCurrency,
+                            "customer": {
+                                "email": "eugeniy.o+4avtotest@payop.com",
+                                "name": "",
+                                "phone": "",
+                                "address": "",
+                                "companyName": "",
+                                "site": "",
+                                "extraFields": []
+                            },
+                            "cardToken": tok,
+                            "checkStatusUrl": "https://account.stage.payop.com/en/payment/wait-page/{{txid}}"
                         }
                     }).then((response) => {
-                        expect(response).property('status').to.equal(201);
+                        expect(response).property('status').to.equal(200);
                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        var tok = response.body.data.token;
-
-                        // Create checkout
-                        cy.request({
-                            method: 'POST',
-                            url: `https://account.stage.paydo.com/v1/checkout/create`,
-                            body: {
-
-                                "invoiceIdentifier": invId,
-                                "paymentMethod": 1,
-                                "payCurrency": payCurrency,
-                                "customer": {
-                                    "email": "eugeniy.o+4avtotest@payop.com",
-                                    "name": "",
-                                    "phone": "",
-                                    "address": "",
-                                    "companyName": "",
-                                    "site": "",
-                                    "extraFields": []
-                                },
-                                "cardToken": tok,
-                                "checkStatusUrl": "https://account.stage.payop.com/en/payment/wait-page/{{txid}}"
-                            }
-                        }).then((response) => {
-                            expect(response).property('status').to.equal(200);
-                            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        })
                     })
                 })
             })
-        }
+        })
+    }
 
     getCheckout2API(payAmount) {
         // Get secret key & public key last project
@@ -128,98 +128,98 @@ class CreateCheckoutPage {
             let secret_key = response.body.data[0].secretKey;
             let public_key = response.body.data[0].publicKey;
 
-                // Signature generation
-                var sha256 = require('js-sha256');
-                var hash = sha256.create();
-                hash.update(payAmount + ":" + checkout.product_currency_c2 + ":C2API:" + secret_key);
-                hash.hex();
+            // Signature generation
+            var sha256 = require('js-sha256');
+            var hash = sha256.create();
+            hash.update(payAmount + ":" + checkout.product_currency_c2 + ":C2API:" + secret_key);
+            hash.hex();
 
-                // Create invoices, save to variable invID
+            // Create invoices, save to variable invID
+            cy.request({
+                method: 'POST',
+                url: `https://account.stage.paydo.com/v1/invoices/create`,
+                body: {
+                    "publicKey": public_key,
+                    "order": {
+                        "id": "C2API",
+                        "amount": payAmount,
+                        "currency": checkout.product_currency_c2,
+                        "items": [
+                            {
+                                "id": "487",
+                                "name": "Item 1",
+                                "price": "3"
+                            },
+                            {
+                                "id": "358",
+                                "name": "Item 2",
+                                "price": "7"
+                            }
+                        ],
+                        "description": "case2"
+                    },
+                    "signature": hash.toString(),
+                    "payer": {
+                        "email": "eugeniy.o+4avtotest@payop.com",
+                        "phone": "",
+                        "name": ""
+                    },
+                    "paymentMethod": null,
+                    "language": "en",
+                    "resultUrl": "https://account.stage.paydo.com/",
+                    "failPath": "https://account.stage.paydo.com/",
+                    "productUrl": "https://account.stage.paydo.com/"
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200);
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                var invId = response.body.data;
+
+                // Create card token, save to variable tok
                 cy.request({
                     method: 'POST',
-                    url: `https://account.stage.paydo.com/v1/invoices/create`,
+                    url: `https://account.stage.paydo.com/v1/payment-tools/card-token/create`,
                     body: {
-                        "publicKey": public_key,
-                        "order": {
-                            "id": "C2API",
-                            "amount": payAmount,
-                            "currency": checkout.product_currency_c2,
-                            "items": [
-                                {
-                                    "id": "487",
-                                    "name": "Item 1",
-                                    "price": "3"
-                                },
-                                {
-                                    "id": "358",
-                                    "name": "Item 2",
-                                    "price": "7"
-                                }
-                            ],
-                            "description": "case2"
-                        },
-                        "signature": hash.toString(),
-                        "payer": {
-                            "email": "eugeniy.o+4avtotest@payop.com",
-                            "phone": "",
-                            "name": ""
-                        },
-                        "paymentMethod": null,
-                        "language": "en",
-                        "resultUrl": "https://account.stage.paydo.com/",
-                        "failPath": "https://account.stage.paydo.com/",
-                        "productUrl": "https://account.stage.paydo.com/"
+                        "invoiceIdentifier": invId,
+                        "saveCard": null,
+                        "pan": card.card_number,
+                        "expirationDate": card.expiration_date,
+                        "cvv": card.CVC,
+                        "holderName": card.cardholder
                     }
                 }).then((response) => {
-                    expect(response).property('status').to.equal(200);
+                    expect(response).property('status').to.equal(201);
                     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    var invId = response.body.data;
+                    var tok = response.body.data.token;
 
-                    // Create card token, save to variable tok
+                    // Create checkout
                     cy.request({
                         method: 'POST',
-                        url: `https://account.stage.paydo.com/v1/payment-tools/card-token/create`,
+                        url: `https://account.stage.paydo.com/v1/checkout/create`,
                         body: {
                             "invoiceIdentifier": invId,
-                            "saveCard": null,
-                            "pan": card.card_number,
-                            "expirationDate": card.expiration_date,
-                            "cvv": card.CVC,
-                            "holderName": card.cardholder
+                            "paymentMethod": 1,
+                            "payCurrency": checkout.product_currency_c2,
+                            "customer": {
+                                "email": "eugeniy.o+4avtotest@payop.com",
+                                "name": "",
+                                "phone": "",
+                                "address": "",
+                                "companyName": "",
+                                "site": "",
+                                "extraFields": []
+                            },
+                            "cardToken": tok,
+                            "checkStatusUrl": "https://acount.stage.paydo.com/en/payment/wait-page/{{txid}}"
                         }
                     }).then((response) => {
-                        expect(response).property('status').to.equal(201);
+                        expect(response).property('status').to.equal(200);
                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        var tok = response.body.data.token;
-
-                        // Create checkout
-                        cy.request({
-                            method: 'POST',
-                            url: `https://account.stage.paydo.com/v1/checkout/create`,
-                            body: {
-                                "invoiceIdentifier": invId,
-                                "paymentMethod": 1,
-                                "payCurrency": checkout.product_currency_c2,
-                                "customer": {
-                                    "email": "eugeniy.o+4avtotest@payop.com",
-                                    "name": "",
-                                    "phone": "",
-                                    "address": "",
-                                    "companyName": "",
-                                    "site": "",
-                                    "extraFields": []
-                                },
-                                "cardToken": tok,
-                                "checkStatusUrl": "https://acount.stage.paydo.com/en/payment/wait-page/{{txid}}"
-                            }
-                        }).then((response) => {
-                            expect(response).property('status').to.equal(200);
-                            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        })
                     })
                 })
             })
-        }
+        })
+    }
 
     getCheckout3API(payAmount) {
         // Get secret key & public key last project
@@ -235,98 +235,98 @@ class CreateCheckoutPage {
             let secret_key = response.body.data[0].secretKey;
             let public_key = response.body.data[0].publicKey;
 
-                // Signature generation
-                var sha256 = require('js-sha256');
-                var hash = sha256.create();
-                hash.update(payAmount + ":" + checkout.product_currency_c3 + ":C3API:" + secret_key);
-                hash.hex();
+            // Signature generation
+            var sha256 = require('js-sha256');
+            var hash = sha256.create();
+            hash.update(payAmount + ":" + checkout.product_currency_c3 + ":C3API:" + secret_key);
+            hash.hex();
 
-                // Create invoices, save to variable invID
+            // Create invoices, save to variable invID
+            cy.request({
+                method: 'POST',
+                url: `https://account.stage.paydo.com/v1/invoices/create`,
+                body: {
+                    "publicKey": public_key,
+                    "order": {
+                        "id": "C3API",
+                        "amount": payAmount,
+                        "currency": checkout.product_currency_c3,
+                        "items": [
+                            {
+                                "id": "487",
+                                "name": "Item 1",
+                                "price": "3"
+                            },
+                            {
+                                "id": "358",
+                                "name": "Item 2",
+                                "price": "7"
+                            }
+                        ],
+                        "description": "case3"
+                    },
+                    "signature": hash.toString(),
+                    "payer": {
+                        "email": "eugeniy.o+4avtotest@payop.com",
+                        "phone": "",
+                        "name": ""
+                    },
+                    "paymentMethod": null,
+                    "language": "en",
+                    "resultUrl": "https://app.stage.paydo.com/",
+                    "failPath": "https://app.stage.paydo.com/",
+                    "productUrl": "https://app.stage.paydo.com/"
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200);
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                var invId = response.body.data;
+
+                // Create card token, save to variable tok
                 cy.request({
                     method: 'POST',
-                    url: `https://account.stage.paydo.com/v1/invoices/create`,
+                    url: `https://account.stage.paydo.com/v1/payment-tools/card-token/create`,
                     body: {
-                        "publicKey": public_key,
-                        "order": {
-                            "id": "C3API",
-                            "amount": payAmount,
-                            "currency": checkout.product_currency_c3,
-                            "items": [
-                                {
-                                    "id": "487",
-                                    "name": "Item 1",
-                                    "price": "3"
-                                },
-                                {
-                                    "id": "358",
-                                    "name": "Item 2",
-                                    "price": "7"
-                                }
-                            ],
-                            "description": "case3"
-                        },
-                        "signature": hash.toString(),
-                        "payer": {
-                            "email": "eugeniy.o+4avtotest@payop.com",
-                            "phone": "",
-                            "name": ""
-                        },
-                        "paymentMethod": null,
-                        "language": "en",
-                        "resultUrl": "https://app.stage.paydo.com/",
-                        "failPath": "https://app.stage.paydo.com/",
-                        "productUrl": "https://app.stage.paydo.com/"
+                        "invoiceIdentifier": invId,
+                        "saveCard": null,
+                        "pan": card.card_number,
+                        "expirationDate": card.expiration_date,
+                        "cvv": card.CVC,
+                        "holderName": card.cardholder
                     }
                 }).then((response) => {
-                    expect(response).property('status').to.equal(200);
+                    expect(response).property('status').to.equal(201);
                     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    var invId = response.body.data;
+                    var tok = response.body.data.token;
 
-                    // Create card token, save to variable tok
+                    // Create checkout
                     cy.request({
                         method: 'POST',
-                        url: `https://account.stage.paydo.com/v1/payment-tools/card-token/create`,
+                        url: `https://account.stage.paydo.com/v1/checkout/create`,
                         body: {
                             "invoiceIdentifier": invId,
-                            "saveCard": null,
-                            "pan": card.card_number,
-                            "expirationDate": card.expiration_date,
-                            "cvv": card.CVC,
-                            "holderName": card.cardholder
+                            "paymentMethod": 1,
+                            "payCurrency": merchant.main_currency,
+                            "customer": {
+                                "email": "eugeniy.o+4avtotest@payop.com",
+                                "name": "",
+                                "phone": "",
+                                "address": "",
+                                "companyName": "",
+                                "site": "",
+                                "extraFields": []
+                            },
+                            "cardToken": tok,
+                            "checkStatusUrl": "https://account.stage.paydo.com/en/payment/wait-page/{{txid}}"
                         }
                     }).then((response) => {
-                        expect(response).property('status').to.equal(201);
+                        expect(response).property('status').to.equal(200);
                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        var tok = response.body.data.token;
-
-                        // Create checkout
-                        cy.request({
-                            method: 'POST',
-                            url: `https://account.stage.paydo.com/v1/checkout/create`,
-                            body: {
-                                "invoiceIdentifier": invId,
-                                "paymentMethod": 1,
-                                "payCurrency": merchant.main_currency,
-                                "customer": {
-                                    "email": "eugeniy.o+4avtotest@payop.com",
-                                    "name": "",
-                                    "phone": "",
-                                    "address": "",
-                                    "companyName": "",
-                                    "site": "",
-                                    "extraFields": []
-                                },
-                                "cardToken": tok,
-                                "checkStatusUrl": "https://account.stage.paydo.com/en/payment/wait-page/{{txid}}"
-                            }
-                        }).then((response) => {
-                            expect(response).property('status').to.equal(200);
-                            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        })
                     })
                 })
             })
-        }
+        })
+    }
 
     getCheckout4API(payAmount) {
         // Get secret key & public key last project
@@ -342,98 +342,98 @@ class CreateCheckoutPage {
             let secret_key = response.body.data[0].secretKey;
             let public_key = response.body.data[0].publicKey;
 
-                // Signature generation
-                var sha256 = require('js-sha256');
-                var hash = sha256.create();
-                hash.update(payAmount + ":" + checkout.product_currency_c4 + ":C4API:" + secret_key);
-                hash.hex();
+            // Signature generation
+            var sha256 = require('js-sha256');
+            var hash = sha256.create();
+            hash.update(payAmount + ":" + checkout.product_currency_c4 + ":C4API:" + secret_key);
+            hash.hex();
 
-                // Create invoices, save to variable invID
+            // Create invoices, save to variable invID
+            cy.request({
+                method: 'POST',
+                url: `https://account.stage.paydo.com/v1/invoices/create`,
+                body: {
+                    "publicKey": public_key,
+                    "order": {
+                        "id": "C4API",
+                        "amount": payAmount,
+                        "currency": checkout.product_currency_c4,
+                        "items": [
+                            {
+                                "id": "487",
+                                "name": "Item 1",
+                                "price": "3"
+                            },
+                            {
+                                "id": "358",
+                                "name": "Item 2",
+                                "price": "7"
+                            }
+                        ],
+                        "description": "case4"
+                    },
+                    "signature": hash.toString(),
+                    "payer": {
+                        "email": "eugeniy.o+4avtotest@payop.com",
+                        "phone": "",
+                        "name": ""
+                    },
+                    "paymentMethod": null,
+                    "language": "en",
+                    "resultUrl": "https://app.stage.paydo.com/",
+                    "failPath": "https://app.stage.paydo.com/",
+                    "productUrl": "https://app.stage.paydo.com/"
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200);
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                var invId = response.body.data;
+
+                // Create card token, save to variable tok
                 cy.request({
                     method: 'POST',
-                    url: `https://account.stage.paydo.com/v1/invoices/create`,
+                    url: `https://account.stage.paydo.com/v1/payment-tools/card-token/create`,
                     body: {
-                        "publicKey": public_key,
-                        "order": {
-                            "id": "C4API",
-                            "amount": payAmount,
-                            "currency": checkout.product_currency_c4,
-                            "items": [
-                                {
-                                    "id": "487",
-                                    "name": "Item 1",
-                                    "price": "3"
-                                },
-                                {
-                                    "id": "358",
-                                    "name": "Item 2",
-                                    "price": "7"
-                                }
-                            ],
-                            "description": "case4"
-                        },
-                        "signature": hash.toString(),
-                        "payer": {
-                            "email": "eugeniy.o+4avtotest@payop.com",
-                            "phone": "",
-                            "name": ""
-                        },
-                        "paymentMethod": null,
-                        "language": "en",
-                        "resultUrl": "https://app.stage.paydo.com/",
-                        "failPath": "https://app.stage.paydo.com/",
-                        "productUrl": "https://app.stage.paydo.com/"
+                        "invoiceIdentifier": invId,
+                        "saveCard": null,
+                        "pan": card.card_number,
+                        "expirationDate": card.expiration_date,
+                        "cvv": card.CVC,
+                        "holderName": card.cardholder
                     }
                 }).then((response) => {
-                    expect(response).property('status').to.equal(200);
+                    expect(response).property('status').to.equal(201);
                     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                    var invId = response.body.data;
+                    var tok = response.body.data.token;
 
-                    // Create card token, save to variable tok
+                    // Create checkout
                     cy.request({
                         method: 'POST',
-                        url: `https://account.stage.paydo.com/v1/payment-tools/card-token/create`,
+                        url: `https://account.stage.paydo.com/v1/checkout/create`,
                         body: {
                             "invoiceIdentifier": invId,
-                            "saveCard": null,
-                            "pan": card.card_number,
-                            "expirationDate": card.expiration_date,
-                            "cvv": card.CVC,
-                            "holderName": card.cardholder
+                            "paymentMethod": 1,
+                            "payCurrency": checkout.pay_currency,
+                            "customer": {
+                                "email": "eugeniy.o+4avtotest@payop.com",
+                                "name": "",
+                                "phone": "",
+                                "address": "",
+                                "companyName": "",
+                                "site": "",
+                                "extraFields": []
+                            },
+                            "cardToken": tok,
+                            "checkStatusUrl": "https://account.stage.paydo.com/en/payment/wait-page/{{txid}}"
                         }
                     }).then((response) => {
-                        expect(response).property('status').to.equal(201);
+                        expect(response).property('status').to.equal(200);
                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        var tok = response.body.data.token;
-
-                        // Create checkout
-                        cy.request({
-                            method: 'POST',
-                            url: `https://account.stage.paydo.com/v1/checkout/create`,
-                            body: {
-                                "invoiceIdentifier": invId,
-                                "paymentMethod": 1,
-                                "payCurrency": checkout.pay_currency,
-                                "customer": {
-                                    "email": "eugeniy.o+4avtotest@payop.com",
-                                    "name": "",
-                                    "phone": "",
-                                    "address": "",
-                                    "companyName": "",
-                                    "site": "",
-                                    "extraFields": []
-                                },
-                                "cardToken": tok,
-                                "checkStatusUrl": "https://account.stage.paydo.com/en/payment/wait-page/{{txid}}"
-                            }
-                        }).then((response) => {
-                            expect(response).property('status').to.equal(200);
-                            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        })
                     })
                 })
             })
-        }
+        })
+    }
 
 
     createCheckoutAPI(payAmount, payCurrency) {
@@ -463,7 +463,7 @@ class CreateCheckoutPage {
                 body: {
                     "publicKey": public_key,
                     "order": {
-                        "id": payCurrency+"API",
+                        "id": payCurrency + "API",
                         "amount": payAmount,
                         "currency": payCurrency,
                         "items": [

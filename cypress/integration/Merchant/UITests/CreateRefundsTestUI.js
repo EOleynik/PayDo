@@ -77,7 +77,7 @@ describe('Refund suit', () => {
         transactionsPage.clickButtonPartialRefund();
         transactionsPage.enterTextInToInputPartialRefundAmount(refund.amount_1);
         transactionsPage.clickButtonCreateRefund();
-        cy.wait(2000);
+        cy.wait(3000);
         transactionsPage.clickButtonCreateRefundOk();
         cy.wait(4000);
         transactionsPage.clickButtonPartialRefund();

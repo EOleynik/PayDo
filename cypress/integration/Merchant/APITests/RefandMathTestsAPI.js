@@ -11,14 +11,7 @@ import parentPage from "../../../pages/ParentPage";
          let payAmount = parentPage.getRandomArbitrary(100, 500);
          //let payAmount = 500;
 
-         for (let i = 0; i < refund.currency.length; i++) {
-             let payCurrency = refund.currency[i];
-             cy.log(payCurrency);
-             createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
-             cy.wait(3000);
-             transactionsPage.createFullRefundAndCheckAmount(payAmount, payCurrency);
-             refundPage.rejectRefund();
-         }
+         refundPage.createFullRefundAPIAndCheckAmount(payAmount);
      });
 
      it('Full refund, payment currency does not match the currencies that are in the merchant account', () => {
@@ -37,14 +30,7 @@ import parentPage from "../../../pages/ParentPage";
 
          let payAmount = parentPage.getRandomArbitrary(100, 500);
 
-         for (let i = 0; i < refund.currency.length; i++) {
-             let payCurrency = refund.currency[i];
-             cy.log(payCurrency);
-             createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
-             cy.wait(4000);
-             transactionsPage.createPartialRefundAndCheckAmount(payAmount, payCurrency);
-             refundPage.rejectRefund();
-         }
+         refundPage.createPartialRefundAPIAndCheckAmount(payAmount);
      });
 
      it('Partial refund, payment currency does not match the currencies that are in the merchant account', () => {

@@ -1,5 +1,8 @@
 import merchant from "../fixtures/merchant"
 import feen from "../fixtures/feen"
+import refund from "../fixtures/refund";
+import createCheckoutPage from "./CreateCheckoutPage";
+import transactionsPage from "./TransactionsPage";
 
 class RefundPage{
 
@@ -31,6 +34,28 @@ class RefundPage{
                 expect(response).property('status').to.equal(201);
             })
         })
+    }
+
+    createFullRefundAPIAndCheckAmount(payAmount) {
+        for (let i = 0; i < refund.currency.length; i++) {
+            let payCurrency = refund.currency[i];
+            cy.log(payCurrency);
+            createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
+            cy.wait(3000);
+            transactionsPage.createFullRefundAndCheckAmount(payAmount, payCurrency);
+            this.rejectRefund();
+        }
+    }
+
+    createPartialRefundAPIAndCheckAmount(payAmount) {
+        for (let i = 0; i < refund.currency.length; i++) {
+            let payCurrency = refund.currency[i];
+            cy.log(payCurrency);
+            createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
+            cy.wait(4000);
+            transactionsPage.createPartialRefundAndCheckAmount(payAmount, payCurrency);
+            this.rejectRefund();
+        }
     }
 }
 

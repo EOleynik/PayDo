@@ -1398,7 +1398,8 @@ class TransactionsPage {
     }
 
     checkCreateChargeback() {
-        cy.get('.alert__title').invoke('text').should((text) => {
+        cy.get('[class="alert__title ng-tns-c214-0"]').invoke('text').should((text) => {
+        //cy.get('.alert__title').invoke('text').should((text) => {
             expect(text).to.eq('Success');
         })
     }

@@ -14,6 +14,7 @@ import merchant from "../../../fixtures/merchant";
 
             homePage.checkUrl('/en/overview');
             homePage.clickMenuTickets();
+            cy.wait(2000);
 
             ticketsPage.checkUrl('tickets/list');
             ticketsPage.clickButtonCreateNewTicket();

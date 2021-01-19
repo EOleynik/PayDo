@@ -46,9 +46,9 @@ class ChargebackPage {
         //Get ID last created chargeback
         cy.request({
             method: 'GET',
-            url: "https://account.stage.paydo.com/v1/chargebacks/filters?query[userIdentifier]=" + merchant.bussiness_account + "&query[status]=1",
+            url: "https://account.stage.paydo.com/v1/chargebacks/user-chargebacks?query[status]=1",
             headers: {
-                token: feen.token
+                token: merchant.token
             }
         }).then((response) => {
             expect(response).property('status').to.equal(200);

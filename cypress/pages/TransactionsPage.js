@@ -2004,13 +2004,16 @@ class TransactionsPage {
                                         expect(response).property('status').to.equal(200);
                                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                         let available_balance_after = response.body.data[payCurrency].available.actual;
-                                        expect((available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
+
+                                        expect(parentPage.getDelta(chargeback, available_balance_after, (available_balance - final).toFixed(2)));
+
+                                        //expect((available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
                                         //     expect(cy.getDeltaChargeback(available_balance_after, (available_balance - final))).to.eq(true);
                                         cy.log("product Amount " + payAmount);
                                         cy.log("amount " + amount);
                                         cy.log("chargeback fixcom " + chargeback_fixcom);
                                         cy.log("chargeback perscom " + (amount / 100 * chargeback_perscom).toFixed(2));
-                                        cy.log("available balance " + available_main_currency);
+                                        cy.log("available balance " + available_balance);
                                         cy.log("available balance after " + available_balance_after);
                                         // }
                                     })
@@ -2033,13 +2036,15 @@ class TransactionsPage {
                                         expect(response).property('status').to.equal(200);
                                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                         let available_balance_after = response.body.data[payCurrency].available.actual;
-                                        expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
+
+                                        expect(parentPage.getDelta(chargeback, available_balance_after, (available_balance - final).toFixed(2)));
+                                       // expect(parseFloat(available_balance_after).toFixed(2)).to.eq((+available_balance - final).toFixed(2));
                                         //     expect(cy.getDeltaChargeback(available_balance_after, (available_balance - final))).to.eq(true);
                                         cy.log("product Amount " + payAmount);
                                         cy.log("amount " + amount);
                                         cy.log("chargeback fixcom " + chargeback_fixcom);
                                         cy.log("chargeback perscom " + (amount / 100 * chargeback_perscom).toFixed(2));
-                                        cy.log("available balance " + available_main_currency);
+                                        cy.log("available balance " + available_balance);
                                         cy.log("available balance after " + available_balance_after);
                                         // }
                                     })
@@ -2164,7 +2169,9 @@ class TransactionsPage {
                                     expect(response).property('status').to.equal(200);
                                     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                     let available_balance_after = response.body.data[merchant.main_currency].available.actual.toString();
-                                    expect (available_balance_after).to.eq ((available_main_currency - final).toFixed(2));                                    //
+
+                                    expect(parentPage.getDelta(chargeback, available_balance_after, (available_main_currency - final).toFixed(2)));
+                                    //expect (available_balance_after).to.eq ((available_main_currency - final).toFixed(2));                                    //
                                     //     expect(cy.getDeltaChargeback(available_balance_after, (available_main_currency - final))).to.eq(true);
                                          cy.log("product Amount " + payAmount);
                                          cy.log("amount " + amount);

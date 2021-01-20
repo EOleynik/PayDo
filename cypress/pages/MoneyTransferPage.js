@@ -52,8 +52,8 @@ class MoneyTransferPage {
     }
 
     selectCountry() {
-        //cy.get('[class="mat-form-field-infix ng-tns-c101-43"]').click();
-        cy.get ('#mat-input-13').click();
+        cy.get('[class="withdraw-method__select"]').click();
+        //cy.get ('#mat-input-13').click();
         //return cy.get ('#mat-option-5 > .mat-option-text').click();
         return cy.contains('span', 'Algeria').click();
     }

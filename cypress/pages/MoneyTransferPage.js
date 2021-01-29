@@ -1,4 +1,4 @@
-import parentPage from "./ParentPage";
+import parentPage from "../pages/ParentPage"
 import withdraw from  "../fixtures/withdraw";
 import merchant from "../fixtures/merchant";
 import feen from "../fixtures/feen";

@@ -307,7 +307,7 @@ class FeenPage {
         // Get ID last transaction for merchant
         cy.request({
             method: 'GET',
-            url: "https://app.stage.paydo.com/v1/transactions/filter?query[userIdentifier]=" + merchant.bussiness_account,
+            url: "https://admin.stage.paydo.com/v1/transactions/filter?query[userIdentifier]=" + merchant.bussiness_account,
             headers: {
                 token: feen.token
             }
@@ -319,7 +319,7 @@ class FeenPage {
             //Create chargeback
             cy.request({
                 method: 'POST',
-                url: "https://app.stage.paydo.com/v1/chargebacks/create",
+                url: "https://admin.stage.paydo.com/v1/chargebacks/create",
                 headers: {
                     token: feen.token
                 },

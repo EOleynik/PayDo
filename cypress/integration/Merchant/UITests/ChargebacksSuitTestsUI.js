@@ -14,6 +14,7 @@ import feen from "../../../fixtures/feen";
             let payAmount = parentPage.getRandomArbitrary(300, 500);
             let payCurrency = "USD";
             createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
+            cy.wait(2000);
         });
 
         it('Create Chargeback', () => {

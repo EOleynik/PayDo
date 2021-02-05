@@ -2,6 +2,7 @@ import merchant from "../fixtures/merchant.json"
 import manajer from "../fixtures/manajer.json"
 import parentPage from "./ParentPage";
 import project from "../fixtures/project";
+import feen from "../fixtures/feen"
 
 class ProjectsPage {
 
@@ -64,9 +65,9 @@ class ProjectsPage {
             // Get identifier last project
             cy.request({
                 method: 'GET',
-                url: "https://account.stage.paydo.com/v1/apps/filters?query[userIdentifier]=" + merchant.bussiness_account,
+                url: "https://admin.stage.paydo.com/v1/apps/filters?query[userIdentifier]=" + merchant.bussiness_account,
                 headers: {
-                    token: manajer.token
+                    token: feen.token
                 }
             }).then((response) => {
                 expect(response).property('status').to.equal(200);
@@ -76,9 +77,9 @@ class ProjectsPage {
                 // Install the Can use cardtoken checkbox
                 cy.request({
                     method: 'POST',
-                    url: "https://account.stage.paydo.com/v1/apps/" + projident + "/update-manager",
+                    url: "https://admin.stage.paydo.com/v1/apps/" + projident + "/update-manager",
                     headers: {
-                        token: manajer.token,
+                        token: feen.token,
                     },
                     body: {
                         "name": "MyNewProject" + " " + parentPage.getTime(),
@@ -125,12 +126,9 @@ class ProjectsPage {
         // Get identifier last project
         cy.request({
             method: 'GET',
-            url: "https://account.stage.paydo.com/v1/apps/filters?query[userIdentifier]=" + merchant.bussiness_account,
-            params: {
-                "query[userIdentifier]": merchant.bussiness_account
-            },
+            url: "https://admin.stage.paydo.com/v1/apps/filters?query[userIdentifier]=" + merchant.bussiness_account,
             headers: {
-                token: manajer.token
+                token: feen.token
             }
         }).then((response) => {
             expect(response).property('status').to.equal(200);
@@ -140,7 +138,7 @@ class ProjectsPage {
             // Accept project
             cy.request({
                 method: 'POST',
-                url: "https://account.stage.paydo.com/v1/apps/" + projident + "/accept",
+                url: "https://admin.stage.paydo.com/v1/apps/" + projident + "/accept",
                 params: {
                     "query[userIdentifier]": merchant.bussiness_account // нужны ли здесь параметры?
                 },

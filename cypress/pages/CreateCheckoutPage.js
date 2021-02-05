@@ -68,7 +68,7 @@ class CreateCheckoutPage {
                 // Create card token, save to variable tok
                 cy.request({
                     method: 'POST',
-                    url: `https://account.stage.paydo.com/v1/payment-tools/card-token/create`,
+                    url: `https://admin.stage.paydo.com/v1/payment-tools/card-token/create`,
 
                     body: {
 

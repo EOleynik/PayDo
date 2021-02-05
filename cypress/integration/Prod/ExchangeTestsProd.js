@@ -109,16 +109,16 @@ describe('Exchange suit UI', () => {
                     }).then((response) => {
                         expect(response).property('status').to.equal(200);
                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                        let av_bal_from_wallet_after = response.body.data['USD'].available.actual;
+                        let av_bal_from_wallet_after = response.body.data['USD'].available.actual.toString();
 
-                        try {
+                        //try {
 
-                            expect(av_bal_from_wallet_after).to.eq(av_bal_from_wallet - merchantProd.amount_exchange);
+                            expect(av_bal_from_wallet_after).to.eq((av_bal_from_wallet - merchantProd.amount_exchange).toFixed(2));
 
-                        }catch (e) {
+                        //}catch (e) {
                             cy.log(av_bal_from_wallet);
                             cy.log(av_bal_from_wallet_after);
-                        }
+                       // }
 
                         // Amount after exchange
                         let amount = (merchantProd.amount_exchange * rate).toFixed(2);
@@ -139,16 +139,16 @@ describe('Exchange suit UI', () => {
                         }).then((response) => {
                             expect(response).property('status').to.equal(200);
                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                            let av_bal_to_wallet_after = response.body.data['RUB'].available.actual;
+                            let av_bal_to_wallet_after = response.body.data['RUB'].available.actual.toString();
 
-                            try {
+                            //try {
 
-                                expect(av_bal_to_wallet_after).to.eq(av_bal_to_wallet + ex_amount);
+                                expect(av_bal_to_wallet_after).to.eq((+av_bal_to_wallet + ex_amount).toFixed(2));
 
-                            }catch (e) {
+                            //}catch (e) {
                                 cy.log(av_bal_to_wallet);
                                 cy.log(av_bal_to_wallet_after);
-                            }
+                            //}
                         })
                     })
                 })

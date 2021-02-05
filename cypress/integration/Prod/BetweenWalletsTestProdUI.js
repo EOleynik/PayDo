@@ -123,7 +123,7 @@ describe('Between Wallets suit ', () => {
                             // Get commission for transfer between wallets
                             cy.request({
                                 method: 'GET',
-                                url: "https://account.paydo.com/v1/instrument-settings/commissions/custom/204/" + merchantProd.recipient_account,
+                                url: "https://admin.paydo.com/v1/instrument-settings/commissions/custom/204/" + merchantProd.recipient_account,
                                 headers: {
                                     token: merchantProd.feen_token,
                                 }

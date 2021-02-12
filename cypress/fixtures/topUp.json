@@ -1,6 +1,6 @@
 {
   "wallet": ["GBP","USD", "EUR", "RUB"],
-  "amount": 100,
+  "amount": 800,
   "exchange_percentage": 3.5,
   "merchant_email": "eugeniy.o+test@payop.com",
   "merchant_pass": "eugeniy.o+test!Q2w@payop.com",

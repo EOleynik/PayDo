@@ -20,7 +20,7 @@ import merchant from "../../../fixtures/merchant";
                     loginPage.visit('/');
                     cy.wait(2000);
                      loginPage.checkAuthorization(merchant.email, merchant.password, merchant.authenticator);
-                    cy.wait(5000);
+                    cy.wait(6000);
                 });
 
                 // 1.Самый простой кейс. Цена товара совпадает с валютами которые в кабинете мерчанта (USD, EUR, GBP, RUB)
@@ -45,6 +45,9 @@ import merchant from "../../../fixtures/merchant";
                     restPage.enterTextInToInput('failPath', 'https://account.stage.paydo.com/');
                     restPage.enterTextInToInput('productUrl', 'https://account.stage.paydo.com/');
                     restPage.clickButton('Generate config ');
+
+                    cy.get('a').invoke('removeAttr', 'target');
+
                     restPage.clickButton('Show payment page ');
                     cy.wait(7000);
 

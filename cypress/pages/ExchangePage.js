@@ -24,7 +24,7 @@ class ExchangePage {
     }
 
     checkStatusExchange(message) {
-        cy.get('[class="alert-text ng-tns-c287-0"]').invoke('text').should((text) => {
+        cy.get('[class="alert-text ng-tns-c342-0"]').invoke('text').should((text) => {
             let alert = (text);
             let error = alert.split(':',1);
             expect(error.toString()).to.eq(message);

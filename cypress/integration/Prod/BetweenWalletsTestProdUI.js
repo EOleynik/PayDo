@@ -32,7 +32,7 @@ describe('Between Wallets suit ', () => {
         moneyTransferPage.clickButtonConfirmTransfer();
         cy.wait(2000);
         moneyTransferPage.enter2FACode(merchantProd.merchant_authenticator);
-        //moneyTransferPage.checkStatusWithdraw('Withdraw created');
+        moneyTransferPage.checkStatusWithdraw('Withdraw created');
         moneyTransferPage.closeAlert();
         moneyTransferPage.clickButtonGoToMoneyTransferList();
         moneyTransferPage.checkUrl('/list-of-transfers/transfers-between-wallets');

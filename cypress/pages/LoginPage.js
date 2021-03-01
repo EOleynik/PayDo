@@ -100,7 +100,7 @@ class LoginPage {
                 cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]')
                     .clear().type(parentPage.get2FACode(authenticator));
             } else {
-                //parentPage.clickButton('To Admin Panel')
+                parentPage.clickButton('Login')
             }
         })
     }

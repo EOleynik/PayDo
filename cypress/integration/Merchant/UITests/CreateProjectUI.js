@@ -28,6 +28,7 @@ describe('Create project suit', () => {
         projectsPage.enterTextInToInput('site', project.site + parentPage.getTime());
         projectsPage.enterTextInToInput('info', project.description);
         projectsPage.enterTextInToInput('ipn', project.callback_IPN);
+        projectsPage.enterTextInToInput('refundIpn', project.refund_IPN);
         projectsPage.enterMinTransactionAmount(project.min_tr_amount);
         projectsPage.enterAverageTransactionAmount(project.avg_tr_amount);
         projectsPage.enterMaxTransactionAmount(project.avg_tr_amount);
@@ -38,7 +39,7 @@ describe('Create project suit', () => {
         projectsPage.checkStatusProject(0);
         projectsPage.rejectProject();
 
-        //homePage.checkUrl('/en/overview');
+        homePage.checkUrl('/projects/create');
         homePage.clickMenuProjects();
         cy.wait(2000);
 
@@ -70,6 +71,7 @@ describe('Create project suit', () => {
         projectsPage.enterTextInToInput('site', project.site + parentPage.getTime());
         projectsPage.enterTextInToInput('info', project.description);
         projectsPage.enterTextInToInput('ipn', project.callback_IPN);
+        projectsPage.enterTextInToInput('refundIpn', project.refund_IPN);
         projectsPage.enterMinTransactionAmount(project.min_tr_amount);
         projectsPage.enterAverageTransactionAmount(project.avg_tr_amount);
         projectsPage.enterMaxTransactionAmount(project.avg_tr_amount);

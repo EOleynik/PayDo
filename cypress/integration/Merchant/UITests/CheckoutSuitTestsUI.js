@@ -46,8 +46,6 @@ import merchant from "../../../fixtures/merchant";
                     restPage.enterTextInToInput('productUrl', 'https://account.stage.paydo.com/');
                     restPage.clickButton('Generate config ');
 
-                    cy.get('a').invoke('removeAttr', 'target');
-
                     restPage.clickButton('Show payment page ');
                     cy.wait(7000);
 
@@ -61,7 +59,7 @@ import merchant from "../../../fixtures/merchant";
 
                     loginPage.visit('/');
                     cy.wait(1000);
-                    loginPage.clickButton('To Admin Panel');
+                    loginPage.clickButton('Login');
                     cy.wait(2000);
 
                     homePage.checkUrl('/en/overview');
@@ -104,7 +102,7 @@ import merchant from "../../../fixtures/merchant";
 
                     loginPage.visit('/');
                     cy.wait(1000);
-                    loginPage.clickButton('To Admin Panel');
+                    loginPage.clickButton('Login');
                     cy.wait(2000);
 
                     homePage.checkUrl('/en/overview');
@@ -147,7 +145,7 @@ import merchant from "../../../fixtures/merchant";
 
                     loginPage.visit('/');
                     cy.wait(1000);
-                    loginPage.clickButton('To Admin Panel');
+                    loginPage.clickButton('Login');
                     cy.wait(2000);
 
                     homePage.checkUrl('/en/overview');
@@ -192,7 +190,7 @@ import merchant from "../../../fixtures/merchant";
 
                     loginPage.visit('/');
                     cy.wait(1000);
-                    loginPage.clickButton('To Admin Panel');
+                    loginPage.clickButton('Login');
                     cy.wait(2000);
 
                     homePage.checkUrl('/en/overview');
@@ -252,7 +250,7 @@ import merchant from "../../../fixtures/merchant";
 
                     loginPage.visit('/');
                     cy.wait(1000);
-                    loginPage.clickButton('To Admin Panel');
+                    loginPage.clickButton('Login');
                     cy.wait(2000);
 
                     homePage.checkUrl('/en/overview');
@@ -295,7 +293,7 @@ import merchant from "../../../fixtures/merchant";
 
                     loginPage.visit('/');
                     cy.wait(1000);
-                    loginPage.clickButton('To Admin Panel');
+                    loginPage.clickButton('Login');
                     cy.wait(2000);
 
                     homePage.checkUrl('/en/overview');
@@ -338,7 +336,7 @@ import merchant from "../../../fixtures/merchant";
 
                     loginPage.visit('/');
                     cy.wait(1000);
-                    loginPage.clickButton('To Admin Panel');
+                    loginPage.clickButton('Login');
                     cy.wait(2000);
 
                     homePage.checkUrl('/en/overview');
@@ -383,7 +381,7 @@ import merchant from "../../../fixtures/merchant";
 
                     loginPage.visit('/');
                     cy.wait(1000);
-                    loginPage.clickButton('To Admin Panel');
+                    loginPage.clickButton('Login');
                     cy.wait(2000);
 
                     homePage.checkUrl('/en/overview');

@@ -112,7 +112,7 @@ class MoneyTransferPage {
     }
 
     checkStatusWithdraw(message) {
-        cy.get('[class="alert-text ng-tns-c287-0"]').invoke('text').should((text) => {
+        cy.get('.alert-text').invoke('text').should((text) => {
             let alert = (text);
             let error = alert.split(':',1);
             expect(error.toString()).to.eq(message);

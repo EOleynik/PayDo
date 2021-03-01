@@ -10,9 +10,7 @@ describe('Exchange suit UI', () => {
 
         cy.visit('https://account.paydo.com/en/auth/login');
         loginPage.checkUrl('/auth/login');
-        loginPage.loginWithCred(merchantProd.merchant_email, merchantProd.merchant_password);
-        loginPage.enter2FACode(merchantProd.merchant_authenticator);
-       // loginPage.clickButton('To Admin Panel')
+        loginPage.checkAuthorization(merchantProd.merchant_email, merchantProd.merchant_password, merchantProd.merchant_authenticator);
         cy.wait(3000);
 
         homePage.checkUrl('/overview');

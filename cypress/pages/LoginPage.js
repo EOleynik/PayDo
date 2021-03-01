@@ -92,7 +92,7 @@ class LoginPage {
 
     checkAuthorization(email, password, authenticator) {
         cy.get('body').then(($body) => {
-            if ($body.text().includes('Email Address')) {
+            if ($body.text().includes('Email')) {
 
                 cy.get("[formcontrolname=email]").clear().type(email);
                 cy.get("[formcontrolname=password]").clear().type(password);

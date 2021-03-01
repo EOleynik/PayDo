@@ -169,19 +169,19 @@ class ProjectsPage {
     }
 
     enterMinTransactionAmount(text) {
-        cy.get('#mat-input-10').type(text)
+        cy.get('#mat-input-11').type(text)
     }
 
     enterAverageTransactionAmount(text) {
-        cy.get('#mat-input-11').clear().type(text)
+        cy.get('#mat-input-12').clear().type(text)
     }
 
     enterMaxTransactionAmount(text) {
-        cy.get('#mat-input-12').clear().type(text);
+        cy.get('#mat-input-13').clear().type(text);
     }
 
     enterExpectedMonthlyVolume(text) {
-        cy.get('#mat-input-13').clear().type(text);
+        cy.get('#mat-input-14').clear().type(text);
     }
 
     checkCreateProject() {

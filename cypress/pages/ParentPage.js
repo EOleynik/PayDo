@@ -86,10 +86,6 @@ class ParentPage {
         return cy.contains(name);
     }
 
-    getSubMenu(name) {
-        return cy.contains('p', name);
-    }
-
     clickTab(name) {
         return cy.contains(name);
     }

@@ -1337,40 +1337,52 @@ class TransactionsPage {
 
     enterTextInToInputPartialRefundAmount(amount) {
         parentPage.getInput('amount').clear().type(amount);
-        //cy.get('#mat-input-6').type(amount);
     }
 
     checkCreateRefund() {
-        // get ID last transaction and save on variable trIdent
+
         cy.request({
             method: 'GET',
-            url: 'https://account.stage.paydo.com/v1/transactions/user-transactions',
+            url: 'https://account.stage.paydo.com/v1/refunds/user-refunds',
             headers: {
                 token: merchant.token,
             }
         }).then((response) => {
             expect(response).property('status').to.equal(200);
             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-            let trIdent = response.body.data[0].identifier;
+            expect(response.body.data[0].status).to.eq(1)
+        });
 
-            // get status refund
-            cy.request({
-                method: 'GET',
-                url: "https://account.stage.paydo.com/v1/transactions/" + trIdent,
-                headers: {
-                    token: merchant.token,
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200);
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                expect(response.body.data.refunds[0].status).to.eq(1)
-            })
-        })
+        // get ID last transaction and save on variable trIdent
+        // cy.request({
+        //     method: 'GET',
+        //     url: 'https://account.stage.paydo.com/v1/transactions/user-transactions',
+        //     headers: {
+        //         token: merchant.token,
+        //     }
+        // }).then((response) => {
+        //     expect(response).property('status').to.equal(200);
+        //     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+        //     let trIdent = response.body.data[0].identifier;
+        //
+        //     // get status refund
+        //     cy.request({
+        //         method: 'GET',
+        //         url: "https://account.stage.paydo.com/v1/transactions/" + trIdent,
+        //         headers: {
+        //             token: merchant.token,
+        //         }
+        //     }).then((response) => {
+        //         expect(response).property('status').to.equal(200);
+        //         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+        //         expect(response.body.data.refunds[0].status).to.eq(1)
+        //     })
+        // })
     }
 
 
     clickButtonCreateRefundOk() {
-        cy.get('[class="new-alert-btn ng-tns-c285-0"]').click();
+        cy.get('.new-alert-btn').click();
     }
 
     clickButtonRefund() {
@@ -1398,8 +1410,7 @@ class TransactionsPage {
     }
 
     checkCreateChargeback() {
-        cy.get('[class="alert__title ng-tns-c214-0"]').invoke('text').should((text) => {
-        //cy.get('.alert__title').invoke('text').should((text) => {
+        cy.get('.alert__title').invoke('text').should((text) => {
             expect(text).to.eq('Success');
         })
     }

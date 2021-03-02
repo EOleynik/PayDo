@@ -4,7 +4,9 @@ import ticketsPage from "../../pages/TicketsPage";
 import ticket from "../../fixtures/ticket";
 import merchant from "../../fixtures/merchant";
 import feen from "../../fixtures/feen";
-import manajer from "../../fixtures/manajer";
+import manager from "../../fixtures/manajer";
+import feenPage from "../../pages/FeenPage"
+import managerPage from "../../pages/ManagerPage"
 
     describe('Create ticket admin panels', () => {
 
@@ -12,7 +14,7 @@ import manajer from "../../fixtures/manajer";
 
             cy.visit('https://admin.stage.paydo.com');
             cy.wait(2000);
-            loginPage.checkAuthorization(manajer.email, manajer.pass, manajer.authenticator);
+            loginPage.checkAuthorizationManager(manager.email, manager.pass, manager.authenticator);
             cy.wait(3000);
 
             homePage.checkUrl('https://admin.stage.paydo.com');
@@ -32,6 +34,8 @@ import manajer from "../../fixtures/manajer";
             cy.wait(1000);
             ticketsPage.checkCreateTicketFin();
             ticketsPage.closeAlert();
+
+            managerPage.closeTicket()
         });
 
         it('Create ticket, Feen panel', () => {
@@ -56,6 +60,8 @@ import manajer from "../../fixtures/manajer";
             cy.wait(1000);
             ticketsPage.checkCreateTicketFin();
             ticketsPage.closeAlert();
+
+            feenPage.closeTicket()
         })
 
     });

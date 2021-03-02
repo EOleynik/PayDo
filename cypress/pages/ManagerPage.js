@@ -1,5 +1,6 @@
 import merchant from "../fixtures/merchant.json"
 import manajer from "../fixtures/manajer.json"
+import feen from "../fixtures/feen";
 
 class ManagerPage {
 
@@ -119,6 +120,37 @@ class ManagerPage {
             })
         })
     }
+
+    closeTicket() {
+    // Get ID first ticket
+    cy.request({
+        method: 'GET',
+        url: "https://admin.stage.paydo.com/v1/tickets/filters?query[userIdentifier]=" + merchant.bussiness_account + "&offset=0",
+        headers: {
+        token: manajer.token
+    }
+    }).then((response) => {
+         expect(response).property('status').to.equal(200);
+        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+        let ticket_ID = response.body.data[0].identifier;
+
+        // Close ticket
+            cy.request({
+                method: 'POST',
+                url: 'https://admin.stage.paydo.com/v1/tickets/close',
+                headers: {
+                token: manajer.token
+                },
+                body: {
+                "identifier": ticket_ID
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200);
+                 expect(response.body).property('status').to.equal(1);
+            })
+        })
+    }
+
 }
 
 export default new ManagerPage();

@@ -8,13 +8,6 @@ import checkout from "../fixtures/checkout";
 
 class FeenPage {
 
-    getLogin() {
-        loginPage.visit('/');
-        window.localStorage.setItem('user-session',
-            '{"id":"1604","email":"eugeniy.o+f2@payop.com","token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE2MDQiLCJhY2Nlc3NUb2tlbiI6ImRlYzhhMDE5YjA1Y2M2ZjVkMzk3ZjdiOSIsInRva2VuSWQiOm51bGwsIndhbGxldElkIjoiMTU5OCIsInRpbWUiOjE1OTYzNTgyNzMsImV4cGlyZWRBdCI6bnVsbCwicm9sZXMiOlsiUk9MRV9GSU5BTkNJQUwiXSwidHdvRmFjdG9yIjp7InBhc3NlZCI6dHJ1ZX19.GGimEqCfcBU3fMMiO23Uc9_-nPidBcmNwpFvNuNi3SU","role":4,"moduleUrl":"financial","status":1,"type":2,"accountType":1,"availableAccounts":[],"stayLogin":true,"isLoggedIn":true}');
-        loginPage.getButtonToAdminPanel().click();
-    }
-
     setCommissionsAndStrategy() {
         cy.request({
             method: 'POST',
@@ -231,7 +224,7 @@ class FeenPage {
     }
 
     setNewCommissionsAndStrategy() {
-        parentPage.setCommissionsAndStrategy(checkout.tr_type, checkout.strategy,checkout.fix_com,checkout.perc_com,checkout.pm_id, merchant.bussiness_account);
+        parentPage.setCommissionsAndStrategy(checkout.tr_type, checkout.strategy, checkout.fix_com, checkout.perc_com, checkout.pm_id, merchant.bussiness_account);
     }
 
     changeCommissionsAndStrategy() {
@@ -271,7 +264,7 @@ class FeenPage {
                     }
                 }).then((response) => {
                     expect(response).property('status').to.equal(201);
-                    expect((response.body).status).eq (1)
+                    expect((response.body).status).eq(1)
                 })
 
             } else {
@@ -332,6 +325,38 @@ class FeenPage {
         })
     }
 
+
+    closeTicket() {
+
+        // Get ID first ticket
+        cy.request({
+            method: 'GET',
+            url: "https://admin.stage.paydo.com/v1/tickets/filters?query[userIdentifier]=" + merchant.bussiness_account + "&offset=0",
+            headers: {
+                token: feen.token
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+            let ticket_ID = response.body.data[0].identifier;
+
+            // Close ticket
+            cy.request({
+                method: 'POST',
+                url: 'https://admin.stage.paydo.com/v1/tickets/close',
+                headers: {
+                    token: feen.token
+                },
+                body: {
+                    "identifier": ticket_ID
+
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200);
+                expect(response.body).property('status').to.equal(1);
+            })
+        })
+    }
 
 }
 

@@ -1416,7 +1416,7 @@ class TransactionsPage {
     }
 
     isErrorAlertDisplayed(alert) {
-        cy.get('li.ng-tns-c285-0').invoke('text').should((text) => {
+        cy.get('.alert .alert-text').invoke('text').should((text) => {
             expect(text).to.eq(alert)
         });
     }

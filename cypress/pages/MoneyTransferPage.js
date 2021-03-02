@@ -155,7 +155,7 @@ class MoneyTransferPage {
     chooseAndAttachDocument() {
         for (let i = 0; i < withdraw.document_type.length; i++)
         {
-            cy.get('#mat-select-value-29 > .mat-select-placeholder').click();
+            cy.get('withdraw-form-transfer-bank-docs mat-form-field').click();
             let doc_type = withdraw.document_type[i];
             cy.contains('span', doc_type).click();
             cy.wait(2000);

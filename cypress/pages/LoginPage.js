@@ -12,8 +12,16 @@ class LoginPage {
         parentPage.checkUrl(Url)
     }
 
+    enterTextInToInputEmail(text) {
+        parentPage.getInput('email').clear().type(text);
+    }
+
+    enterTextInToInputPassword(text) {
+        parentPage.getInput('password').clear().type(text);
+    }
+
     clickButton(name){
-        parentPage.clickButton(name);
+        parentPage.clickButton(name).click();
     }
 
     getEmailField() {
@@ -104,6 +112,9 @@ class LoginPage {
             }
         })
     }
+
+
+
 }
 
 

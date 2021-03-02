@@ -47,7 +47,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.clickButton('Generate config ');
 
                     restPage.clickButton('Show payment page ');
-                    cy.wait(7000);
+                    cy.wait(8000);
 
                     paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
@@ -60,7 +60,7 @@ import merchant from "../../../fixtures/merchant";
                     loginPage.visit('/');
                     cy.wait(1000);
                     loginPage.clickButton('Login');
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -103,7 +103,7 @@ import merchant from "../../../fixtures/merchant";
                     loginPage.visit('/');
                     cy.wait(1000);
                     loginPage.clickButton('Login');
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -146,7 +146,7 @@ import merchant from "../../../fixtures/merchant";
                     loginPage.visit('/');
                     cy.wait(1000);
                     loginPage.clickButton('Login');
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -191,7 +191,7 @@ import merchant from "../../../fixtures/merchant";
                     loginPage.visit('/');
                     cy.wait(1000);
                     loginPage.clickButton('Login');
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -251,7 +251,7 @@ import merchant from "../../../fixtures/merchant";
                     loginPage.visit('/');
                     cy.wait(1000);
                     loginPage.clickButton('Login');
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -294,7 +294,7 @@ import merchant from "../../../fixtures/merchant";
                     loginPage.visit('/');
                     cy.wait(1000);
                     loginPage.clickButton('Login');
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -337,7 +337,7 @@ import merchant from "../../../fixtures/merchant";
                     loginPage.visit('/');
                     cy.wait(1000);
                     loginPage.clickButton('Login');
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -382,7 +382,7 @@ import merchant from "../../../fixtures/merchant";
                     loginPage.visit('/');
                     cy.wait(1000);
                     loginPage.clickButton('Login');
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();

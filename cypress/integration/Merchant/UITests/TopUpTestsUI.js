@@ -13,7 +13,7 @@ describe('Top Up suit UI', () => {
         cy.wait(3000);
     });
 
-    it('Top Up', () => {
+    it('Top Up with a Bank Card', () => {
 
         homePage.checkUrl('/en/overview');
         homePage.clickMenuTopUpWallet();

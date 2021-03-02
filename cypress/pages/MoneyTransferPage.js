@@ -59,11 +59,11 @@ class MoneyTransferPage {
     }
 
     enterTextInToInputCity(text) {
-        parentPage.getInput('city').clear().type(text);
+        parentPage.getInput('city').eq(0).clear().type(text);
     }
 
     enterTextInToInputRecipientAdress(text) {
-        parentPage.getInput('address').clear().type(text);
+        parentPage.getInput('address').eq(0).clear().type(text);
     }
 
     enterTextInToInputBICCode(text) {
@@ -71,7 +71,15 @@ class MoneyTransferPage {
     }
 
     enterTextInToInputBeneficiaryBank(text) {
-        cy.get ('#mat-input-14').clear().type(text);
+        parentPage.getInput('name').eq(1).clear().type(text);
+    }
+
+    enterTextInToInputCityBeneficiaryBank(text) {
+        parentPage.getInput('city').eq(1).clear().type(text);
+    }
+
+    enterTextInToInputAddressBeneficiaryBank(text) {
+        parentPage.getInput('address').eq(1).clear().type(text);
     }
 
     enterTextInToInputPurposePayment(text) {
@@ -80,7 +88,6 @@ class MoneyTransferPage {
 
     InstallCheckboxPaymentNotCommercial() {
         cy.get('[class="mat-checkbox-inner-container"]').eq(0).click();
-        //cy.get ('#mat-checkbox-2 > .mat-checkbox-layout > .mat-checkbox-inner-container').click();
     }
 
     enterTextInToInputAmountToTransfer(text) {
@@ -89,7 +96,6 @@ class MoneyTransferPage {
 
     clickFieldAmountToBeCharged() {
         cy.get('[class="transfer-item__view"]').click();
-        //return cy.get ('.transfer-item__view');
     }
 
     getButtonConfirmTransfer() {
@@ -149,7 +155,7 @@ class MoneyTransferPage {
     chooseAndAttachDocument() {
         for (let i = 0; i < withdraw.document_type.length; i++)
         {
-            cy.get('#mat-select-value-5 > .mat-select-placeholder').click();
+            cy.get('withdraw-form-transfer-bank-docs mat-form-field').click();
             let doc_type = withdraw.document_type[i];
             cy.contains('span', doc_type).click();
             cy.wait(2000);

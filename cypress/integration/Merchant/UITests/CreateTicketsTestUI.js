@@ -3,6 +3,7 @@ import homePage from "../../../pages/HomePage";
 import ticketsPage from "../../../pages/TicketsPage";
 import ticket from "../../../fixtures/ticket";
 import merchant from "../../../fixtures/merchant";
+import feenPage from "../../../pages/FeenPage"
 
     describe('Merchant account', () => {
 
@@ -26,6 +27,8 @@ import merchant from "../../../fixtures/merchant";
             ticketsPage.clickButtonSendTicket();
             ticketsPage.checkCreateTicket();
             ticketsPage.closeAlert();
+
+            feenPage.closeTicket();
         });
 
     })

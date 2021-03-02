@@ -21,7 +21,7 @@ class LoginPage {
     }
 
     clickButton(name){
-        parentPage.clickButton(name).click();
+        parentPage.clickButton(name);
     }
 
     getEmailField() {

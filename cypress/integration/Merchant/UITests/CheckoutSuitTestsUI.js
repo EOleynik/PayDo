@@ -55,7 +55,7 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(3000);
+                    cy.wait(4000);
 
                     loginPage.visit('/');
                     cy.wait(1000);
@@ -97,7 +97,7 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(3000);
+                    cy.wait(4000);
 
 
                     loginPage.visit('/');
@@ -140,7 +140,7 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(3000);
+                    cy.wait(4000);
 
 
                     loginPage.visit('/');
@@ -186,7 +186,7 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.selectPayCurrency();
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(3000);
+                    cy.wait(4000);
 
                     loginPage.visit('/');
                     cy.wait(1000);
@@ -246,7 +246,7 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(3000);
+                    cy.wait(4000);
 
                     loginPage.visit('/');
                     cy.wait(1000);
@@ -288,7 +288,7 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(3000);
+                    cy.wait(4000);
 
 
                     loginPage.visit('/');
@@ -331,7 +331,7 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(3000);
+                    cy.wait(4000);
 
 
                     loginPage.visit('/');
@@ -377,7 +377,7 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.selectPayCurrency();
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(3000);
+                    cy.wait(4000);
 
                     loginPage.visit('/');
                     cy.wait(1000);

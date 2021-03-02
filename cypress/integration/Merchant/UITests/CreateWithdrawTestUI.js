@@ -18,7 +18,7 @@ describe('Withdraw suit ', () => {
 
         homePage.checkUrl('/en/overview');
         homePage.clickMenuCreateTransfer();
-        cy.wait(3000);
+        cy.wait(5000);
 
         moneyTransferPage.checkUrl('/money-transfers');
         moneyTransferPage.enterTextInToInputIBAN(withdraw.IBAN);
@@ -28,6 +28,8 @@ describe('Withdraw suit ', () => {
         moneyTransferPage.enterTextInToInputRecipientAdress(withdraw.recipient_address);
         moneyTransferPage.enterTextInToInputBICCode('BIJORU66XXX');
         moneyTransferPage.enterTextInToInputBeneficiaryBank('Primatbank');
+        moneyTransferPage.enterTextInToInputCityBeneficiaryBank('City Bank');
+        moneyTransferPage.enterTextInToInputAddressBeneficiaryBank('Address Bank');
         moneyTransferPage.enterTextInToInputPurposePayment('Other');
         moneyTransferPage.InstallCheckboxPaymentNotCommercial();
         moneyTransferPage.enterTextInToInputAmountToTransfer(withdraw.amount);
@@ -51,7 +53,7 @@ describe('Withdraw suit ', () => {
 
         homePage.checkUrl('/en/overview');
         homePage.clickMenuCreateTransfer();
-        cy.wait(3000);
+        cy.wait(5000);
 
         moneyTransferPage.checkUrl('/money-transfers');
         moneyTransferPage.enterTextInToInputIBAN(withdraw.IBAN);
@@ -61,6 +63,8 @@ describe('Withdraw suit ', () => {
         moneyTransferPage.enterTextInToInputRecipientAdress(withdraw.recipient_address);
         moneyTransferPage.enterTextInToInputBICCode('BIJORU66XXX');
         moneyTransferPage.enterTextInToInputBeneficiaryBank('Primatbank');
+        moneyTransferPage.enterTextInToInputCityBeneficiaryBank('City Bank');
+        moneyTransferPage.enterTextInToInputAddressBeneficiaryBank('Address Bank');
         moneyTransferPage.enterTextInToInputPurposePayment('Other');
         moneyTransferPage.chooseAndAttachDocument();
         moneyTransferPage.enterTextInToInputAmountToTransfer(withdraw.amount);

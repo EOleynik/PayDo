@@ -47,7 +47,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.clickButton('Generate config ');
 
                     restPage.clickButton('Show payment page ');
-                    cy.wait(7000);
+                    cy.wait(9000);
 
                     paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
@@ -55,12 +55,12 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(4000);
+                    cy.wait(5000);
 
                     loginPage.visit('/');
-                    cy.wait(1000);
-                    loginPage.clickButton('Login');
                     cy.wait(2000);
+                    loginPage.clickButton('Login');
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -89,7 +89,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.enterTextInToInput('productUrl', 'https://account.stage.paydo.com/');
                     restPage.clickButton('Generate config ');
                     restPage.clickButton('Show payment page ');
-                    cy.wait(7000);
+                    cy.wait(9000);
 
                     paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
@@ -97,13 +97,13 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(4000);
+                    cy.wait(5000);
 
 
                     loginPage.visit('/');
-                    cy.wait(1000);
-                    loginPage.clickButton('Login');
                     cy.wait(2000);
+                    loginPage.clickButton('Login');
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -132,7 +132,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.enterTextInToInput('productUrl', 'https://account.stage.paydo.com/');
                     restPage.clickButton('Generate config ');
                     restPage.clickButton('Show payment page ');
-                    cy.wait(7000);
+                    cy.wait(9000);
 
                     paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
@@ -140,13 +140,13 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(4000);
+                    cy.wait(5000);
 
 
                     loginPage.visit('/');
-                    cy.wait(1000);
-                    loginPage.clickButton('Login');
                     cy.wait(2000);
+                    loginPage.clickButton('Login');
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -175,23 +175,23 @@ import merchant from "../../../fixtures/merchant";
                     restPage.enterTextInToInput('productUrl', 'https://account.stage.paydo.com/');
                     restPage.clickButton('Generate config ');
                     restPage.clickButton('Show payment page ');
-                    cy.wait(7000);
+                    cy.wait(9000);
 
                     paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     paymentPage.clickButton('Cards');
-                    cy.wait(1000);
+                    cy.wait(3000);
                     paymentPage.selectPayCurrency();
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(4000);
+                    cy.wait(5000);
 
                     loginPage.visit('/');
-                    cy.wait(1000);
+                    cy.wait(3000);
                     loginPage.clickButton('Login');
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -238,7 +238,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.enterTextInToInput('productUrl', 'https://account.stage.paydo.com/');
                     restPage.clickButton('Generate config ');
                     restPage.clickButton('Show payment page ');
-                    cy.wait(7000);
+                    cy.wait(9000);
 
                     paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
@@ -246,12 +246,12 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(4000);
+                    cy.wait(5000);
 
                     loginPage.visit('/');
-                    cy.wait(1000);
-                    loginPage.clickButton('Login');
                     cy.wait(2000);
+                    loginPage.clickButton('Login');
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -280,7 +280,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.enterTextInToInput('productUrl', 'https://account.stage.paydo.com/');
                     restPage.clickButton('Generate config ');
                     restPage.clickButton('Show payment page ');
-                    cy.wait(7000);
+                    cy.wait(9000);
 
                     paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
@@ -288,13 +288,13 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(4000);
+                    cy.wait(5000);
 
 
                     loginPage.visit('/');
-                    cy.wait(1000);
-                    loginPage.clickButton('Login');
                     cy.wait(2000);
+                    loginPage.clickButton('Login');
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -323,7 +323,7 @@ import merchant from "../../../fixtures/merchant";
                     restPage.enterTextInToInput('productUrl', 'https://account.stage.paydo.com/');
                     restPage.clickButton('Generate config ');
                     restPage.clickButton('Show payment page ');
-                    cy.wait(7000);
+                    cy.wait(9000);
 
                     paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
@@ -331,13 +331,13 @@ import merchant from "../../../fixtures/merchant";
                     paymentPage.clickButton('Cards');
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
-                    cy.wait(4000);
+                    cy.wait(5000);
 
 
                     loginPage.visit('/');
-                    cy.wait(1000);
+                    cy.wait(3000);
                     loginPage.clickButton('Login');
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();
@@ -366,23 +366,23 @@ import merchant from "../../../fixtures/merchant";
                     restPage.enterTextInToInput('productUrl', 'https://account.stage.paydo.com/');
                     restPage.clickButton('Generate config ');
                     restPage.clickButton('Show payment page ');
-                    cy.wait(7000);
+                    cy.wait(9000);
 
                     paymentPage.checkUrlPaymentPage(/en\/payment\/\S{36}/);
                     paymentPage.checkLogIn();
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     paymentPage.clickButton('Cards');
-                    cy.wait(1000);
+                    cy.wait(3000);
                     paymentPage.selectPayCurrency();
                     paymentPage.enterCardData();
                     paymentPage.clickButtonPay();
                     cy.wait(4000);
 
                     loginPage.visit('/');
-                    cy.wait(1000);
+                    cy.wait(3000);
                     loginPage.clickButton('Login');
-                    cy.wait(2000);
+                    cy.wait(3000);
 
                     homePage.checkUrl('/en/overview');
                     homePage.clickMenuTransactions();

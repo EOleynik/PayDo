@@ -20,6 +20,7 @@ import parentPage from "../../../pages/ParentPage";
                 let payCurrency = 'GBP';
 
                 createCheckoutPage.getCheckoutGBPAPI(payAmount, payCurrency);
+                cy.wait(2000);
                 transactionsPage.checkAmountAPIGBP(payAmount);
             });
 
@@ -31,6 +32,7 @@ import parentPage from "../../../pages/ParentPage";
                     //let payAmount = 474.24;
 
                     createCheckoutPage.getCheckout2API(payAmount);
+                    cy.wait(2000);
                     transactionsPage.checkAmountAPIUSD(payAmount);
                 });
 
@@ -42,6 +44,7 @@ import parentPage from "../../../pages/ParentPage";
                     //let payAmount = 426.62;
 
                     createCheckoutPage.getCheckout3API(payAmount);
+                    cy.wait(2000);
                     transactionsPage.checkAmountAPIALL(payAmount);
                     });
 
@@ -53,6 +56,7 @@ import parentPage from "../../../pages/ParentPage";
                         //let payAmount = 1336.76;
 
                         createCheckoutPage.getCheckout4API(payAmount);
+                        cy.wait(2000);
                         transactionsPage.checkAmountAPICUP(payAmount);
                     });
 
@@ -71,6 +75,7 @@ import parentPage from "../../../pages/ParentPage";
             let payCurrency = 'GBP';
 
             createCheckoutPage.getCheckoutGBPAPI(payAmount, payCurrency);
+            cy.wait(2000);
             transactionsPage.checkAmountAPIGBP(payAmount);
         });
 
@@ -80,6 +85,7 @@ import parentPage from "../../../pages/ParentPage";
                 //let payAmount = 474.24;
 
                 createCheckoutPage.getCheckout2API(payAmount);
+                cy.wait(2000);
                 transactionsPage.checkAmountAPIUSD(payAmount);
             });
 
@@ -89,6 +95,7 @@ import parentPage from "../../../pages/ParentPage";
                     //let payAmount = 423.21;
 
                     createCheckoutPage.getCheckout3API(payAmount);
+                    cy.wait(2000);
                     transactionsPage.checkAmountAPIALL(payAmount);
                 });
 
@@ -98,6 +105,7 @@ import parentPage from "../../../pages/ParentPage";
                         // let payAmount = 419.94;
 
                         createCheckoutPage.getCheckout4API(payAmount);
+                        cy.wait(2000);
                         transactionsPage.checkAmountAPICUP(payAmount);
                     });
     });

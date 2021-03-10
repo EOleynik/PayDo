@@ -41,7 +41,7 @@ class RefundPage{
             let payCurrency = refund.currency[i];
             cy.log(payCurrency);
             createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
-            cy.wait(3000);
+            cy.wait(4000);
             transactionsPage.createFullRefundAndCheckAmount(payAmount, payCurrency);
             this.rejectRefund();
         }

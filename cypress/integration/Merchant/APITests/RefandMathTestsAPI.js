@@ -21,7 +21,7 @@ import parentPage from "../../../pages/ParentPage";
          let payCurrency = "UAH";
 
          createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
-         cy.wait(3000);
+         cy.wait(4000);
          transactionsPage.createFullRefundUAHAndCheckAmount(payAmount, payCurrency);
          refundPage.rejectRefund();
      });
@@ -40,7 +40,7 @@ import parentPage from "../../../pages/ParentPage";
          let payCurrency = "UAH";
 
          createCheckoutPage.createCheckoutAPI(payAmount, payCurrency);
-         cy.wait(3000);
+         cy.wait(4000);
          transactionsPage.createPartialRefundUAHAndCheckAmount(payAmount, payCurrency);
          refundPage.rejectRefund();
      });

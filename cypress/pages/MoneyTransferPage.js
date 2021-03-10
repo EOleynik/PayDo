@@ -353,8 +353,10 @@ class MoneyTransferPage {
                         "address": withdraw.beneficiary_address
                     },
                     "beneficiaryBank": {
+                        "bic": withdraw.BIC_code,
                         "name": withdraw.beneficiary_Bank,
-                        "bic": withdraw.BIC_code
+                        "city": "LONDON",
+                        "address": "180 TOTTENHAM COURT ROAD, 12 FLOOR 2"
                     },
                     "attachments": [],
                     "attachmentsToUpload": [],
@@ -385,8 +387,10 @@ class MoneyTransferPage {
                             "address": withdraw.beneficiary_address
                         },
                         "beneficiaryBank": {
+                            "bic": withdraw.BIC_code,
                             "name": withdraw.beneficiary_Bank,
-                            "bic": withdraw.BIC_code
+                            "city": "LONDON",
+                            "address": "180 TOTTENHAM COURT ROAD, 12 FLOOR 2"
                         },
                         "attachments": [],
                         "attachmentsToUpload": [],
@@ -402,7 +406,7 @@ class MoneyTransferPage {
                     // Get commission for withdraw
                     cy.request({
                         method: 'GET',
-                        url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + withdraw.payment_method_ID + "/" + merchant.bussiness_account,
+                        url: "https://admin.stage.paydo.com/v1/instrument-settings/commissions/custom/" + withdraw.payment_method_ID + "/" + merchant.bussiness_account,
                         headers: {
                             token: feen.token,
                         }

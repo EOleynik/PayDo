@@ -100,16 +100,16 @@ class LoginPage {
 
     checkAuthorization(email, password, authenticator) {
         cy.get('body').then(($body) => {
-            if ($body.text().includes('Email')) {
+            //if ($body.text().includes('email')) {
 
                 cy.get("[formcontrolname=email]").clear().type(email);
                 cy.get("[formcontrolname=password]").clear().type(password);
                 cy.contains('span', ' Login ').click();
                 cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]')
                     .clear().type(parentPage.get2FACode(authenticator));
-            } else {
+           // } else {
                 parentPage.clickButton('Login')
-            }
+            //}
         })
     }
 

@@ -1,8 +1,88 @@
 
 import exchangePage from "../../pages/ExchangePage";
-import merchantProd from "../../fixtures/merchantProd";
+import merchants from "../../fixtures/Prod/merchants.json";
 import loginPage from "../../pages/LoginPage";
 import homePage from "../../pages/HomePage";
+import parentPage from "../../pages/ParentPage";
+import feen from "../../fixtures/Prod/feen.json";
+import moneyTransferPage from "../../pages/MoneyTransferPage";
+
+let recipient;
+let user;
+let admin;
+
+before(function fetchToken() {
+
+    // Get token for recipient
+    cy.request('POST', 'https://account.paydo.com/v1/users/login', {
+        email: merchants.email_4,
+        password: merchants.password_4,
+    }).then((response) => {
+        expect(response).property('status').to.equal(206);
+
+        cy.request({
+            method:'POST',
+            url:'https://account.paydo.com/v1/users/login',
+            headers: {
+                "x-2fa-code": parentPage.get2FACode(merchants.authenticator_4)
+            },
+            body:{
+                email: merchants.email_4,
+                password: merchants.password_4
+            }
+        }).its('headers')
+            .then((res) => {
+                recipient = res
+            })
+    })
+
+    // Get token for merchant
+    cy.request('POST', 'https://account.paydo.com/v1/users/login', {
+        email: merchants.email_2,
+        password: merchants.password_2,
+    }).then((response) => {
+        expect(response).property('status').to.equal(206);
+
+        cy.request({
+            method:'POST',
+            url:'https://account.paydo.com/v1/users/login',
+            headers: {
+                "x-2fa-code": parentPage.get2FACode(merchants.authenticator_2)
+            },
+            body:{
+                email: merchants.email_2,
+                password: merchants.password_2,
+            }
+        }).its('headers')
+            .then((res) => {
+                user = res
+            })
+    })
+
+    // Get token for admin
+    cy.request('POST', 'https://admin.paydo.com/v1/users/login', {
+        email: feen.email,
+        password: feen.password,
+    }).then((response) => {
+        expect(response).property('status').to.equal(206);
+
+        cy.request({
+            method:'POST',
+            url:'https://admin.paydo.com/v1/users/login',
+            headers: {
+                "x-2fa-code": parentPage.get2FACode(feen.authenticator)
+            },
+            body:{
+                email: feen.email,
+                password: feen.password,
+            }
+        }).its('headers')
+            .then((res) => {
+                admin = res
+            })
+    })
+
+})
 
 describe('Exchange suit UI', () => {
 
@@ -10,17 +90,21 @@ describe('Exchange suit UI', () => {
 
         cy.visit('https://account.paydo.com/en/auth/login');
         loginPage.checkUrl('/auth/login');
-        loginPage.checkAuthorization(merchantProd.merchant_email, merchantProd.merchant_password, merchantProd.merchant_authenticator);
+        loginPage.checkAuthorization(merchants.email_2, merchants.password_2, merchants.authenticator_2);
         cy.wait(3000);
 
         homePage.checkUrl('/overview');
         homePage.clickMenuExchange('Exchange');
         cy.wait(2000);
 
-        exchangePage.selectWalletExchangeFrom(merchantProd.exchange_from_wallet);
-        exchangePage.selectWalletExchangeTo(merchantProd.exchange_to_wallet);
-        exchangePage.enterAmountForExchange(merchantProd.amount_exchange);
+        exchangePage.selectWalletExchangeFrom(merchants.exchange_from_wallet);
+        exchangePage.selectWalletExchangeTo(merchants.exchange_to_wallet);
+        exchangePage.enterAmountForExchange(merchants.amount_exchange);
         exchangePage.clickButtonConvertCurrency();
+
+        moneyTransferPage.ConfirmationTransfer('Yes, I sure ');
+        cy.wait(3000);
+
         exchangePage.checkStatusExchange('Exchange successful');
         exchangePage.closeAlert();
     });
@@ -29,18 +113,21 @@ describe('Exchange suit UI', () => {
 
         cy.visit('https://account.paydo.com/en/auth/login');
         loginPage.checkUrl('/auth/login');
-        loginPage.loginWithCred(merchantProd.merchant_email, merchantProd.merchant_password);
-        loginPage.enter2FACode(merchantProd.merchant_authenticator);
+        loginPage.checkAuthorization(merchants.email_2, merchants.password_2, merchants.authenticator_2);
         cy.wait(3000);
 
         homePage.checkUrl('/overview');
         homePage.clickMenuExchange('Exchange');
         cy.wait(2000);
 
-        exchangePage.selectWalletExchangeFrom(merchantProd.exchange_from_wallet);
-        exchangePage.selectWalletExchangeTo(merchantProd.exchange_to_wallet);
+        exchangePage.selectWalletExchangeFrom(merchants.exchange_from_wallet);
+        exchangePage.selectWalletExchangeTo(merchants.exchange_to_wallet);
         exchangePage.enterAmountForExchange(1000000);
         exchangePage.clickButtonConvertCurrency();
+
+        moneyTransferPage.ConfirmationTransfer('Yes, I sure ');
+        cy.wait(3000);
+
         exchangePage.checkStatusExchange('Not enough money to perform this operation');
         exchangePage.closeAlert();
     });
@@ -49,9 +136,9 @@ describe('Exchange suit UI', () => {
     // Get available balance "from wallet"
     cy.request({
         method: 'GET',
-        url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchantProd.main_currency,
+        url: "https://account.paydo.com/v1/wallets/get-all-balances/USD",
         headers: {
-            token: merchantProd.merchant_token,
+            token: user.token
         }
     }).then((response) => {
         expect(response).property('status').to.equal(200);
@@ -61,9 +148,9 @@ describe('Exchange suit UI', () => {
         // Get available balance "to wallet"
         cy.request({
             method: 'GET',
-            url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchantProd.main_currency,
+            url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
             headers: {
-                token: merchantProd.merchant_token,
+                token: user.token,
             }
         }).then((response) => {
             expect(response).property('status').to.equal(200);
@@ -75,7 +162,7 @@ describe('Exchange suit UI', () => {
                 method: 'GET',
                 url: "https://admin.paydo.com/v1/currencies/get-rates-for/USD",
                 headers: {
-                    token: merchantProd.feen_prod_token,
+                    token: admin.token,
                 }
             }).then((response) => {
                 expect(response).property('status').to.equal(200);
@@ -87,10 +174,10 @@ describe('Exchange suit UI', () => {
                     method: 'POST',
                     url: 'https://account.paydo.com/v1/wallets/exchange',
                     headers: {
-                        token: merchantProd.merchant_token,
+                        token: user.token,
                     },
                     body: {
-                        "amount": merchantProd.amount_exchange,
+                        "amount": merchants.amount_exchange,
                         "currency": "USD",
                         "destinationCurrency": "RUB"
                     }
@@ -100,9 +187,9 @@ describe('Exchange suit UI', () => {
                     // Get available balance "from wallet" after
                     cy.request({
                         method: 'GET',
-                        url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchantProd.main_currency,
+                        url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
                         headers: {
-                            token: merchantProd.merchant_token,
+                            token: user.token,
                         }
                     }).then((response) => {
                         expect(response).property('status').to.equal(200);
@@ -112,7 +199,7 @@ describe('Exchange suit UI', () => {
                         //try {
 
                             expect(parseFloat(av_bal_from_wallet_after).toFixed(2))
-                                .to.eq((av_bal_from_wallet - merchantProd.amount_exchange).toFixed(2));
+                                .to.eq((av_bal_from_wallet - merchants.amount_exchange).toFixed(2));
 
                         //}catch (e) {
                             cy.log(av_bal_from_wallet);
@@ -120,7 +207,7 @@ describe('Exchange suit UI', () => {
                        // }
 
                         // Amount after exchange
-                        let amount = (merchantProd.amount_exchange * rate).toFixed(2);
+                        let amount = (merchants.amount_exchange * rate).toFixed(2);
 
                         // Percentage for exchange
                         let pers =((amount / 100) * 3.5).toFixed(2);
@@ -131,9 +218,9 @@ describe('Exchange suit UI', () => {
                         // Get available balance "to wallet" after
                         cy.request({
                             method: 'GET',
-                            url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchantProd.main_currency,
+                            url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
                             headers: {
-                                token: merchantProd.merchant_token,
+                                token: user.token,
                             }
                         }).then((response) => {
                             expect(response).property('status').to.equal(200);

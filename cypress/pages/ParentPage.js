@@ -1,11 +1,6 @@
-import merchant from "../fixtures/merchant";
-import exchange from "../fixtures/exchange";
+
 import card from "../fixtures/card";
-import checkout from "../fixtures/checkout";
 import feen from "../fixtures/feen";
-import paymentMethod from "../fixtures/paymentMethod";
-
-
 
 class ParentPage {
 
@@ -96,6 +91,7 @@ class ParentPage {
 
     attachFile(name) {
         cy.get('input[class="ngx-file-drop__file-input"]').each((fileInput) => {
+            // @ts-ignore
             cy.wrap(fileInput).attachFile(name);
         });
     }

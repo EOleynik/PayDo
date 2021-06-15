@@ -1,6 +1,6 @@
 import topUp from "../fixtures/topUp";
 import merchant from "../fixtures/merchant";
-import parentPage from "../pages/ParentPage";
+import parentPage from "./ParentPage";
 import feen from "../fixtures/feen";
 import card from "../fixtures/card";
 

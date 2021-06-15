@@ -1,4 +1,4 @@
-import parentPage from "../pages/ParentPage"
+import parentPage from "./ParentPage"
 import withdraw from  "../fixtures/withdraw";
 import merchant from "../fixtures/merchant";
 import feen from "../fixtures/feen";
@@ -20,6 +20,10 @@ class MoneyTransferPage {
 
     clickButtonProceed() {
         parentPage.clickButton('Proceed');
+    }
+
+    ConfirmationTransfer(button) {
+        cy.contains(button).click();
     }
 
     clickButtonGoToMoneyTransferList() {
@@ -125,7 +129,7 @@ class MoneyTransferPage {
         });
     }
 
-    checkTransferBetweenWallets(type, sender, recipient, amount, currency) {
+    checkTransferBetweenWallets(type, sender, recipient, amount, currency, commission) {
         cy.get(':nth-child(1) > .cdk-column-type > .bold').invoke('text').should((text) => {
             expect(text).to.eq(type);
         });
@@ -136,7 +140,7 @@ class MoneyTransferPage {
             expect(text).to.eq(" ID: "+recipient);
         });
         cy.get(':nth-child(1) > .text-right > .amount > .bold').invoke('text').should((text) => {
-            expect(parseFloat(text).toFixed(2)).to.eq(parseFloat(amount).toFixed(2));
+            expect(parseFloat(text).toFixed(2)).to.eq(parseFloat(amount + +commission).toFixed(2));
         });
     }
 

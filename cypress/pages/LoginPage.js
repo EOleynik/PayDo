@@ -101,7 +101,7 @@ class LoginPage {
     checkAuthorization(email, password, authenticator) {
         cy.get('body').then(($body) => {
             if ($body.text().includes('Continue')) {
-                parentPage.clickButton('Continue');
+                cy.contains('Continue').click();
             } else {
                 cy.get("[formcontrolname=email]").clear().type(email);
                 cy.get("[formcontrolname=password]").clear().type(password);

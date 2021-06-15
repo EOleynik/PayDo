@@ -1,0 +1,27 @@
+{
+  "authenticator_2": "RSGOLIL6REAXOWJK",
+  "account_2": "13728",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTM3MjgsImFjY2Vzc1Rva2VuIjoiNjk0ODRhOWNjODgwODg3N2FmMDdiNzE2IiwidG9rZW5JZCI6NjgsIndhbGxldElkIjoxMzcyOCwidGltZSI6MTYxMjUwMjQ3NSwiZXhwaXJlZEF0IjoxNjQwOTAxNjAwLCJyb2xlcyI6WzJdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjpmYWxzZX19.0e7kHbCHeHIGCM7pO9qFrtltloCx887KNWVJ_0t0_sM",
+  "email_2": "eugeniy.o+2avtotest_p@payop.com",
+  "password_2": "Makarenka113P-",
+  "main_currency": "USD",
+  "amount_transfer": 0.1,
+  "feen_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTIyNzIsImFjY2Vzc1Rva2VuIjoiZjEzYjA3Y2VhYzM4MjQ5YWI4YTA4NTRkIiwidG9rZW5JZCI6bnVsbCwid2FsbGV0SWQiOjEyMjcyLCJ0aW1lIjoxNjIyNTIwNzA5LCJleHBpcmVkQXQiOm51bGwsInJvbGVzIjpbNF0sInR3b0ZhY3RvciI6eyJwYXNzZWQiOnRydWV9fQ.RqzdKmmiZvSD_83PSVA9tmxHd2ouiOpPfvifwIKmCq8",
+  "feen_prod_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTIyNzIsImFjY2Vzc1Rva2VuIjoiZjEzYjA3Y2VhYzM4MjQ5YWI4YTA4NTRkIiwidG9rZW5JZCI6bnVsbCwid2FsbGV0SWQiOjEyMjcyLCJ0aW1lIjoxNjIyNTIwNzA5LCJleHBpcmVkQXQiOm51bGwsInJvbGVzIjpbNF0sInR3b0ZhY3RvciI6eyJwYXNzZWQiOnRydWV9fQ.RqzdKmmiZvSD_83PSVA9tmxHd2ouiOpPfvifwIKmCq8",
+  "exchange_from_wallet": "US Dollar Wallet",
+  "exchange_to_wallet": "Russian Ruble Wallet",
+  "amount_exchange": 0.1,
+  "commission": 0.01,
+  "mid_for_user": 511,
+
+
+  "authenticator_4": "VKLUZWYMUQWC6GU3",
+  "account_4": "20330",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MjAzMzAsImFjY2Vzc1Rva2VuIjoiMzU1Y2NiZjRmYzk3ODdjNzUzYTZjYWYxIiwidG9rZW5JZCI6NjcsIndhbGxldElkIjoyMDMzMCwidGltZSI6MTYxMjUwMjIzNSwiZXhwaXJlZEF0IjoxNjQwOTAxNjAwLCJyb2xlcyI6WzJdLCJ0d29GYWN0b3IiOnsicGFzc2VkIjpmYWxzZX19.tVWbfhQhl0am71_SHz80WG805fkT_yM-92vTPkmQfmQ",
+  "email_4": "eugeniy.o+4avtotest_p@payop.com",
+  "password_4": "1q2w3e$R%T^Y_p"
+
+
+
+
+}

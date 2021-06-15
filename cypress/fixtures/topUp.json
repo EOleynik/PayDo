@@ -5,7 +5,7 @@
   "merchant_email": "eugeniy.o+test@payop.com",
   "merchant_pass": "eugeniy.o+test!Q2w@payop.com",
   "merch_id": 1602,
-  "authenticator": "57CVOMVEOY75U32D",
+  "authenticator_4": "57CVOMVEOY75U32D",
   "payment_method_ID": 197,
   "description": "Wallet top up",
   "merch_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTYwMiwiYWNjZXNzVG9rZW4iOiJjNTlmM2I3YmU0ZmM3NTM3ZDZjZWZhMjgiLCJ0b2tlbklkIjozMiwid2FsbGV0SWQiOjE1OTYsInRpbWUiOjE2MTE5MjMwODksImV4cGlyZWRBdCI6MTY0MDkwMTYwMCwicm9sZXMiOlsxLDE4XSwidHdvRmFjdG9yIjp7InBhc3NlZCI6ZmFsc2V9fQ.-pHyO_7NE8aQN5aKzYAl5GW79M3kRul3RH89OcxlYVU"

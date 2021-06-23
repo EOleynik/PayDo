@@ -1,4 +1,4 @@
-import ticket from "../fixtures/ticket";
+import ticket from "../fixtures/Stage/ticket.json";
 import parentPage from "../pages/ParentPage";
 
 class TicketsPage {

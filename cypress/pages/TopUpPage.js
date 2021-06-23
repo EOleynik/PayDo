@@ -1,8 +1,8 @@
-import topUp from "../fixtures/topUp";
-import merchant from "../fixtures/merchant";
+import topUp from "../fixtures/Stage/topUp.json";
+import merchant from "../fixtures/Stage/merchant.json";
 import parentPage from "./ParentPage";
-import feen from "../fixtures/feen";
-import card from "../fixtures/card";
+import feen from "../fixtures/Stage/feen.json";
+import card from "../fixtures/Stage/card.json";
 
 class TopUpPage {
 

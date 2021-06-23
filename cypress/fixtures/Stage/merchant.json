@@ -1,0 +1,12 @@
+{
+  "authenticator": "3Q7JQSAURURNW45V",
+  "personal_account": "1811",
+  "business_account": "1812",
+  "email": "eugeniy.o+4avtotest@payop.com",
+  "password": "eugeniy.o+4avtotest@payop.com",
+  "main_currency": "USD",
+  "recipient": 1602,
+  "recipient_email" : "eugeniy.o+test@payop.com",
+  "recipient_password": "eugeniy.o+test!Q2w@payop.com",
+  "recipient_authenticator": "57CVOMVEOY75U32D"
+}

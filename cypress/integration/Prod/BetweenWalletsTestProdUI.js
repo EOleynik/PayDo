@@ -2,7 +2,6 @@
 import parentPage from "../../pages/ParentPage";
 import moneyTransferPage from "../../pages/MoneyTransferPage";
 import merchants from "../../fixtures/Prod/merchants.json";
-import recipients from "../../fixtures/Prod/recipients.json";
 import feen from "../../fixtures/Prod/feen.json";
 import loginPage from "../../pages/LoginPage";
 import homePage from "../../pages/HomePage";
@@ -36,6 +35,7 @@ before(function fetchToken() {
             })
     })
 
+
     // Get token for merchant
     cy.request('POST', 'https://account.paydo.com/v1/users/login', {
         email: merchants.email_2,
@@ -58,6 +58,7 @@ before(function fetchToken() {
                 user = res
             })
     })
+
 
     // Get token for admin
     cy.request('POST', 'https://admin.paydo.com/v1/users/login', {
@@ -85,9 +86,6 @@ before(function fetchToken() {
 })
 
 describe('Between Wallets suit ', () => {
-
-    // add get commission
-
 
     it('Create transfer by recipient ID, all data is valid', () => {
 
@@ -132,7 +130,6 @@ describe('Between Wallets suit ', () => {
         moneyTransferPage.chooseCurrencyWallet('USD');
         moneyTransferPage.enterTextInToInputRecipient(merchants.email_4);
         moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
-        //moneyTransferPage.chooseCurrencyTransfer('USD');
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         moneyTransferPage.clickButtonConfirmTransfer();
@@ -159,7 +156,6 @@ describe('Between Wallets suit ', () => {
         moneyTransferPage.chooseCurrencyWallet('USD');
         moneyTransferPage.enterTextInToInputRecipient("ECOM" + 0 + merchants.account_4 + "F");
         moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
-        //moneyTransferPage.chooseCurrencyTransfer('USD');
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         moneyTransferPage.clickButtonConfirmTransfer();
@@ -171,7 +167,7 @@ describe('Between Wallets suit ', () => {
 
     it('Between Wallets math, wallets match', () => {
 
-        // Get available balance "from wallet"
+        // Get available balance "sender wallet"
         cy.request({
             method: 'GET',
             url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
@@ -211,7 +207,7 @@ describe('Between Wallets suit ', () => {
                 }).then((response) => {
                     expect(response).property('status').to.equal(200);
 
-                    // 2FA
+                    // 2FA authentication
                     cy.request({
                         method: 'POST',
                         url: 'https://account.paydo.com/v1/wallets/move-money-between-wallets',
@@ -275,7 +271,7 @@ describe('Between Wallets suit ', () => {
                                     // Total amount with commission
                                     let sum = (Number(merchants.amount_transfer) + +com);
 
-                                    // Get available balance "from wallet" after
+                                    // Get available balance "sender wallet" after transfer
                                     cy.request({
                                         method: 'GET',
                                         url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
@@ -289,13 +285,13 @@ describe('Between Wallets suit ', () => {
                                         let av_bal_from_wallet_after = (response.body.data['USD'].available.actual).toString();
                                         expect(parseFloat(av_bal_from_wallet_after).toFixed(2)).to.eq((+av_bal_from_wallet - sum).toFixed(2));
 
-                                        cy.log('av_bal_from_wallet' + av_bal_from_wallet);
-                                        cy.log('av_bal_from_wallet_after' + av_bal_from_wallet_after);
-                                        cy.log('sum' + sum);
+                                        cy.log('av_bal_from_wallet' + ' ' + av_bal_from_wallet);
+                                        cy.log('av_bal_from_wallet_after' + ' ' + av_bal_from_wallet_after);
+                                        cy.log('sum' + ' ' + sum);
 
                                         let rec_amount = (+av_bal_to_wallet + +merchants.amount_transfer).toFixed(2);
 
-                                        // Get available balance "recipient wallet" after
+                                        // Get available balance "recipient wallet" after transfer
                                         cy.request({
                                             method: 'GET',
                                             url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
@@ -308,9 +304,9 @@ describe('Between Wallets suit ', () => {
                                             let av_bal_to_wallet_after = (response.body.data['USD'].available.actual).toString();
                                             expect(parseFloat(av_bal_to_wallet_after).toFixed(2)).to.eq(rec_amount);
 
-                                            cy.log('av_bal_to_wallet' + av_bal_to_wallet);
-                                            cy.log('av_bal_to_wallet_after' + av_bal_to_wallet_after);
-                                            cy.log('merchant.amount_transfer' + merchants.amount_transfer);
+                                            cy.log('av_bal_to_wallet' + ' ' + av_bal_to_wallet);
+                                            cy.log('av_bal_to_wallet_after' + ' ' + av_bal_to_wallet_after);
+                                            cy.log('merchant.amount_transfer' + ' ' + merchants.amount_transfer);
                                         })
                                     })
                                 }

@@ -1,7 +1,7 @@
 import transactionsPage from "../../../pages/TransactionsPage";
 import createCheckoutPage from "../../../pages/CreateCheckoutPage";
 import refundPage from "../../../pages/RefundPage";
-import refund from "../../../fixtures/refund";
+import refund from "../../../fixtures/Stage/refund.json";
 import parentPage from "../../../pages/ParentPage";
 
  describe('Refund math', () => {

@@ -1,7 +1,7 @@
 import loginPage from "../../../pages/LoginPage";
-import betweenWallets from "../../../fixtures/betweenWallets";
+import betweenWallets from "../../../fixtures/Stage/betweenWallets.json";
 import moneyTransferPage from "../../../pages/MoneyTransferPage";
-import merchant from "../../../fixtures/merchant";
+import merchant from "../../../fixtures/Stage/merchant.json";
 import homePage from "../../../pages/HomePage";
 
 describe('Between Wallets suit ', () => {

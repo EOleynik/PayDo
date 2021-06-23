@@ -1,8 +1,8 @@
 import loginPage from "../../../pages/LoginPage";
 import homePage from "../../../pages/HomePage";
 import ticketsPage from "../../../pages/TicketsPage";
-import ticket from "../../../fixtures/ticket";
-import merchant from "../../../fixtures/merchant";
+import ticket from "../../../fixtures/Stage/ticket.json";
+import merchant from "../../../fixtures/Stage/merchant.json";
 import feenPage from "../../../pages/FeenPage"
 
     describe('Merchant account', () => {

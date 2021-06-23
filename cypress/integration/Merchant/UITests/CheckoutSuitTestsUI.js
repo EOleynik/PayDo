@@ -3,10 +3,10 @@ import loginPage from "../../../pages/LoginPage";
 import homePage from "../../../pages/HomePage";
 import paymentPage from "../../../pages/PaymentPage";
 import transactionsPage from "../../../pages/TransactionsPage";
-import checkout from "../../../fixtures/checkout";
+import checkout from "../../../fixtures/Stage/checkout.json";
 import parentPage from "../../../pages/ParentPage";
 import restPage from "../../../pages/RestPage";
-import merchant from "../../../fixtures/merchant";
+import merchant from "../../../fixtures/Stage/merchant.json";
 
     describe ('Checkout suit UI ', () => {
 

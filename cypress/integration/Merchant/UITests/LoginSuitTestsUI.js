@@ -1,7 +1,7 @@
 import loginPage from "../../../pages/LoginPage";
 import parentPage from "../../../pages/ParentPage";
 import homePage from "../../../pages/HomePage";
-import merchant from "../../../fixtures/merchant";
+import merchant from "../../../fixtures/Stage/merchant.json";
 
  describe ('Login suit UI ', () => {
 

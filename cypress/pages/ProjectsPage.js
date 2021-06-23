@@ -1,8 +1,8 @@
-import merchant from "../fixtures/merchant.json"
+import merchant from "../fixtures/Stage/merchant.json"
 import manajer from "../fixtures/manajer.json"
 import parentPage from "./ParentPage";
-import project from "../fixtures/project";
-import feen from "../fixtures/feen"
+import project from "../fixtures/Stage/project.json";
+import feen from "../fixtures/Stage/feen.json"
 
 class ProjectsPage {
 

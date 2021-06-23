@@ -1,7 +1,7 @@
 import loginPage from "../../../pages/LoginPage";
 import exchangePage from "../../../pages/ExchangePage";
-import exchange from "../../../fixtures/exchange";
-import merchant from "../../../fixtures/merchant";
+import exchange from "../../../fixtures/Stage/exchange.json";
+import merchant from "../../../fixtures/Stage/merchant.json";
 import homePage from "../../../pages/HomePage";
 
 describe('Exchange suit UI', () => {

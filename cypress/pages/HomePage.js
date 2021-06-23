@@ -1,4 +1,4 @@
-import merchant from "../fixtures/merchant";
+import merchant from "../fixtures/Stage/merchant.json";
 import parentPage from "../pages/ParentPage"
 
 

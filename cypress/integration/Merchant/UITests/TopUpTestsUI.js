@@ -1,6 +1,6 @@
 import loginPage from "../../../pages/LoginPage";
 import topUpPage from "../../../pages/TopUpPage";
-import topUp from "../../../fixtures/topUp";
+import topUp from "../../../fixtures/Stage/topUp.json";
 import homePage from "../../../pages/HomePage";
 
 

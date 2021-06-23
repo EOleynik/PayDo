@@ -2,9 +2,9 @@ import loginPage from "../../../pages/LoginPage";
 import homePage from "../../../pages/HomePage";
 import transactionsPage from "../../../pages/TransactionsPage";
 import createCheckoutPage from "../../../pages/CreateCheckoutPage"
-import refund from "../../../fixtures/refund";
+import refund from "../../../fixtures/Stage/refund.json";
 import refundPage from "../../../pages/RefundPage";
-import merchant from "../../../fixtures/merchant";
+import merchant from "../../../fixtures/Stage/merchant.json";
 
 describe('Refund suit', () => {
 

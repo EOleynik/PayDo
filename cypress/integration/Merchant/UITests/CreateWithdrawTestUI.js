@@ -1,16 +1,49 @@
 import loginPage from "../../../pages/LoginPage";
 import moneyTransferPage from "../../../pages/MoneyTransferPage";
-import withdraw from "../../../fixtures/withdraw";
+import withdraw from "../../../fixtures/Stage/withdraw.json";
 import withdrawPage from "../../../pages/WithdrawPage";
-import merchant from "../../../fixtures/merchant";
+import merchant from "../../../fixtures/Stage/merchant.json";
 import homePage from "../../../pages/HomePage";
+import merchants from "../../../fixtures/Prod/merchants.json";
+import parentPage from "../../../pages/ParentPage";
+import feen from "../../../fixtures/Stage/feen.json";
+
+let admin;
 
 describe('Withdraw suit ', () => {
 
+    before(function fetchToken() {
+
+         //Get token for admin
+
+        cy.request('POST', 'https://admin.stage.paydo.com/v1/users/login', {
+            email: feen.email,
+            password: feen.pass,
+        }).then((response) => {
+            expect(response).property('status').to.equal(206);
+
+            cy.request({
+                method: 'POST',
+                url: 'https://admin.stage.paydo.com/v1/users/login',
+                headers: {
+                    "x-2fa-code": parentPage.get2FACode(feen.authenticator)
+                },
+                body: {
+                    email: feen.email,
+                    password: feen.pass
+                }
+            }).its('headers')
+                .then((res) => {
+                    admin = res
+                })
+        })
+    })
+
     beforeEach('', () => {
         loginPage.visit('/');
-        loginPage.loginWithCred(merchant.email, merchant.password);
-        loginPage.enter2FACode(merchant.authenticator);
+        loginPage.checkAuthorization(merchant.email, merchant.password, merchant.authenticator)
+        //loginPage.loginWithCred(merchant.email, merchant.password);
+       // loginPage.enter2FACode(merchant.authenticator);
         cy.wait(3000);
     });
 
@@ -45,11 +78,12 @@ describe('Withdraw suit ', () => {
         moneyTransferPage.clickButtonGoToMoneyTransferList();
 
         moneyTransferPage.checkUrl('/list-of-transfers/outgoing-bank-transfer');
-        moneyTransferPage.checkCreateWithdraw(withdraw.beneficiary_name, ' Pending ', withdraw.amount );
-        withdrawPage.rejectWithdraw();
+        moneyTransferPage.checkCreateWithdraw(withdraw.beneficiary_name, ' Pending ',
+            withdraw.amount, merchant.main_currency );
+        withdrawPage.rejectWithdraw(admin.token);
     });
 
-    it('Create withdraw, payment is commercial', () => {
+    it.only('Create withdraw, payment is commercial', () => {
 
         homePage.checkUrl('/en/overview');
         homePage.clickMenuCreateTransfer();
@@ -79,8 +113,9 @@ describe('Withdraw suit ', () => {
         moneyTransferPage.clickButtonGoToMoneyTransferList();
 
         moneyTransferPage.checkUrl('/list-of-transfers/outgoing-bank-transfer');
-        moneyTransferPage.checkCreateWithdraw(withdraw.beneficiary_name, ' Pending ', withdraw.amount );
-        withdrawPage.rejectWithdraw()
+        moneyTransferPage.checkCreateWithdraw(withdraw.beneficiary_name, ' Pending ',
+            withdraw.amount, merchant.main_currency);
+        withdrawPage.rejectWithdraw(admin.token)
     });
 
 })

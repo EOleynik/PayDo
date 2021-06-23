@@ -1,6 +1,7 @@
 
-import card from "../fixtures/card";
-import feen from "../fixtures/feen";
+import card from "../fixtures/Stage/card.json";
+import feen from "../fixtures/Stage/feen.json";
+import betweenWallets from "../fixtures/Stage/betweenWallets.json";
 
 class ParentPage {
 
@@ -61,6 +62,21 @@ class ParentPage {
         })
     }
 
+    calculationFinancialCommission(fixcom, perscom, strateg, amount) {
+        let pers = ((amount / 100) * perscom).toFixed(2);
+
+        if (strateg === 1) {
+            // Amount of commissions
+            let finCom = (+fixcom + +pers).toFixed(2);
+
+            // Total amount with commission
+            let sum = (Number(betweenWallets.amount_transfer) + +finCom);
+
+            return finCom;
+
+        }
+    }
+
     getDelta(page, n1, n2) {
         return Math.abs(n1 - n2) <= page.precision;
     };
@@ -91,7 +107,6 @@ class ParentPage {
 
     attachFile(name) {
         cy.get('input[class="ngx-file-drop__file-input"]').each((fileInput) => {
-            // @ts-ignore
             cy.wrap(fileInput).attachFile(name);
         });
     }

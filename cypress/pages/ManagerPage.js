@@ -1,6 +1,6 @@
-import merchant from "../fixtures/merchant.json"
+import merchant from "../fixtures/Stage/merchant.json"
 import manajer from "../fixtures/manajer.json"
-import feen from "../fixtures/feen";
+import feen from "../fixtures/Stage/feen.json";
 
 class ManagerPage {
 

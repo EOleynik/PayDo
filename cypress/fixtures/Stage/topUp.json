@@ -1,0 +1,11 @@
+{
+  "wallet": ["GBP","USD", "EUR", "RUB"],
+  "amount": 800,
+  "exchange_percentage": 3.5,
+  "merchant_email": "eugeniy.o+test@payop.com",
+  "merchant_pass": "eugeniy.o+test!Q2w@payop.com",
+  "merch_id": 1602,
+  "authenticator_4": "57CVOMVEOY75U32D",
+  "payment_method_ID": 197,
+  "description": "Wallet top up"
+}

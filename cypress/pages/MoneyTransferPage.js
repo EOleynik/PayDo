@@ -1,8 +1,8 @@
 import parentPage from "./ParentPage"
-import withdraw from  "../fixtures/withdraw";
-import merchant from "../fixtures/merchant";
-import feen from "../fixtures/feen";
-import betweenWallets from "../fixtures/betweenWallets";
+import withdraw from "../fixtures/Stage/withdraw.json";
+import merchant from "../fixtures/Stage/merchant.json";
+import feen from "../fixtures/Stage/feen.json";
+import betweenWallets from "../fixtures/Stage/betweenWallets.json";
 
 class MoneyTransferPage {
 
@@ -144,7 +144,7 @@ class MoneyTransferPage {
         });
     }
 
-    checkCreateWithdraw(name, status, amount) {
+    checkCreateWithdraw(name, status, amount, currency) {
         cy.get(':nth-child(1) > .cdk-column-info > .payment-info > .payment-info__recipient').invoke('text').should((text) => {
             expect(text).to.eq(name);
         });
@@ -152,7 +152,7 @@ class MoneyTransferPage {
             expect(text).to.eq(status);
         });
         cy.get(':nth-child(1) > .text-right > .amount > .bold').invoke('text').should((text) => {
-            expect(text).to.eq(amount+" "+"EUR");
+            expect(text).to.eq(amount + " " + currency);
         })
     }
 
@@ -168,13 +168,13 @@ class MoneyTransferPage {
         }
     }
 
-    createTransferAndCheckMath() {
-        // Get available balance "from wallet"
+    createTransferAndCheckMath(admin, user, recipient) {
+        // Get available balance "sender wallet"
         cy.request({
             method: 'GET',
             url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
             headers: {
-                token: merchant.token,
+                token: user.token,
             }
         }).then((response) => {
             expect(response).property('status').to.equal(200);
@@ -186,7 +186,7 @@ class MoneyTransferPage {
                 method: 'GET',
                 url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                 headers: {
-                    token: betweenWallets.recipient_token,
+                    token: recipient.token,
                 }
             }).then((response) => {
                 expect(response).property('status').to.equal(200);
@@ -198,7 +198,7 @@ class MoneyTransferPage {
                     method: 'POST',
                     url: 'https://account.stage.paydo.com/v1/wallets/calculate-money/on-transfer-between-wallets',
                     headers: {
-                        token: merchant.token,
+                        token: user.token,
                     },
                     body: {
                         "amount": betweenWallets.amount_transfer,
@@ -214,14 +214,14 @@ class MoneyTransferPage {
                         method: 'POST',
                         url: 'https://account.stage.paydo.com/v1/wallets/move-money-between-wallets',
                         headers: {
-                            token: merchant.token,
+                            token: user.token,
                         },
                         body: {
                             "amount": betweenWallets.amount_transfer,
                             "currency": betweenWallets.recipient_wallet,
                             "email": "",
                             "paymentMethodIdentifier": betweenWallets.payment_method_ID,
-                            "recipient": betweenWallets.recipient_ID,
+                            "recipient": merchant.recipient,
                             "startCurrency": betweenWallets.wallet,
                             "type": 1,
                             "userIdentifierTo": "",
@@ -233,7 +233,7 @@ class MoneyTransferPage {
                             method: 'POST',
                             url: 'https://account.stage.paydo.com/v1/wallets/move-money-between-wallets',
                             headers: {
-                                token: merchant.token,
+                                token: user.token,
                                 "x-2fa-code":parentPage.get2FACode(merchant.authenticator)
                             },
                             body: {
@@ -241,7 +241,7 @@ class MoneyTransferPage {
                                 "currency": betweenWallets.recipient_wallet,
                                 "email": "",
                                 "paymentMethodIdentifier": betweenWallets.payment_method_ID,
-                                "recipient": betweenWallets.recipient_ID,
+                                "recipient": merchant.recipient,
                                 "startCurrency": betweenWallets.wallet,
                                 "type": 1,
                                 "userIdentifierTo": "",
@@ -249,75 +249,66 @@ class MoneyTransferPage {
                         }).then((response) => {
                             expect(response).property('status').to.equal(200);
 
+
                             // Get commission for transfer between wallets
                             cy.request({
                                 method: 'GET',
-                                url: "https://account.stage.paydo.com/v1/instrument-settings/commissions/custom/" + betweenWallets.payment_method_ID + "/" + merchant.bussiness_account,
+                                url: "https://admin.stage.paydo.com/v1/instrument-settings/commissions/for-mid/13/155/204",
                                 headers: {
-                                    token: feen.token,
+                                    token: admin.token,
                                 }
                             }).then((response) => {
                                 expect(response).property('status').to.equal(200);
                                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                                let fixcom = response.body.data[8].value[betweenWallets.wallet][0];
-                                let perscom = response.body.data[8].value[betweenWallets.wallet][1];
-                                let strateg = response.body.data[8].strategy;
+                                let fixcom = response.body.data.value[betweenWallets.wallet][0];
+                                let perscom = response.body.data.value[betweenWallets.wallet][1];
+                                let strateg = response.body.data.strategy;
+                                let senderPart = response.body.data.payerPart;
+                                let recipientPart = response.body.data.userPart;
 
-                                let pers = ((betweenWallets.amount_transfer / 100) * perscom).toFixed(2);
+                                //  Get available balance "from wallet" after
+                                cy.request({
+                                    method: 'GET',
+                                    url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                    headers: {
+                                        token: user.token,
+                                    }
+                                }).then((response) => {
+                                    expect(response).property('status').to.equal(200);
+                                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                    let av_bal_from_wallet_after = response.body.data[betweenWallets.wallet].available.actual;
 
-                                if (strateg === 1) {
-                                    // Amount of commissions
-                                    let com = (+fixcom + +pers).toFixed(2);
+                                    expect(av_bal_from_wallet_after).to.eq(av_bal_from_wallet - (+betweenWallets.amount_transfer +
+                                        +parentPage.calculationFinancialCommission(fixcom, perscom, strateg, betweenWallets.amount_transfer)));
 
-                                    // Total amount with commission
-                                    let sum = (Number(betweenWallets.amount_transfer) + +com);
-
-                                    // Get available balance "from wallet" after
-                                    cy.request({
-                                        method: 'GET',
-                                        url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
-                                        headers: {
-                                            token: merchant.token,
-                                        }
-                                    }).then((response) => {
-                                        expect(response).property('status').to.equal(200);
-                                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                                        let av_bal_from_wallet_after = response.body.data[betweenWallets.wallet].available.actual;
-
-                                        try {
-
-                                            expect(av_bal_from_wallet_after).to.eq(av_bal_from_wallet - sum);
-
-                                        }catch (e) {
-                                            cy.log(av_bal_from_wallet);
-                                            cy.log(av_bal_from_wallet_after);
-                                            cy.log(sum);
-                                        }
+                                            cy.log('av_bal_from_wallet' + ' ' + av_bal_from_wallet);
+                                            cy.log('av_bal_from_wallet_after' + ' ' + av_bal_from_wallet_after);
+                                            //cy.log('sum' + ' ' +sum);
 
                                         // Get available balance "recipient wallet" after
                                         cy.request({
                                             method: 'GET',
                                             url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
                                             headers: {
-                                                token: betweenWallets.recipient_token,
+                                                token: recipient.token,
                                             }
                                         }).then((response) => {
                                             expect(response).property('status').to.equal(200);
                                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                             let av_bal_to_wallet_after = response.body.data[betweenWallets.recipient_wallet].available.actual;
 
-                                            try {
+                                            //try {
 
                                             expect(av_bal_to_wallet_after).to.eq(av_bal_to_wallet + Number(betweenWallets.amount_transfer));
 
-                                            }catch (e) {
-                                                cy.log(av_bal_to_wallet);
-                                                cy.log(av_bal_to_wallet_after);
-                                                cy.log(sum);
-                                            }
+                                            //}catch (e) {
+                                                cy.log('av_bal_to_wallet' + ' ' + av_bal_to_wallet);
+                                                cy.log('av_bal_to_wallet_after' + ' ' + av_bal_to_wallet_after);
+                                                cy.log('sum' + ' ' + betweenWallets.amount_transfer);
+                                            //}
                                         })
                                     })
-                                }
+                                //}
                             })
                         })
                     })

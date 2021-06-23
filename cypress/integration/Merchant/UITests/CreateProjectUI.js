@@ -1,10 +1,10 @@
 import loginPage from "../../../pages/LoginPage";
 import homePage from "../../../pages/HomePage";
 import projectsPage from "../../../pages/ProjectsPage";
-import project from "../../../fixtures/project";
+import project from "../../../fixtures/Stage/project.json";
 import feenPage from "../../../pages/FeenPage";
 import parentPage from "../../../pages/ParentPage";
-import merchant from "../../../fixtures/merchant";
+import merchant from "../../../fixtures/Stage/merchant.json";
 
 describe('Create project suit', () => {
 

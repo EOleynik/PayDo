@@ -1,6 +1,6 @@
-import card from "../fixtures/card.json";
-import checkout from "../fixtures/checkout.json";
-import merchant from "../fixtures/merchant.json";
+import card from "../fixtures/Stage/card.json";
+import checkout from "../fixtures/Stage/checkout.json";
+import merchant from "../fixtures/Stage/merchant.json";
 
 class CreateCheckoutPage {
 

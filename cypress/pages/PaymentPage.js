@@ -1,5 +1,5 @@
-import merchant from "../fixtures/merchant";
-import checkout from "../fixtures/checkout";
+import merchant from "../fixtures/Stage/merchant.json";
+import checkout from "../fixtures/Stage/checkout.json";
 import parentPage from "../pages/ParentPage";
 import loginPage from "../pages/LoginPage";
 

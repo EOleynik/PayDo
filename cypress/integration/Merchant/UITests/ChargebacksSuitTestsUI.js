@@ -1,12 +1,12 @@
 import loginPage from "../../../pages/LoginPage";
 import createCheckoutPage from "../../../pages/CreateCheckoutPage";
 import transactionsPage from "../../../pages/TransactionsPage";
-import merchant from "../../../fixtures/merchant";
+import merchant from "../../../fixtures/Stage/merchant.json";
 import parentPage from "../../../pages/ParentPage";
 import chargebackPage from "../../../pages/ChargebackPage";
 import feenPage from "../../../pages/FeenPage";
 import homePage from "../../../pages/HomePage";
-import feen from "../../../fixtures/feen";
+import feen from "../../../fixtures/Stage/feen.json";
 
     describe('Chargeback suit', () => {
 

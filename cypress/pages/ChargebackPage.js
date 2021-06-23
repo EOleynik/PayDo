@@ -1,5 +1,5 @@
-import merchant from "../fixtures/merchant";
-import feen from "../fixtures/feen";
+import merchant from "../fixtures/Stage/merchant.json";
+import feen from "../fixtures/Stage/feen.json";
 import parentPage from "../pages/ParentPage"
 
 class ChargebackPage {

@@ -1,6 +1,6 @@
-import merchant from "../fixtures/merchant";
-import exchange from "../fixtures/exchange";
-import feen from "../fixtures/feen";
+import merchant from "../fixtures/Stage/merchant.json";
+import exchange from "../fixtures/Stage/exchange.json";
+import feen from "../fixtures/Stage/feen.json";
 import parentPage from "../pages/ParentPage";
 
 class ExchangePage {

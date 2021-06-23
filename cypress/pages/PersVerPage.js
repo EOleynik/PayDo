@@ -1,4 +1,4 @@
-import merchant from "../fixtures/merchant.json"
+import merchant from "../fixtures/Stage/merchant.json"
 
 class PersVerPage {
 

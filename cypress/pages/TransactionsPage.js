@@ -1,10 +1,10 @@
-import merchant from "../fixtures/merchant.json"
-import feen from "../fixtures/feen.json"
-import paymentMethod from "../fixtures/paymentMethod.json"
-import checkout from "../fixtures/checkout";
-import refund from "../fixtures/refund";
+import merchant from "../fixtures/Stage/merchant.json"
+import feen from "../fixtures/Stage/feen.json"
+import paymentMethod from "../fixtures/Stage/paymentMethod.json"
+import checkout from "../fixtures/Stage/checkout.json";
+import refund from "../fixtures/Stage/refund.json";
 import manajer from "../fixtures/manajer";
-import chargeback from "../fixtures/chargeback";
+import chargeback from "../fixtures/Stage/chargeback.json";
 import createCheckoutPage from "./CreateCheckoutPage";
 import parentPage from "./ParentPage";
 
@@ -243,29 +243,6 @@ class TransactionsPage {
                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                 let rate = response.body.data.rates[merchant.main_currency];
 
-
-            // cy.request({
-            //     method: 'GET',
-            //     url: 'https://app.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-            //     headers: {
-            //         token: merchant.token
-            //     }
-            // }).then((response) => {
-            //     expect(response).property('status').to.equal(200);
-            //     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-            //     let transaction_id = response.body.data[0].identifier;
-            //
-            //     cy.request({
-            //         method: 'GET',
-            //         url: "https://admin.stage.paydo.com/v1/transactions/" + transaction_id,
-            //         headers: {
-            //             token: manajer.token
-            //         }
-            //     }).then((response) => {
-            //         expect(response).property('status').to.equal(200);
-            //         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-            //         let rate = response.body.data.exchanges[0].rate;
-
                     if (strateg === 1) {
 
                         // сумма комиссий
@@ -379,7 +356,7 @@ class TransactionsPage {
                     }
                 })
             })
-        //})
+
     }
 
     checkAmountAPIGBP(payAmount) {
@@ -1120,20 +1097,6 @@ class TransactionsPage {
                 expect(text).to.eq(' Accepted ')
             });
 
-            // Сalculation formula & Check Amount
-
-            // Get transaction_id last transaction
-            // cy.request({
-            //     method: 'GET',
-            //     url: 'https://account.stage.paydo.com/v1/transactions/user-transactions?query[type]=7',
-            //     headers: {
-            //         token: merchant.token
-            //     }
-            // }).then((response) => {
-            //     expect(response).property('status').to.equal(200);
-            //     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-            //     let transaction_id = response.body.data[0].identifier;
-
                 // Get rate from product currency to pay currency and rate2 from pay currency to main currency
 
                 cy.request({
@@ -1157,18 +1120,6 @@ class TransactionsPage {
                         expect(response).property('status').to.equal(200);
                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                         let rate2 = response.body.data.rates[merchant.main_currency];
-
-                // cy.request({
-                //     method: 'GET',
-                //     url: "https://admin.stage.paydo.com/v1/transactions/" + transaction_id,
-                //     headers: {
-                //         token: manajer.token
-                //     }
-                // }).then((response) => {
-                //     expect(response).property('status').to.equal(200);
-                //     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                //     let rate = response.body.data.exchanges[0].rate;
-                //     let rate2 = response.body.data.exchanges[1].rate;
 
                     // комиссия за конвертацию цены товара в валюту оплаты
                     let exch = (payAmount / 100 * checkout.exchange_percentage).toFixed(2);
@@ -1353,31 +1304,6 @@ class TransactionsPage {
             expect(response.body.data[0].status).to.eq(1)
         });
 
-        // get ID last transaction and save on variable trIdent
-        // cy.request({
-        //     method: 'GET',
-        //     url: 'https://account.stage.paydo.com/v1/transactions/user-transactions',
-        //     headers: {
-        //         token: merchant.token,
-        //     }
-        // }).then((response) => {
-        //     expect(response).property('status').to.equal(200);
-        //     expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-        //     let trIdent = response.body.data[0].identifier;
-        //
-        //     // get status refund
-        //     cy.request({
-        //         method: 'GET',
-        //         url: "https://account.stage.paydo.com/v1/transactions/" + trIdent,
-        //         headers: {
-        //             token: merchant.token,
-        //         }
-        //     }).then((response) => {
-        //         expect(response).property('status').to.equal(200);
-        //         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-        //         expect(response.body.data.refunds[0].status).to.eq(1)
-        //     })
-        // })
     }
 
 

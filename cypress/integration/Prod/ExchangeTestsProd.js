@@ -133,14 +133,15 @@ describe('Exchange suit UI', () => {
     });
 
     it('Exchange math', () => {
-    // Get available balance "from wallet"
-    cy.request({
+
+        // Get available balance "from wallet"
+        cy.request({
         method: 'GET',
         url: "https://account.paydo.com/v1/wallets/get-all-balances/USD",
         headers: {
             token: user.token
         }
-    }).then((response) => {
+         }).then((response) => {
         expect(response).property('status').to.equal(200);
         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
         let av_bal_from_wallet = response.body.data['USD'].available.actual;
@@ -184,7 +185,7 @@ describe('Exchange suit UI', () => {
                 }).then((response) => {
                     expect(response).property('status').to.equal(200);
 
-                    // Get available balance "from wallet" after
+                    // Get available balance "from wallet" after exchange
                     cy.request({
                         method: 'GET',
                         url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
@@ -196,17 +197,13 @@ describe('Exchange suit UI', () => {
                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                         let av_bal_from_wallet_after = response.body.data['USD'].available.actual.toString();
 
-                        //try {
-
                             expect(parseFloat(av_bal_from_wallet_after).toFixed(2))
                                 .to.eq((av_bal_from_wallet - merchants.amount_exchange).toFixed(2));
 
-                        //}catch (e) {
                             cy.log(av_bal_from_wallet);
                             cy.log(av_bal_from_wallet_after);
-                       // }
 
-                        // Amount after exchange
+                            // Amount after exchange
                         let amount = (merchants.amount_exchange * rate).toFixed(2);
 
                         // Percentage for exchange
@@ -227,13 +224,10 @@ describe('Exchange suit UI', () => {
                             expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                             let av_bal_to_wallet_after = response.body.data['RUB'].available.actual.toString();
 
-                            //try {
-
                                 expect(parseFloat(av_bal_to_wallet_after).toFixed(2))
                                     .to.eq((+av_bal_to_wallet + ex_amount).toFixed(2));
 
-                            //}catch (e) {
-                                cy.log(av_bal_to_wallet);
+                                cy.log('av_bal_to_wallet' + ' ' + av_bal_to_wallet);
                                 cy.log(av_bal_to_wallet_after);
                             //}
                         })

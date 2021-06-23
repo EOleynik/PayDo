@@ -1,6 +1,6 @@
-import merchant from "../fixtures/merchant"
-import feen from "../fixtures/feen"
-import refund from "../fixtures/refund";
+import merchant from "../fixtures/Stage/merchant.json"
+import feen from "../fixtures/Stage/feen.json"
+import refund from "../fixtures/Stage/refund.json";
 import createCheckoutPage from "./CreateCheckoutPage";
 import transactionsPage from "./TransactionsPage";
 

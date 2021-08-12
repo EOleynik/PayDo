@@ -106,10 +106,11 @@ describe('Between Wallets suit ', () => {
         moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
+        moneyTransferPage.confirmTransferWith2FA(merchants.authenticator_2)
         moneyTransferPage.clickButtonConfirmTransfer();
+        cy.wait(2000);
         moneyTransferPage.ConfirmationTransfer('Yes, I sure ')
         cy.wait(2000);
-        moneyTransferPage.enter2FACode(merchants.authenticator_2);
         moneyTransferPage.checkStatusWithdraw('Withdraw created');
     });
 
@@ -132,10 +133,10 @@ describe('Between Wallets suit ', () => {
         moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
+        moneyTransferPage.confirmTransferWith2FA(merchants.authenticator_2)
         moneyTransferPage.clickButtonConfirmTransfer();
         moneyTransferPage.ConfirmationTransfer('Yes, I sure ')
         cy.wait(2000);
-        moneyTransferPage.enter2FACode(merchants.authenticator_2);
         moneyTransferPage.checkStatusWithdraw('Withdraw created');
     });
 
@@ -158,10 +159,10 @@ describe('Between Wallets suit ', () => {
         moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
+        moneyTransferPage.confirmTransferWith2FA(merchants.authenticator_2)
         moneyTransferPage.clickButtonConfirmTransfer();
         moneyTransferPage.ConfirmationTransfer('Yes, I sure ')
         cy.wait(2000);
-        moneyTransferPage.enter2FACode(merchants.authenticator_2);
         moneyTransferPage.checkStatusWithdraw('Withdraw created');
     });
 

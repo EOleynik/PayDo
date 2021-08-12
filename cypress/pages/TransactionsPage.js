@@ -3,7 +3,7 @@ import feen from "../fixtures/Stage/feen.json"
 import paymentMethod from "../fixtures/Stage/paymentMethod.json"
 import checkout from "../fixtures/Stage/checkout.json";
 import refund from "../fixtures/Stage/refund.json";
-import manajer from "../fixtures/manajer";
+import manajer from "../fixtures/Stage/feen.json";
 import chargeback from "../fixtures/Stage/chargeback.json";
 import createCheckoutPage from "./CreateCheckoutPage";
 import parentPage from "./ParentPage";

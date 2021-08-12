@@ -1,8 +1,13 @@
-import parentPage from "./ParentPage"
+import parentPage from "../pages/ParentPage"
 import withdraw from "../fixtures/Stage/withdraw.json";
 import merchant from "../fixtures/Stage/merchant.json";
 import feen from "../fixtures/Stage/feen.json";
 import betweenWallets from "../fixtures/Stage/betweenWallets.json";
+import endpoints from "../fixtures/Stage/endpoints.json"
+import * as lookup from "country-code-lookup";
+
+let no_res = '.no-result';
+let country_name = '.mat-option-text';
 
 class MoneyTransferPage {
 
@@ -30,10 +35,10 @@ class MoneyTransferPage {
         parentPage.clickButton('Go to Money Transfers list')
     }
 
-    enter2FACode(authenticator) {
-        cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]')
-            .clear().type(parentPage.get2FACode(authenticator));
-    }
+    // enter2FACode(authenticator) {
+    //     cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]')
+    //         .clear().type(parentPage.get2FACode(authenticator));
+    // }
 
     clickButtonConfirmTransfer() {
         parentPage.clickButton('Confirm transfer');
@@ -55,11 +60,26 @@ class MoneyTransferPage {
         parentPage.getInput('name').eq(0).clear().type(text);
     }
 
-    selectCountry() {
+    selectCountry(country_name) {
         cy.get('[class="withdraw-method__select"]').click();
-        //cy.get ('#mat-input-13').click();
-        //return cy.get ('#mat-option-5 > .mat-option-text').click();
-        return cy.contains('span', 'Algeria').click();
+        return cy.contains('span', country_name).click();
+    }
+
+    enterCountryAndCheckResult(country_name, blockCountry, message) {
+        cy.get('[class="withdraw-method__select"]').click();
+        for (let i = 0; i < country_name.length; i++) {
+            cy.get('#mat-input-42').type(country_name[i])
+            cy.wait(1000)
+            for (let j = 0; j < blockCountry.length; j++) {
+                if (parentPage.getCodeCountry(country_name[i]) === blockCountry[j]) {
+                    this.checkMessageDisplay(message);
+                    //breack;
+                } else {
+                }
+            }
+            cy.get('#mat-input-42').clear()
+        }
+
     }
 
     enterTextInToInputCity(text) {
@@ -94,8 +114,8 @@ class MoneyTransferPage {
         cy.get('[class="mat-checkbox-inner-container"]').eq(0).click();
     }
 
-    enterTextInToInputAmountToTransfer(text) {
-        parentPage.getInput('amount').clear().type(text);
+    enterTextInToInputAmountToTransfer(amount) {
+        parentPage.getInput('amount').clear().type(amount);
     }
 
     clickFieldAmountToBeCharged() {
@@ -103,28 +123,31 @@ class MoneyTransferPage {
     }
 
     getButtonConfirmTransfer() {
-        return cy.get ('.step-preview > .py-4 > .mat-focus-indicator > .mat-button-wrapper');
+        return cy.get('.step-preview > .py-4 > .mat-focus-indicator > .mat-button-wrapper');
+    }
+
+    confirmTransferWith2FA(key) {
+        cy.get('[class="d-flex justify-content-center ng-star-inserted"]').clear().type (parentPage.get2FACode(key))
     }
 
     chooseCurrencyWallet(wallet) {
         cy.get('[formcontrolname="wallet"]').click();
-        cy.get ('[class="mat-option-text"]').contains(wallet).click();
+        cy.get('[class="mat-option-text"]').contains(wallet).click();
     }
 
     chooseCurrencyTransfer(currency) {
         cy.get('[formcontrolname="currency"]').click();
-        cy.get ('[class="mat-option-text"]').contains(currency).click();
+        cy.get('[class="mat-option-text"]').contains(currency).click();
     }
 
     enterAuthCode(code) {
-        cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]').
-        clear().type(parentPage.get2FACode(code));
+        cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]').clear().type(parentPage.get2FACode(code));
     }
 
     checkStatusWithdraw(message) {
         cy.get('.alert-text').invoke('text').should((text) => {
             let alert = (text);
-            let error = alert.split(':',1);
+            let error = alert.split(':', 1);
             expect(error.toString()).to.eq(message);
         });
     }
@@ -137,7 +160,7 @@ class MoneyTransferPage {
             expect(text).to.eq(sender);
         });
         cy.get('tbody > :nth-child(1) > .cdk-column-recipient').invoke('text').should((text) => {
-            expect(text).to.eq(" ID: "+recipient);
+            expect(text).to.eq(" ID: " + recipient);
         });
         cy.get(':nth-child(1) > .text-right > .amount > .bold').invoke('text').should((text) => {
             expect(parseFloat(text).toFixed(2)).to.eq(parseFloat(amount + +commission).toFixed(2));
@@ -157,8 +180,7 @@ class MoneyTransferPage {
     }
 
     chooseAndAttachDocument() {
-        for (let i = 0; i < withdraw.document_type.length; i++)
-        {
+        for (let i = 0; i < withdraw.document_type.length; i++) {
             cy.get('withdraw-form-transfer-bank-docs mat-form-field').click();
             let doc_type = withdraw.document_type[i];
             cy.contains('span', doc_type).click();
@@ -234,7 +256,7 @@ class MoneyTransferPage {
                             url: 'https://account.stage.paydo.com/v1/wallets/move-money-between-wallets',
                             headers: {
                                 token: user.token,
-                                "x-2fa-code":parentPage.get2FACode(merchant.authenticator)
+                                "x-2fa-code": parentPage.get2FACode(merchant.authenticator)
                             },
                             body: {
                                 "amount": betweenWallets.amount_transfer,
@@ -281,34 +303,32 @@ class MoneyTransferPage {
                                     expect(av_bal_from_wallet_after).to.eq(av_bal_from_wallet - (+betweenWallets.amount_transfer +
                                         +parentPage.calculationFinancialCommission(fixcom, perscom, strateg, betweenWallets.amount_transfer)));
 
-                                            cy.log('av_bal_from_wallet' + ' ' + av_bal_from_wallet);
-                                            cy.log('av_bal_from_wallet_after' + ' ' + av_bal_from_wallet_after);
-                                            //cy.log('sum' + ' ' +sum);
+                                    cy.log('av_bal_from_wallet' + ' ' + av_bal_from_wallet);
+                                    cy.log('av_bal_from_wallet_after' + ' ' + av_bal_from_wallet_after);
+                                    //cy.log('sum' + ' ' +sum);
 
-                                        // Get available balance "recipient wallet" after
-                                        cy.request({
-                                            method: 'GET',
-                                            url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
-                                            headers: {
-                                                token: recipient.token,
-                                            }
-                                        }).then((response) => {
-                                            expect(response).property('status').to.equal(200);
-                                            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                                            let av_bal_to_wallet_after = response.body.data[betweenWallets.recipient_wallet].available.actual;
+                                    // Get available balance "recipient wallet" after
+                                    cy.request({
+                                        method: 'GET',
+                                        url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                        headers: {
+                                            token: recipient.token,
+                                        }
+                                    }).then((response) => {
+                                        expect(response).property('status').to.equal(200);
+                                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                        let av_bal_to_wallet_after = response.body.data[betweenWallets.recipient_wallet].available.actual;
 
-                                            //try {
+                                        //try {
 
-                                            expect(av_bal_to_wallet_after).to.eq(av_bal_to_wallet + Number(betweenWallets.amount_transfer));
+                                        expect(av_bal_to_wallet_after).to.eq(av_bal_to_wallet + Number(betweenWallets.amount_transfer));
 
-                                            //}catch (e) {
-                                                cy.log('av_bal_to_wallet' + ' ' + av_bal_to_wallet);
-                                                cy.log('av_bal_to_wallet_after' + ' ' + av_bal_to_wallet_after);
-                                                cy.log('sum' + ' ' + betweenWallets.amount_transfer);
-                                            //}
-                                        })
+                                        //}catch (e) {
+                                        cy.log('av_bal_to_wallet' + ' ' + av_bal_to_wallet);
+                                        cy.log('av_bal_to_wallet_after' + ' ' + av_bal_to_wallet_after);
+                                        cy.log('sum' + ' ' + betweenWallets.amount_transfer);
                                     })
-                                //}
+                                })
                             })
                         })
                     })
@@ -441,6 +461,91 @@ class MoneyTransferPage {
         })
     }
 
+
+    checkErrorDisplay(message) {
+        this.checkStatusWithdraw(message)
+    }
+
+    checkMessageDisplay(cause, message) {
+        cy.get(cause).invoke('text').should((text) => {
+            let alert = (text);
+            expect(alert.toString()).to.eq(message);
+        });
+    }
+
+    enterBICCodeAndCheckResult(admin, codes, message) {
+        // Get list block Swift for PM and user
+        cy.request({
+            method: 'GET',
+            url: 'https://admin.stage.paydo.com/v1/instrument-settings/restrictions/actual?operationType=6&paymentMethodIdentifier=1000005&userIdentifier=1812',
+            headers: {
+                token: admin.token
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+
+            if (typeof response.body.data[0] !== 'undefined') {
+                let blockSwift = response.body.data[0].value.swiftCodes;
+
+                for (let i = 0; i < codes.length; i++) {
+                    parentPage.getInput('bic').clear().type(codes[i]);
+                    cy.wait(4000);
+                    for (let j = 0; j < blockSwift.length; j++) {
+                        if (codes[i] === blockSwift[j]) {
+                            this.checkMessageDisplay(message);
+                            break;
+                        } else {
+                        }
+                    }
+                }
+            } else {
+                cy.log('No blocked SWIFT codes');
+            }
+        })
+    }
+
+
+    enterReceiverCountryAndCheckResult(admin, beneficiary_country, message) {
+        // Get list block Country for PM and user
+        cy.request({
+            method: 'GET',
+            url: endpoints.restrictions_operationType_6 +
+                "&paymentMethodIdentifier=1000005&userIdentifier=" + merchant.business_account,
+            headers: {
+                token: admin.token
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+
+            if (typeof response.body.data[1] !== 'undefined') {
+                let blockCountry = response.body.data[1].value.countries;
+
+                cy.get('[class="withdraw-method__select"]').click();
+                for (let i = 0; i < beneficiary_country.length; i++) {
+
+                    cy.get('[placeholder="Search"]').clear().type(beneficiary_country[i])
+                    //cy.wait(1000)
+                    for (let j = 0; j < blockCountry.length; j++) {
+
+                        if (parentPage.getCodeCountry(beneficiary_country[i]) === blockCountry[j]) {
+                            this.checkMessageDisplay(no_res,message);
+                            break;
+                        } else {
+                            this.checkMessageDisplay(country_name," " +beneficiary_country[i] + " ")
+
+
+                            // cy.get(country_name).invoke('text').should((text) => {
+                            //     let alert = (text);
+                            //     expect(alert.toString()).to.eq(" " + beneficiary_country[i] + " ");
+                            // });
+                            break;
+                        }
+                        cy.get('[placeholder="Search"]').clear()
+                    }
+                }
+            }
+        })
+    }
 
 
 }

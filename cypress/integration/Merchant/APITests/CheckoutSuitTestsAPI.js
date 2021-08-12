@@ -4,11 +4,45 @@ import transactionsPage from "../../../pages/TransactionsPage";
 import createCheckoutPage from "../../../pages/CreateCheckoutPage"
 import homepage from "../../../pages/HomePage";
 import parentPage from "../../../pages/ParentPage";
+import feen from "../../../fixtures/Stage/feen.json";
+import merchant from "../../../fixtures/Stage/merchant.json";
+
+let user
+
+before(function fetchToken() {
+
+    //Get token for admin
+
+    cy.request('POST', 'https://account.stage.paydo.com/v1/users/login', {
+        email: merchant.email,
+        password: merchant.password,
+    }).then((response) => {
+        expect(response).property('status').to.equal(206);
+
+        cy.request({
+            method: 'POST',
+            url: 'https://account.stage.paydo.com/v1/users/login',
+            headers: {
+                "x-2fa-code": parentPage.get2FACode(merchant.authenticator)
+            },
+            body: {
+                email: merchant.email,
+                password: merchant.password
+            }
+        }).its('headers')
+            .then((res) => {
+                user = res
+            })
+    })
+})
+
+
+
 
     describe('Checkout suit API', () => {
 
         it('Set main currency', () => {
-            homepage.setMainCurrency();
+            //homepage.setMainCurrency();
         });
 
             // 1.Самый простой кейс. Цена товара совпадает с валютами которые в кабинете мерчанта (USD, EUR, GBP, RUB)
@@ -28,10 +62,10 @@ import parentPage from "../../../pages/ParentPage";
                 // и валютами провайдера. Цена товара в USD или EUR или RUB
                 it('Checkout, product currency USD', () => {
 
-                    let payAmount = parentPage.getRandomArbitrary(300, 500);
-                    //let payAmount = 474.24;
+                    //let payAmount = parentPage.getRandomArbitrary(300, 500);
+                    let payAmount = 50;
 
-                    createCheckoutPage.getCheckout2API(payAmount);
+                    createCheckoutPage.getCheckout2API(user, payAmount);
                     cy.wait(2000);
                     transactionsPage.checkAmountAPIUSD(payAmount);
                 });

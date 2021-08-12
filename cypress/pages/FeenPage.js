@@ -2,8 +2,7 @@ import loginPage from "./LoginPage";
 import feen from "../fixtures/Stage/feen.json"
 import merchant from "../fixtures/Stage/merchant.json"
 import paymentMethod from "../fixtures/Stage/paymentMethod.json"
-import manajer from "../fixtures/manajer";
-import parentPage from ".//ParentPage";
+import parentPage from "../pages/ParentPage";
 import checkout from "../fixtures/Stage/checkout.json";
 
 class FeenPage {

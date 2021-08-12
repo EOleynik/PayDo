@@ -4,7 +4,6 @@ import withdraw from "../../../fixtures/Stage/withdraw.json";
 import withdrawPage from "../../../pages/WithdrawPage";
 import merchant from "../../../fixtures/Stage/merchant.json";
 import homePage from "../../../pages/HomePage";
-import merchants from "../../../fixtures/Prod/merchants.json";
 import parentPage from "../../../pages/ParentPage";
 import feen from "../../../fixtures/Stage/feen.json";
 
@@ -37,26 +36,25 @@ describe('Withdraw suit ', () => {
                     admin = res
                 })
         })
+
     })
 
     beforeEach('', () => {
         loginPage.visit('/');
         loginPage.checkAuthorization(merchant.email, merchant.password, merchant.authenticator)
-        //loginPage.loginWithCred(merchant.email, merchant.password);
-       // loginPage.enter2FACode(merchant.authenticator);
-        cy.wait(3000);
+        cy.wait(6000);
+        homePage.checkUrl('/en/overview');
     });
 
     it('Create withdraw, payment is not commercial', () => {
 
-        homePage.checkUrl('/en/overview');
         homePage.clickMenuCreateTransfer();
         cy.wait(5000);
 
         moneyTransferPage.checkUrl('/money-transfers');
         moneyTransferPage.enterTextInToInputIBAN(withdraw.IBAN);
         moneyTransferPage.enterTextInToInputBeneficiaryName(withdraw.beneficiary_name);
-        moneyTransferPage.selectCountry();
+        moneyTransferPage.selectCountry('Algeria');
         moneyTransferPage.enterTextInToInputCity('City');
         moneyTransferPage.enterTextInToInputRecipientAdress(withdraw.recipient_address);
         moneyTransferPage.enterTextInToInputBICCode('BIJORU66XXX');
@@ -70,9 +68,9 @@ describe('Withdraw suit ', () => {
         moneyTransferPage.clickButtonProceed('Proceed');
         cy.wait(3000);
         moneyTransferPage.clickButtonConfirmTransfer('Confirm transfer');
-        cy.wait(1000);
+        cy.wait(3000);
         moneyTransferPage.enterAuthCode(merchant.authenticator);
-        cy.wait(1000);
+        cy.wait(3000);
         moneyTransferPage.checkStatusWithdraw('Withdraw created');
         moneyTransferPage.closeAlert();
         moneyTransferPage.clickButtonGoToMoneyTransferList();
@@ -83,16 +81,15 @@ describe('Withdraw suit ', () => {
         withdrawPage.rejectWithdraw(admin.token);
     });
 
-    it.only('Create withdraw, payment is commercial', () => {
+    it('Create withdraw, payment is commercial', () => {
 
-        homePage.checkUrl('/en/overview');
         homePage.clickMenuCreateTransfer();
         cy.wait(5000);
 
         moneyTransferPage.checkUrl('/money-transfers');
         moneyTransferPage.enterTextInToInputIBAN(withdraw.IBAN);
         moneyTransferPage.enterTextInToInputBeneficiaryName(withdraw.beneficiary_name);
-        moneyTransferPage.selectCountry();
+        moneyTransferPage.selectCountry('Algeria');
         moneyTransferPage.enterTextInToInputCity('City');
         moneyTransferPage.enterTextInToInputRecipientAdress(withdraw.recipient_address);
         moneyTransferPage.enterTextInToInputBICCode('BIJORU66XXX');
@@ -105,9 +102,9 @@ describe('Withdraw suit ', () => {
         moneyTransferPage.clickFieldAmountToBeCharged();
         moneyTransferPage.clickButtonProceed('Proceed');
         moneyTransferPage.clickButtonConfirmTransfer();
-        cy.wait(1000);
+        cy.wait(3000);
         moneyTransferPage.enterAuthCode(merchant.authenticator);
-        cy.wait(1000);
+        cy.wait(3000);
         moneyTransferPage.checkStatusWithdraw('Withdraw created');
         moneyTransferPage.closeAlert();
         moneyTransferPage.clickButtonGoToMoneyTransferList();
@@ -118,4 +115,44 @@ describe('Withdraw suit ', () => {
         withdrawPage.rejectWithdraw(admin.token)
     });
 
-})
+    it('Create a withdrawal, there are not enough funds in the account', () => {
+
+        homePage.clickMenuCreateTransfer();
+        cy.wait(5000);
+
+        moneyTransferPage.checkUrl('/money-transfers');
+        moneyTransferPage.enterTextInToInputIBAN(withdraw.IBAN);
+        moneyTransferPage.enterTextInToInputBeneficiaryName(withdraw.beneficiary_name);
+        moneyTransferPage.selectCountry('Algeria');
+        moneyTransferPage.enterTextInToInputCity('City');
+        moneyTransferPage.enterTextInToInputRecipientAdress(withdraw.recipient_address);
+        moneyTransferPage.enterTextInToInputBICCode('BIJORU66XXX');
+        moneyTransferPage.enterTextInToInputBeneficiaryBank('Primatbank');
+        moneyTransferPage.enterTextInToInputCityBeneficiaryBank('City Bank');
+        moneyTransferPage.enterTextInToInputAddressBeneficiaryBank('Address Bank');
+        moneyTransferPage.enterTextInToInputPurposePayment('Other');
+        moneyTransferPage.InstallCheckboxPaymentNotCommercial();
+        moneyTransferPage.enterTextInToInputAmountToTransfer(1000000);
+        moneyTransferPage.clickFieldAmountToBeCharged();
+        moneyTransferPage.checkErrorDisplay('Insufficient funds');
+    })
+
+    it('Create a withdrawal with Blocked swift codes', () => {
+
+        homePage.clickMenuCreateTransfer();
+        cy.wait(5000);
+
+        moneyTransferPage.enterBICCodeAndCheckResult(admin, withdraw.BIC_code, withdraw.message_blockSwift)
+    })
+
+    it.only('Create a withdraw with Blocked receiver countries', () => {
+
+        cy.wait(7000)
+        homePage.clickMenuCreateTransfer();
+        cy.wait(9000);
+
+        moneyTransferPage.enterReceiverCountryAndCheckResult(admin, withdraw.beneficiary_countries, withdraw.message)
+    })
+
+
+    })

@@ -2,6 +2,7 @@
 import card from "../fixtures/Stage/card.json";
 import feen from "../fixtures/Stage/feen.json";
 import betweenWallets from "../fixtures/Stage/betweenWallets.json";
+import * as lookup from "country-code-lookup";
 
 class ParentPage {
 
@@ -34,6 +35,10 @@ class ParentPage {
         let today = new Date();
         let time = today.getHours() + '_' + today.getMinutes() + '_' + today.getSeconds();
         return time;
+    }
+
+    getCodeCountry(country) {
+        return lookup.byCountry(country).fips
     }
 
     setCommissionsAndStrategy(tr_type, strategy, fix_commiss, perc_commiss, pm_id, user_id) {

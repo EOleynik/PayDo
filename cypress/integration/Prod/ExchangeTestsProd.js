@@ -89,6 +89,7 @@ describe('Exchange suit UI', () => {
     it('Exchange, enough funds on the wallet', () => {
 
         cy.visit('https://account.paydo.com/en/auth/login');
+        cy.wait(1000);
         loginPage.checkUrl('/auth/login');
         loginPage.checkAuthorization(merchants.email_2, merchants.password_2, merchants.authenticator_2);
         cy.wait(3000);
@@ -112,6 +113,7 @@ describe('Exchange suit UI', () => {
     it('Exchange, not enough funds on the wallet', () => {
 
         cy.visit('https://account.paydo.com/en/auth/login');
+        cy.wait(1000);
         loginPage.checkUrl('/auth/login');
         loginPage.checkAuthorization(merchants.email_2, merchants.password_2, merchants.authenticator_2);
         cy.wait(3000);
@@ -229,7 +231,6 @@ describe('Exchange suit UI', () => {
 
                                 cy.log('av_bal_to_wallet' + ' ' + av_bal_to_wallet);
                                 cy.log(av_bal_to_wallet_after);
-                            //}
                         })
                     })
                 })

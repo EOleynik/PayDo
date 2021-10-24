@@ -4,7 +4,7 @@ import merchant from "../fixtures/Stage/merchant.json";
 import feen from "../fixtures/Stage/feen.json";
 import betweenWallets from "../fixtures/Stage/betweenWallets.json";
 import endpoints from "../fixtures/Stage/endpoints.json"
-import * as lookup from "country-code-lookup";
+import merchants from "../fixtures/Prod/merchants.json";
 
 let no_res = '.no-result';
 let country_name = '.mat-option-text';
@@ -34,11 +34,6 @@ class MoneyTransferPage {
     clickButtonGoToMoneyTransferList() {
         parentPage.clickButton('Go to Money Transfers list')
     }
-
-    // enter2FACode(authenticator) {
-    //     cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]')
-    //         .clear().type(parentPage.get2FACode(authenticator));
-    // }
 
     clickButtonConfirmTransfer() {
         parentPage.clickButton('Confirm transfer');
@@ -73,13 +68,11 @@ class MoneyTransferPage {
             for (let j = 0; j < blockCountry.length; j++) {
                 if (parentPage.getCodeCountry(country_name[i]) === blockCountry[j]) {
                     this.checkMessageDisplay(message);
-                    //breack;
                 } else {
                 }
             }
             cy.get('#mat-input-42').clear()
         }
-
     }
 
     enterTextInToInputCity(text) {
@@ -133,11 +126,6 @@ class MoneyTransferPage {
     chooseCurrencyWallet(wallet) {
         cy.get('[formcontrolname="wallet"]').click();
         cy.get('[class="mat-option-text"]').contains(wallet).click();
-    }
-
-    chooseCurrencyTransfer(currency) {
-        cy.get('[formcontrolname="currency"]').click();
-        cy.get('[class="mat-option-text"]').contains(currency).click();
     }
 
     enterAuthCode(code) {
@@ -271,7 +259,6 @@ class MoneyTransferPage {
                         }).then((response) => {
                             expect(response).property('status').to.equal(200);
 
-
                             // Get commission for transfer between wallets
                             cy.request({
                                 method: 'GET',
@@ -305,7 +292,6 @@ class MoneyTransferPage {
 
                                     cy.log('av_bal_from_wallet' + ' ' + av_bal_from_wallet);
                                     cy.log('av_bal_from_wallet_after' + ' ' + av_bal_from_wallet_after);
-                                    //cy.log('sum' + ' ' +sum);
 
                                     // Get available balance "recipient wallet" after
                                     cy.request({
@@ -319,11 +305,8 @@ class MoneyTransferPage {
                                         expect(response.body).property('data').to.not.be.oneOf([null, ""]);
                                         let av_bal_to_wallet_after = response.body.data[betweenWallets.recipient_wallet].available.actual;
 
-                                        //try {
-
                                         expect(av_bal_to_wallet_after).to.eq(av_bal_to_wallet + Number(betweenWallets.amount_transfer));
 
-                                        //}catch (e) {
                                         cy.log('av_bal_to_wallet' + ' ' + av_bal_to_wallet);
                                         cy.log('av_bal_to_wallet_after' + ' ' + av_bal_to_wallet_after);
                                         cy.log('sum' + ' ' + betweenWallets.amount_transfer);
@@ -524,7 +507,7 @@ class MoneyTransferPage {
                 for (let i = 0; i < beneficiary_country.length; i++) {
 
                     cy.get('[placeholder="Search"]').clear().type(beneficiary_country[i])
-                    //cy.wait(1000)
+
                     for (let j = 0; j < blockCountry.length; j++) {
 
                         if (parentPage.getCodeCountry(beneficiary_country[i]) === blockCountry[j]) {
@@ -532,12 +515,6 @@ class MoneyTransferPage {
                             break;
                         } else {
                             this.checkMessageDisplay(country_name," " +beneficiary_country[i] + " ")
-
-
-                            // cy.get(country_name).invoke('text').should((text) => {
-                            //     let alert = (text);
-                            //     expect(alert.toString()).to.eq(" " + beneficiary_country[i] + " ");
-                            // });
                             break;
                         }
                         cy.get('[placeholder="Search"]').clear()
@@ -548,6 +525,192 @@ class MoneyTransferPage {
     }
 
 
+    CreateTransferBetweenWallets(amount_transfer, wallet, sender, sender_authenticator, recipient) {
+        cy.readFile("cypress/fixtures/Prod/sender_headers.json").then((data) => {
+            let sender_token = data.token
+            cy.readFile("cypress/fixtures/Prod/recipient_headers.json").then((data) => {
+                let recipient_token = data.token
+
+                cy.request({
+                    method: 'POST',
+                    url: 'https://account.paydo.com/v1/wallets/calculate-money/on-transfer-between-wallets',
+                    headers: {
+                        token: sender_token,
+                    },
+                    body: {
+                        "amount": amount_transfer,
+                        "currency": wallet,
+                        "paymentMethodIdentifier": 204,
+                        "type": 1
+                    }
+                }).then((response) => {
+                    expect(response).property('status').to.equal(200);
+
+                    // 2FA authentication
+                    cy.request({
+                        method: 'POST',
+                        url: 'https://account.paydo.com/v1/wallets/move-money-between-wallets',
+                        headers: {
+                            token: sender_token,
+                        },
+                        body: {
+                            "amount": amount_transfer,
+                            "currency": wallet,
+                            "email": "",
+                            "paymentMethodIdentifier": 204,
+                            "recipient": recipient,
+                            "startCurrency": wallet,
+                            "type": 1,
+                            "userIdentifierTo": "",
+                        }
+                    }).then((response) => {
+                        expect(response).property('status').to.equal(206);
+
+                        cy.request({
+                            method: 'POST',
+                            url: 'https://account.paydo.com/v1/wallets/move-money-between-wallets',
+                            headers: {
+                                token: sender_token,
+                                "x-2fa-code": parentPage.get2FACode(sender_authenticator)
+                            },
+                            body: {
+                                "amount": amount_transfer,
+                                "currency": wallet,
+                                "email": "",
+                                "paymentMethodIdentifier": 204,
+                                "recipient": recipient,
+                                "startCurrency": wallet,
+                                "type": 1,
+                                "userIdentifierTo": "",
+                            }
+                        }).then((response) => {
+                            expect(response).property('status').to.equal(200);
+                        })
+                    })
+                })
+            })
+        })
+    }
+
+    checkAvailableSenderWallet(user, wallet, amount_transfer, user_token) {
+
+            cy.readFile("cypress/fixtures/Prod/available " + wallet + " " + user + ".json").then((data) => {
+                let available_before = data.available;
+
+                cy.readFile("cypress/fixtures/Prod/com13_type.json").then((data) => {
+                    let fixcom = data.fixcom;
+                    let perscom = data.perscom;
+                    let strategy = data.strategy;
+
+                    cy.request({
+                        method: 'GET',
+                        url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
+                        headers: {
+                            token: user_token
+                        }
+                    }).then((response) => {
+                        expect(response).property('status').to.equal(200);
+                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                        let available_after = response.body.data[wallet].available.actual.toFixed(2)
+
+                        let amountWithCommission = ((+amount_transfer + +parentPage.receiveCommission(fixcom, perscom, strategy))
+                            .toFixed(2))
+
+                        expect(available_after).to.eq((available_before - amountWithCommission).toFixed(2))
+                    })
+                })
+            })
+    }
+
+    checkAvailableRecipientWallet(user, wallet, amount_transfer, user_token) {
+
+            cy.readFile("cypress/fixtures/Prod/available " + wallet + " " + user + ".json").then((data) => {
+                let available_before = data.available;
+
+                cy.request({
+                    method: 'GET',
+                    url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
+                    headers: {
+                        token: user_token
+                    }
+                }).then((response) => {
+                    expect(response).property('status').to.equal(200);
+                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                    let available_after = response.body.data[wallet].available.actual.toString()
+                    expect(available_after).to.eq((+available_before + +amount_transfer).toFixed(2))
+                })
+            })
+    }
+
+    createExchange(user_token, amount, from, to) {
+        cy.request({
+            method: 'POST',
+            url: 'https://account.paydo.com/v1/wallets/exchange',
+            headers: {
+                token: user_token,
+            },
+            body: {
+                "amount": amount,
+                "currency": from,
+                "destinationCurrency": to
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+        })
+    }
+
+    checkAvailableBalanceToWallet(user, wallet, user_token, amount_exchange, admin_token, from) {
+
+        cy.readFile("cypress/fixtures/Prod/available " + wallet + " " + user + ".json").then((data) => {
+            let balance = data.available
+
+            cy.readFile("cypress/fixtures/Prod/com10_type.json").then((data) => {
+                let fixcom = data.fixcom;
+                let perscom = data.perscom;
+                let strategy = data.strategy;
+
+                cy.readFile("cypress/fixtures/Prod/rate_exchange.json").then((data) => {
+                    let rates = data.rates
+                    let amount_after_exchange = (amount_exchange * rates) - parentPage.receiveCommission(fixcom,
+                        perscom, strategy)
+
+                    cy.request({
+                        method: 'GET',
+                        url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
+                        headers: {
+                            token: user_token
+                        }
+                    }).then((response) => {
+                        expect(response).property('status').to.equal(200);
+                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                        expect(parseFloat(response.body.data[wallet].available.actual, 10).toFixed(2)).to.equal
+                        ((+balance + amount_after_exchange).toFixed(2))
+                    })
+                })
+            })
+        })
+    }
+
+    checkAvailableBalanceFromWallet(user, wallet, user_token, amount_exchange) {
+
+        cy.readFile("cypress/fixtures/Prod/available " + wallet + " " + user + ".json").then((data) => {
+            let balance = data.available
+
+            cy.request({
+                method: 'GET',
+                url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
+                headers: {
+                    token: user_token
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200);
+                expect(response.body).property('data').to.not.be.oneOf([null, ""])
+                expect((response.body.data[wallet].available.actual).toFixed(2)).
+                to.equal((balance - amount_exchange).toFixed(2))
+            })
+        })
+    }
 }
+
 
 export default new MoneyTransferPage();

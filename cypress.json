@@ -4,5 +4,6 @@
   "chromeWebSecurity": false,
   "projectId": "s4n8mx",
   "viewportHeight": 1080,
-  "viewportWidth": 1920
+  "viewportWidth": 1920,
+  "watchForFileChanges": false
 }

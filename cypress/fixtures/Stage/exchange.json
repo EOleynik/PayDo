@@ -1,8 +1,8 @@
 {
   "from_wallet": "US Dollar Wallet",
   "to_wallet": "Euro Wallet",
-  "exchange_from": "USD",
-  "exchange_to": "EUR",
+  "from": "USD",
+  "to": "EUR",
   "amount_exchange": 50,
   "exchange_percentage": 3.5
 }

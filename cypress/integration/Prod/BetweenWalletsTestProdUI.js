@@ -31,6 +31,7 @@ describe('Between Wallets suit ', () => {
         moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
+        cy.wait(1000);
         moneyTransferPage.confirmTransferWith2FA(merchants.authenticator_2)
         moneyTransferPage.clickButtonConfirmTransfer();
         cy.wait(2000);
@@ -58,6 +59,35 @@ describe('Between Wallets suit ', () => {
         moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
+        cy.wait(1000);
+        moneyTransferPage.confirmTransferWith2FA(merchants.authenticator_2)
+        moneyTransferPage.clickButtonConfirmTransfer();
+        moneyTransferPage.ConfirmationTransfer('Yes, I sure ')
+        cy.wait(2000);
+        moneyTransferPage.checkStatusWithdraw('Withdraw created');
+    });
+
+    it('Create transfer by recipient Email, choose personal account', () => {
+
+        cy.visit('https://account.paydo.com/en/auth/login');
+        cy.wait(1000);
+        loginPage.checkUrl('/auth/login');
+        loginPage.checkAuthorization(merchants.email_2, merchants.password_2, merchants.authenticator_2);
+        cy.wait(3000);
+
+        homePage.checkUrl('/overview');
+        homePage.clickMenuCreateTransfer();
+        cy.wait(3000);
+
+        moneyTransferPage.checkUrl('/money-transfers');
+        moneyTransferPage.clickTab('Between Wallets');
+        moneyTransferPage.chooseCurrencyWallet('USD');
+        moneyTransferPage.enterTextInToInputRecipient(merchants.email_4);
+        moneyTransferPage.chooseAccountType('personal');
+        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        cy.wait(1000);
+        moneyTransferPage.clickButtonProceed();
+        cy.wait(1000);
         moneyTransferPage.confirmTransferWith2FA(merchants.authenticator_2)
         moneyTransferPage.clickButtonConfirmTransfer();
         moneyTransferPage.ConfirmationTransfer('Yes, I sure ')
@@ -84,12 +114,85 @@ describe('Between Wallets suit ', () => {
         moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
+        cy.wait(1000);
         moneyTransferPage.confirmTransferWith2FA(merchants.authenticator_2)
         moneyTransferPage.clickButtonConfirmTransfer();
         moneyTransferPage.ConfirmationTransfer('Yes, I sure ')
         cy.wait(2000);
         moneyTransferPage.checkStatusWithdraw('Withdraw created');
     });
+
+    it('Create transfer, recipient is not verified', () => {
+
+        cy.visit('https://account.paydo.com/en/auth/login');
+        cy.wait(1000);
+        loginPage.checkUrl('/auth/login');
+        loginPage.checkAuthorization(merchants.email_2, merchants.password_2, merchants.authenticator_2);
+        cy.wait(3000);
+
+        homePage.checkUrl('/overview');
+        homePage.clickMenuCreateTransfer();
+        cy.wait(3000);
+
+        moneyTransferPage.checkUrl('/money-transfers');
+        moneyTransferPage.clickTab('Between Wallets');
+        moneyTransferPage.chooseCurrencyWallet('USD');
+        moneyTransferPage.enterTextInToInputRecipient("ECOM" + 0 + merchants.account_6 + "F");
+        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        cy.wait(1000);
+        moneyTransferPage.clickButtonProceed();
+        cy.wait(1000);
+        moneyTransferPage.confirmTransferWith2FA(merchants.authenticator_2)
+        moneyTransferPage.clickButtonConfirmTransfer();
+        moneyTransferPage.ConfirmationTransfer('Yes, I sure ')
+        cy.wait(2000);
+        moneyTransferPage.checkStatusWithdraw('Error "userIdentifierTo", This user is not verified yet.');
+    });
+
+    it('Create transfer, recipient data invalid', () => {
+
+        cy.visit('https://account.paydo.com/en/auth/login');
+        cy.wait(1000);
+        loginPage.checkUrl('/auth/login');
+        loginPage.checkAuthorization(merchants.email_2, merchants.password_2, merchants.authenticator_2);
+        cy.wait(3000);
+
+        homePage.checkUrl('/overview');
+        homePage.clickMenuCreateTransfer();
+        cy.wait(3000);
+
+        moneyTransferPage.checkUrl('/money-transfers');
+        moneyTransferPage.clickTab('Between Wallets');
+        moneyTransferPage.chooseCurrencyWallet('USD');
+        moneyTransferPage.enterTextInToInputRecipient('00');
+        moneyTransferPage.checkErrorDisplay('We didn\'t find anyone for your request. Please, try again');
+        moneyTransferPage.checkButtonStatus('Proceed', 'disabled');
+
+    });
+
+    it('Create a transfer, not enough money in the wallets', () => {
+
+        cy.visit('https://account.paydo.com/en/auth/login');
+        cy.wait(1000);
+        loginPage.checkUrl('/auth/login');
+        loginPage.checkAuthorization(merchants.email_2, merchants.password_2, merchants.authenticator_2);
+        cy.wait(3000);
+
+        homePage.checkUrl('/overview');
+        homePage.clickMenuCreateTransfer();
+        cy.wait(3000);
+
+        moneyTransferPage.checkUrl('/money-transfers');
+        moneyTransferPage.clickTab('Between Wallets');
+        moneyTransferPage.chooseCurrencyWallet('USD');
+        moneyTransferPage.enterTextInToInputRecipient("ECOM" + 0 + merchants.account_6 + "F");
+        moneyTransferPage.enterTextInToInputAmount('1000');
+        moneyTransferPage.checkErrorAlert('Insufficient funds');
+        //moneyTransferPage.closeErrorAlert();
+        moneyTransferPage.checkButtonStatus('Proceed', 'disabled')
+
+    });
+
 
     describe('Between API ', () => {
 

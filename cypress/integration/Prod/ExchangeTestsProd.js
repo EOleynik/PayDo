@@ -67,15 +67,14 @@ describe('Exchange suit UI', () => {
         parentPage.getAvailableBalance('sender', exchange.from);
         parentPage.getAvailableBalance('sender', exchange.to);
         parentPage.getRate("exchange", exchange.from, exchange.to, admin_headers.token);
-        parentPage.getBaseCommission(merchants.amount_exchange, exchange.from ,10, 511, admin_headers.token); //
+        parentPage.getBaseCommission(exchange.amount_exchange, exchange.from ,10, 511, admin_headers.token); //
     })
 
         it('Exchange math', () => {
 
-            moneyTransferPage.createExchange(sender_headers.token, merchants.amount_exchange, exchange.from, exchange.to);
+            moneyTransferPage.createExchange(sender_headers.token, exchange.amount_exchange, exchange.from, exchange.to);
             moneyTransferPage.checkAvailableBalanceFromWallet('sender', exchange.from, sender_headers.token, exchange.amount_exchange) // from wallet
-            moneyTransferPage.checkAvailableBalanceToWallet('sender', exchange.to, sender_headers.token, exchange.amount_exchange,
-                admin_headers.token, exchange.from) // to wallet
+            moneyTransferPage.checkAvailableBalanceToWallet('sender', exchange.to, sender_headers.token, exchange.amount_exchange) // to wallet
         })
     })
 

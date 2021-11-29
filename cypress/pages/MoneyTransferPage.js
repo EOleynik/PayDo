@@ -8,6 +8,7 @@ import merchants from "../fixtures/Prod/merchants.json";
 
 let no_res = '.no-result';
 let country_name = '.mat-option-text';
+let error = '.mat-error';
 
 class MoneyTransferPage {
 
@@ -120,7 +121,7 @@ class MoneyTransferPage {
     }
 
     confirmTransferWith2FA(key) {
-        cy.get('[class="d-flex justify-content-center ng-star-inserted"]').clear().type (parentPage.get2FACode(key))
+        cy.get('[class="d-flex justify-content-center ng-star-inserted"]').click().clear().type (parentPage.get2FACode(key))
     }
 
     chooseCurrencyWallet(wallet) {
@@ -132,11 +133,15 @@ class MoneyTransferPage {
         cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]').clear().type(parentPage.get2FACode(code));
     }
 
-    checkStatusWithdraw(message) {
+    checkStatusWithdraw(message, part) {
         cy.get('.alert-text').invoke('text').should((text) => {
             let alert = (text);
-            let error = alert.split(':', 1);
-            expect(error.toString()).to.eq(message);
+            if (part && part.isSet) {
+                expect(alert.toString()).to.eq(message);
+            } else {
+                let error = alert.split(':', part);
+                expect(error.toString()).to.eq(message);
+            }
         });
     }
 
@@ -446,8 +451,17 @@ class MoneyTransferPage {
 
 
     checkErrorDisplay(message) {
-        this.checkStatusWithdraw(message)
+        cy.get('[class="transfer-main"]').click();
+        cy.get(error).invoke('text').should((text) => {
+            let alert = (text);
+            expect(alert.toString()).to.eq(message);
+        });
     }
+
+
+
+        //this.checkStatusWithdraw(message)
+
 
     checkMessageDisplay(cause, message) {
         cy.get(cause).invoke('text').should((text) => {
@@ -659,7 +673,7 @@ class MoneyTransferPage {
         })
     }
 
-    checkAvailableBalanceToWallet(user, wallet, user_token, amount_exchange, admin_token, from) {
+    checkAvailableBalanceToWallet(user, wallet, user_token, amount_exchange) {
 
         cy.readFile("cypress/fixtures/Prod/available " + wallet + " " + user + ".json").then((data) => {
             let balance = data.available
@@ -710,6 +724,36 @@ class MoneyTransferPage {
             })
         })
     }
+
+    chooseAccountType(type) {
+        parentPage.chooseAccountType(type);
+    }
+
+    checkButtonStatus(name, status) {
+        parentPage.getButtonStatus(name, status)
+        // if (status === 'disabled') {
+        //     cy.contains('button', butt).should('be.disabled')
+        //     //parentPage.getButton(button).should('have.attr', 'disabled');
+        // } else {
+        //     cy.contains('button', butt).should('not.be.disabled')
+        //    // parentPage.getButton(butt).should('not.be.disabled')
+        // }
+}
+
+    checkErrorAlert(message) {
+        cy.get('[class="transfer-main"]').click();
+        cy.get('.alert-text').invoke('text').should((text) => {
+            let alert = (text);
+            expect(alert).to.equal(message)
+
+        })
+    }
+
+    closeErrorAlert() {
+        parentPage.closeAlert()
+    }
+
+
 }
 
 

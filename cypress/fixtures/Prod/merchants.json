@@ -7,12 +7,15 @@
   "amount_transfer": 0.1,
   "from_wallet": "US Dollar Wallet",
   "to_wallet": "Russian Ruble Wallet",
-  "amount_exchange": 0.3,
   "mid_for_user": 511,
   "authenticator_4": "VKLUZWYMUQWC6GU3",
   "account_4": "20330",
   "email_4": "eugeniy.o+4avtotest_p@payop.com",
-  "password_4": "1q2w3e$R%T^Y_p"
+  "password_4": "1q2w3e$R%T^Y_p",
+  "authenticator_6": "",
+  "account_6": "69092",
+  "email_6": "eugeniy.o+6avtotest_p@payop.com",
+  "password_6": "1q2w3e$R%T^Y_p"
 
 
 

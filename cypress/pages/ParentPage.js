@@ -95,8 +95,20 @@ class ParentPage {
         return cy.get('.close-alert').click({force: true})
     }
 
+    getButton(name) {
+        return cy.contains('span', name);
+    }
+
     clickButton(name) {
-        return cy.contains('span', name).click({force: true});
+        return this.getButton(name).click({force: true});
+    }
+
+    getButtonStatus(name, status) {
+        if (status === 'disabled') {
+            cy.contains('button', name).should('be.disabled')
+        } else {
+            cy.contains('button', name).should('not.be.disabled')
+        }
     }
 
     getMenu(name) {
@@ -260,6 +272,16 @@ class ParentPage {
             return +(+fixcom + +perscom).toFixed(2);
         }
     }
+
+    chooseAccountType(type) {
+        if(type === 'personal') {
+            cy.get('[class="mat-radio-container"]').eq(1).click()
+        } else {
+            cy.get('[class="mat-radio-container"]').eq(0).click()
+        }
+    }
+
+
 }
 
 

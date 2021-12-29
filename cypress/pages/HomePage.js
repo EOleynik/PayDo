@@ -5,15 +5,31 @@ import parentPage from "../pages/ParentPage"
 class HomePage {
 
     checkUrl(Url) {
-        parentPage.checkUrl(Url)
+        parentPage.checkUrl(Url);
+    }
+
+    clickMenuBankDetails() {
+        cy.get('[class="top-menu__li ng-star-inserted"]').eq(3).click();
+    }
+
+    clickMenuCards() {
+        parentPage.getMenu('Cards').click();
+    }
+
+    clickMenuPaymentMethods() {
+        parentPage.getMenu('Payment methods').click();
     }
 
     clickMenuPaymentsHistory() {
-        parentPage.getMenu('Payments History').click()
+        parentPage.getMenu('Payments History').click();
+    }
+
+    clickMenuPartnerProgram() {
+        parentPage.getMenu('Partner program').click();
     }
 
     clickMenuChargebacks() {
-        parentPage.getMenu('Chargebacks').click()
+        parentPage.getMenu('Chargebacks').click();
     }
 
     clickMenuProjects() {
@@ -26,6 +42,10 @@ class HomePage {
 
     clickMenuTransactions () {
         parentPage.getMenu('Transactions').click();
+    }
+
+    clickMenuListOfTransfer() {
+        parentPage.getMenu('List of Transfers').click();
     }
 
     clickMenuCreateTransfer() {
@@ -50,13 +70,12 @@ class HomePage {
 
     getChangeAccount() {
         cy.get('[class="acc-active__info_acc-type"]').click();
-        return cy.contains('Personal account').click()
+        return cy.contains('Personal account').click();
     }
 
     getSubmenuPersonal() {
-        return cy.get('[class="mat-line mid-menu__li-text"]').contains('Personal')
+        return cy.get('[class="mat-line mid-menu__li-text"]').contains('Personal');
     }
-
 
     clickMenuTickets() {
         parentPage.getMenu('Tickets').click();
@@ -76,7 +95,6 @@ class HomePage {
         }).then((response) => {
             expect(response).property('status').to.equal(201);
             expect(response.body.status).eq(1);
-
         })
     }
 

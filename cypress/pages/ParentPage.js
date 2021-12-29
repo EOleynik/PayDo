@@ -281,8 +281,8 @@ class ParentPage {
 
                     cy.readFile("cypress/fixtures/Prod/Helpers/rate_for_com_" + currency + ".json").then((data) => {
                         let rate = data.rates
-                        let fix = (response.body.data.value[currency][0] * rate).toFixed(2)
-                        let pers = ((amount / 100) * response.body.data.value[currency][1]).toFixed(2)
+                        let fix = (response.body.data.value.EUR[0] * rate).toFixed(2)
+                        let pers = ((amount / 100) * response.body.data.value.EUR[1]).toFixed(2)
                         cy.writeFile("cypress/fixtures/Prod/Helpers/commission_for_" + tr_type + "_type.json", {
                             'currency': currency,
                             'fixcom': fix,
@@ -389,16 +389,11 @@ class ParentPage {
         })
     }
 
-    getMaxAvailableBalanceAfterRecalculation(user, account_type, position) {
-
-        cy.readFile("cypress/fixtures/Prod/Helpers/all available " + account_type + " balances " + user + ".json").then((data) => {
-            let balances = data
+    getMaxAvailableBalanceAfterRecalculation(user, account_type, position, balances) {
 
             cy.writeFile("cypress/fixtures/Prod/Helpers/max available " + account_type + " " + user + ".json",
                 {'available': balances[position], 'wallet':betweenWallets.wallets[position]})
-        })
-    }
-
+           }
 
 }
 

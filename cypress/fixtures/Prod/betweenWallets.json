@@ -2,7 +2,7 @@
   "payment_method_ID": 204,
   "recipient_ID": 1602,
   "wallet": "USD",
-  "amount_transfer": 1,
+  "amount_transfer": 0.1,
   "wallet_null": "GBP",
   "wallets": ["EUR", "USD", "GBP", "AUD"]
 }

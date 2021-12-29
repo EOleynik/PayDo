@@ -1,5 +1,5 @@
 import loginPage from "../../../pages/LoginPage";
-import betweenWallets from "../../../fixtures/Stage/betweenWallets.json";
+import betweenWallets from "../../../fixtures/Stage/betweenWalletsST.json";
 import moneyTransferPage from "../../../pages/MoneyTransferPage";
 import merchant from "../../../fixtures/Stage/merchant.json";
 import homePage from "../../../pages/HomePage";

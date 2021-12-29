@@ -984,7 +984,7 @@ class MoneyTransferPage {
                                     (data[2] * rate_2).toFixed(2), (data[3] * rate_3).toFixed(2)]
 
                                 //получаем баланс нужного кошелька
-                                parentPage.getMaxAvailableBalanceAfterRecalculation('sender', account_type, parentPage.getIndex_max(arrRecBal))
+                                parentPage.getMaxAvailableBalanceAfterRecalculation('sender', account_type, parentPage.getIndex_max(arrRecBal), balances)
 
                             })
                         })

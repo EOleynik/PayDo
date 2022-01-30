@@ -38,6 +38,18 @@ class ParentPage {
         return (Math.random() * (max - min) + min).toFixed(2);
     };
 
+    getRandomIntInclusive = function getRandomIntInclusive(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+    }
+
+    getRandomInt = function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+    }
+
     signatureGeneration(payAmount, payCurrency, description, secret_key) {
         var sha256 = require('js-sha256');
         var hash = sha256.create();
@@ -184,7 +196,15 @@ class ParentPage {
         })
     }
 
-    getAvailableBalance(user, account_type, wallet) {
+    getTokenAdmin(user, email, password, authenticator, account_type) {
+        this.getTokenUser(user, email, password, authenticator, account_type)
+        cy.readFile("cypress/fixtures/Prod/Helpers/admin_business_headers.json").then((data) => {
+             let admin_token = data.token
+            return admin_token
+        })
+    }
+
+        getAvailableBalance(user, account_type, wallet) {
 
         cy.readFile("cypress/fixtures/Prod/Helpers/" + user + "_" + account_type +"_headers.json").then((data) => {
             let tok = data.token
@@ -205,16 +225,16 @@ class ParentPage {
         })
     }
 
-    getCommissionForTransfer(amount, currency, tr_type, mid, payment_method) {
+    getCommissionForTransfer(amount, currency, tr_type, mid, payment_method, token) {
 
-        cy.readFile("cypress/fixtures/Prod/Helpers/admin_business_headers.json").then((data) => {
-            let tok = data.token
+        // cy.readFile("cypress/fixtures/Prod/Helpers/admin_business_headers.json").then((data) => {
+        //     let tok = data.token
 
             cy.request({
                 method: 'GET',
                 url: "https://admin.paydo.com/v1/instrument-settings/commissions/for-mid/" + tr_type + "/" + mid + "/" + payment_method,
                 headers: {
-                    token: tok,
+                    token: token,
                 }
             }).then((response) => {
                 expect(response).property('status').to.equal(200);
@@ -248,7 +268,7 @@ class ParentPage {
                     })
                 }
             })
-        })
+        //})
     }
 
     getBaseCommission(amount, currency, tr_type, mid) {
@@ -317,7 +337,7 @@ class ParentPage {
                         response.body.data[wallets[3]].available.actual])
 
                 })
-        })
+       })
     }
 
     getRate(type, from, to) {
@@ -395,6 +415,29 @@ class ParentPage {
                 {'available': balances[position], 'wallet':betweenWallets.wallets[position]})
            }
 
+    getRandomWallet(min, max) {
+        let i = this.getRandomIntInclusive(min, max)
+        return betweenWallets.wallets[i]
+    }
+
+    getRandomAmountTransfer(min, max) {
+        return this.getRandomArbitrary(min, max)
+    }
+
+    getRandomAccountType(min, max) {
+        if(this.getRandomIntInclusive(min, max) === 1) {
+        return 'personal'
+        } else {
+            return 'business'
+        }
+    }
+
+    getSumElemArray(arrRecBal) {
+        return arrRecBal.reduce(function(sum, elem) {
+            return sum + elem;
+        }, 0);
+
+    }
 }
 
 

@@ -10,7 +10,7 @@ var amount_transfer = 0.3;
 var admin_token;
 var sender_token;
 var recipient_token;
-var wallet_for_transfer = 'GBP';
+var wallet_for_transfer = 'EUR';
 
 describe('Between Wallets suit API', () => {
 
@@ -79,7 +79,7 @@ describe('Between Wallets suit API', () => {
         parentPage.getAvailableBalance('recipient', recipient_account_type, wallet_for_transfer);
 
         // create Transfer
-        //moneyTransferPage.createTransfer(amount_transfer, wallet_for_transfer, merchants.authenticator_2, merchants.account_4);
+        moneyTransferPage.createTransfer(amount_transfer, wallet_for_transfer, merchants.authenticator_2, merchants.account_4);
 
         // проверка баланса отправителя
          moneyTransferPage.checkAvailableSenderWallets('sender', sender_account_type, amount_transfer,  wallet_for_transfer, admin_token,

@@ -7,7 +7,7 @@ describe('Send and Accept Verification', () => {
 
     it('Personal Verification', () => {
 
-        // persVerPage.sendMainInformationPersonalDocuments();
+        //persVerPage.sendMainInformationPersonalDocuments();
         // persVerPage.sendRequestIban();
         // managerPage.acceptPersonalVerification();
         // managerPage.acceptPersonalIBAN();

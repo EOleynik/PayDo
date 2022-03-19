@@ -9,6 +9,8 @@ import merchants from "../fixtures/Prod/merchants.json";
 let no_res = '.no-result';
 let country_name = '.mat-option-text';
 let error = '.mat-error';
+let info = '[class="block-info__text"]'
+let preview = '[class="preview-item d-flex justify-content-between"]'
 
 class MoneyTransferPage {
 
@@ -121,7 +123,7 @@ class MoneyTransferPage {
     }
 
     confirmTransferWith2FA(key) {
-        cy.get('[class="d-flex justify-content-center ng-star-inserted"]').click().clear().type(parentPage.get2FACode(key));
+        cy.get('[class="d-flex justify-content-center ng-star-inserted"]').click().type(parentPage.get2FACode(key));
     }
 
     chooseCurrencyWallet(wallet) {
@@ -453,14 +455,37 @@ class MoneyTransferPage {
 
     checkErrorDisplay(message) {
         cy.get('[class="transfer-main"]').click();
+        cy.wait(1000);
         cy.get(error).invoke('text').should((text) => {
             let alert = (text);
             expect(alert.toString()).to.eq(message);
         });
     }
 
+    checkDisplayInformationBlock(message,index) {
+        cy.get(info).eq(index).invoke('text').should((text) => {
+            let alert = (text);
+            expect(alert.toString()).to.eq(message);
+        });
+    }
+
+    checkDetailsOfTheRecipient(message, index, account_type) {
+        cy.get(preview).eq(index).invoke('text').should((text) => {
+            let alert = (text);
+            if (account_type === 'business') {
+                expect(alert.toString()).to.eq(message + " " + merchants.companyName_4 + " ");
+            }
+            else if (account_type === 'personal') {
+                expect(alert.toString()).to.eq(message + " " + merchants.personalName_4 + " ");
+            }
+            else if (account_type === undefined) {
+                expect(alert.toString()).to.eq(message)
+            }
+        });
+    }
+
     checkMessageDisplay(cause, message) {
-        cy.get(cause).invoke('text').should((text) => {
+        cy.get(cause).eq(1).invoke('text').should((text) => {
             let alert = (text);
             expect(alert.toString()).to.eq(message);
         });
@@ -866,7 +891,7 @@ class MoneyTransferPage {
 
                     if(maxBal1 >= (+difference + (difference /100 *3.5)).toFixed(2)) {
 
-                        // проверяем баланс wallet_for_transfer
+                        // проверяем баланс wallet_for_transfer ( списало что было с wallet_for_transfer )
                         cy.request({
                             method: 'GET',
                             url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
@@ -878,7 +903,7 @@ class MoneyTransferPage {
 
                             expect(response.body.data[wallet_transfer].available.actual).to.eq(0);
 
-                            // проверяем maxBall
+                            // проверяем maxBall ( списало остаток )
                             this.logicMathCheckingBalances_2_1(wallet_transfer, difference, balances[pos1], betweenWallets.wallets[pos1], sender_token, admin_token)
                         })
                     }else {
@@ -1129,7 +1154,7 @@ class MoneyTransferPage {
 
     createExchange(user, account_type, amount, from, to) {
 
-        cy.readFile("cypress/fixtures/Prod/" + user + "_" + account_type + "_headers.json").then((data) => {
+        cy.readFile("cypress/fixtures/Prod/Helpers/" + user + "_" + account_type + "_headers.json").then((data) => {
             let tok = data.token
 
             cy.request({
@@ -1151,18 +1176,18 @@ class MoneyTransferPage {
 
     checkAvailableBalanceToWallet(user, account_type, wallet, amount_exchange) {
 
-        cy.readFile("cypress/fixtures/Prod/available " + account_type + " " + wallet + " " + user + ".json").then((data) => {
+        cy.readFile("cypress/fixtures/Prod/Helpers/available " + account_type + " " + wallet + " " + user + ".json").then((data) => {
             let balance = data.available
 
-            cy.readFile("cypress/fixtures/Prod/" + user + "_" + account_type + "_headers.json").then((data) => {
+            cy.readFile("cypress/fixtures/Prod/Helpers/" + user + "_" + account_type + "_headers.json").then((data) => {
                 let token = data.token
 
-                cy.readFile("cypress/fixtures/Prod/com10_type.json").then((data) => {
+                cy.readFile("cypress/fixtures/Prod/Helpers/commission_for_10_type.json").then((data) => {
                     let fixcom = data.fixcom;
                     let perscom = data.perscom;
                     let strategy = data.strategy;
 
-                    cy.readFile("cypress/fixtures/Prod/rate_exchange.json").then((data) => {
+                    cy.readFile("cypress/fixtures/Prod/Helpers/rate_exchange_" + wallet + ".json").then((data) => {
                         let rates = data.rates
                         let amount_after_exchange = (amount_exchange * rates) - parentPage.receiveCommission(fixcom,
                             perscom, strategy)
@@ -1187,10 +1212,10 @@ class MoneyTransferPage {
 
     checkAvailableBalanceFromWallet(user, account_type, wallet, amount_exchange) {
 
-        cy.readFile("cypress/fixtures/Prod/available " + account_type + " " + wallet + " " + user + ".json").then((data) => {
+        cy.readFile("cypress/fixtures/Prod/Helpers/available " + account_type + " " + wallet + " " + user + ".json").then((data) => {
             let balance = data.available
 
-            cy.readFile("cypress/fixtures/Prod/" + user + "_" + account_type + "_headers.json").then((data) => {
+            cy.readFile("cypress/fixtures/Prod/Helpers/" + user + "_" + account_type + "_headers.json").then((data) => {
                 let token = data.token
 
                 cy.request({
@@ -1392,6 +1417,16 @@ class MoneyTransferPage {
     logicMathCheckingBalances_2_2() {
 
     }
+
+    getRandomAccountType(min, max) {
+       return parentPage.getRandomAccountType(min, max)
+    }
+
+    getRandomAccountType2(min, max) {
+        return parentPage.getRandomAccountType2(min, max)
+    }
+
+
 }
 
 export default new MoneyTransferPage();

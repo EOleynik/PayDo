@@ -1,8 +1,13 @@
 {
   "payment_method_ID": 204,
-  "recipient_ID": 1602,
-  "wallet": "USD",
-  "amount_transfer": 0.1,
+  "wallet": "EUR",
+  "amount_transfer": 0.01,
   "wallet_null": "GBP",
-  "wallets": ["EUR", "USD", "GBP", "AUD"]
+  "wallets": ["EUR", "USD", "GBP", "AUD"],
+  "infoTextFull": "If you are sending by email, please select the account you are sending the funds to: Business - if you are sending the payment to company. Individual - if you are sending the payment to an individual.On the next step, please carefully check the name of company name before confirming the payment.",
+  "infoPart1": " Please note, you are sending money to the non verified ",
+  "infoPart2": " account, the recepient be able to claim the money only after the full verification. ",
+  "infoText2": "Please check the recepient properly before confirming the payment.",
+  "recipientData": " Recipient PayDo ID or email  ",
+  "recipientData2": " Recipient "
 }

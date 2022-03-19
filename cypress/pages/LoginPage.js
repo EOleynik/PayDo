@@ -64,9 +64,10 @@ class LoginPage {
 
     checkAuthorization(email, password, authenticator) {
         cy.get('body').then(($body) => {
+            cy.wait(2000);
             if ($body.text().includes('Continue')) {
                 cy.contains('Change account ').click();
-                cy.wait(1000);
+                cy.wait(2000);
                 parentPage.getLogin(email, password, authenticator)
             } else {
                 parentPage.getLogin(email, password, authenticator)

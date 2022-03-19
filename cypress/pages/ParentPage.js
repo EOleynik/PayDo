@@ -25,8 +25,8 @@ class ParentPage {
 
     getIndex_max(arr) {
         let i, maxV, maxP;
-        for( i = 0; i < arr.length; i++) {
-            if( typeof maxV === "undefined" || arr[i] > maxV ) {
+        for (i = 0; i < arr.length; i++) {
+            if (typeof maxV === "undefined" || arr[i] > maxV) {
                 maxV = arr[i];
                 maxP = i;
             }
@@ -187,7 +187,7 @@ class ParentPage {
             }).its('headers')
                 .then((res) => {
                     let headers = res
-                    if(account_type === 1) {
+                    if (account_type === 1) {
                         cy.writeFile("cypress/fixtures/Prod/Helpers/" + user + "_personal_headers.json", res)
                     } else {
                         cy.writeFile("cypress/fixtures/Prod/Helpers/" + user + "_business_headers.json", res)
@@ -199,14 +199,14 @@ class ParentPage {
     getTokenAdmin(user, email, password, authenticator, account_type) {
         this.getTokenUser(user, email, password, authenticator, account_type)
         cy.readFile("cypress/fixtures/Prod/Helpers/admin_business_headers.json").then((data) => {
-             let admin_token = data.token
+            let admin_token = data.token
             return admin_token
         })
     }
 
-        getAvailableBalance(user, account_type, wallet) {
+    getAvailableBalance(user, account_type, wallet) {
 
-        cy.readFile("cypress/fixtures/Prod/Helpers/" + user + "_" + account_type +"_headers.json").then((data) => {
+        cy.readFile("cypress/fixtures/Prod/Helpers/" + user + "_" + account_type + "_headers.json").then((data) => {
             let tok = data.token
 
             cy.request({
@@ -219,7 +219,7 @@ class ParentPage {
                 expect(response).property('status').to.equal(200);
                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
 
-                cy.writeFile("cypress/fixtures/Prod/Helpers/available " + account_type + " "+ wallet + " "  + user + ".json",
+                cy.writeFile("cypress/fixtures/Prod/Helpers/available " + account_type + " " + wallet + " " + user + ".json",
                     {'available': response.body.data[wallet].available.actual})
             })
         })
@@ -230,44 +230,44 @@ class ParentPage {
         // cy.readFile("cypress/fixtures/Prod/Helpers/admin_business_headers.json").then((data) => {
         //     let tok = data.token
 
-            cy.request({
-                method: 'GET',
-                url: "https://admin.paydo.com/v1/instrument-settings/commissions/for-mid/" + tr_type + "/" + mid + "/" + payment_method,
-                headers: {
-                    token: token,
-                }
-            }).then((response) => {
-                expect(response).property('status').to.equal(200);
-                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+        cy.request({
+            method: 'GET',
+            url: "https://admin.paydo.com/v1/instrument-settings/commissions/for-mid/" + tr_type + "/" + mid + "/" + payment_method,
+            headers: {
+                token: token,
+            }
+        }).then((response) => {
+            expect(response).property('status').to.equal(200);
+            expect(response.body).property('data').to.not.be.oneOf([null, ""]);
 
-                let hasCurrency = !!response.body.data.value?.[currency]
+            let hasCurrency = !!response.body.data.value?.[currency]
 
-                if (hasCurrency) {
+            if (hasCurrency) {
+                cy.writeFile("cypress/fixtures/Prod/Helpers/commission_for_" + tr_type + "_type_" + currency + ".json", {
+                    'currency': currency,
+                    'fixcom': response.body.data.value[currency][0],
+                    'perscom': ((amount / 100) * response.body.data.value[currency][1]),
+                    'strategy': response.body.data.strategy
+                })
+            } else {
+
+                this.getRate('for_commission', 'EUR', currency)
+
+                cy.readFile("cypress/fixtures/Prod/Helpers/rate_for_commission_" + currency + ".json").then((data) => {
+                    let rate = data.rates
+
+                    let fix = (response.body.data.value.EUR[0] * rate).toFixed(2)
+                    let pers = ((amount / 100) * response.body.data.value.EUR[1]).toFixed(2)
+
                     cy.writeFile("cypress/fixtures/Prod/Helpers/commission_for_" + tr_type + "_type_" + currency + ".json", {
                         'currency': currency,
-                        'fixcom': response.body.data.value[currency][0],
-                        'perscom': ((amount / 100) * response.body.data.value[currency][1]),
+                        'fixcom': fix,
+                        'perscom': pers,
                         'strategy': response.body.data.strategy
                     })
-                } else {
-
-                    this.getRate('for_commission', 'EUR', currency)
-
-                    cy.readFile("cypress/fixtures/Prod/Helpers/rate_for_commission_" + currency + ".json").then((data) => {
-                        let rate = data.rates
-
-                        let fix = (response.body.data.value.EUR[0] * rate).toFixed(2)
-                        let pers = ((amount / 100) * response.body.data.value.EUR[1]).toFixed(2)
-
-                        cy.writeFile("cypress/fixtures/Prod/Helpers/commission_for_" + tr_type + "_type_" + currency + ".json", {
-                            'currency': currency,
-                            'fixcom': fix,
-                            'perscom': pers,
-                            'strategy': response.body.data.strategy
-                        })
-                    })
-                }
-            })
+                })
+            }
+        })
         //})
     }
 
@@ -317,27 +317,27 @@ class ParentPage {
 
     getAllAvailableBalances(user, account_type, wallets) {
 
-        cy.readFile("cypress/fixtures/Prod/Helpers/" + user + "_" + account_type +"_headers.json").then((data) => {
+        cy.readFile("cypress/fixtures/Prod/Helpers/" + user + "_" + account_type + "_headers.json").then((data) => {
             let tok = data.token
 
-                cy.request({
-                    method: 'GET',
-                    url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
-                    headers: {
+            cy.request({
+                method: 'GET',
+                url: "https://account.paydo.com/v1/wallets/get-all-balances/" + merchants.main_currency,
+                headers: {
                     token: tok
-                    }
-                }).then((response) => {
-                    expect(response).property('status').to.equal(200);
-                    expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                }
+            }).then((response) => {
+                expect(response).property('status').to.equal(200);
+                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
 
-                    cy.writeFile("cypress/fixtures/Prod/Helpers/all available " + account_type + " balances "  + user + ".json", [
-                        response.body.data[wallets[0]].available.actual,
-                        response.body.data[wallets[1]].available.actual,
-                        response.body.data[wallets[2]].available.actual,
-                        response.body.data[wallets[3]].available.actual])
+                cy.writeFile("cypress/fixtures/Prod/Helpers/all available " + account_type + " balances " + user + ".json", [
+                    response.body.data[wallets[0]].available.actual,
+                    response.body.data[wallets[1]].available.actual,
+                    response.body.data[wallets[2]].available.actual,
+                    response.body.data[wallets[3]].available.actual])
 
-                })
-       })
+            })
+        })
     }
 
     getRate(type, from, to) {
@@ -355,7 +355,7 @@ class ParentPage {
                 expect(response).property('status').to.equal(200);
                 expect(response.body).property('data').to.not.be.oneOf([null, ""]);
 
-                cy.writeFile("cypress/fixtures/Prod/Helpers/rate_" + type + "_" + to +".json", {
+                cy.writeFile("cypress/fixtures/Prod/Helpers/rate_" + type + "_" + to + ".json", {
                     'rates': response.body.data.rates[to]
                 })
             })
@@ -369,7 +369,7 @@ class ParentPage {
     }
 
     chooseAccountType(type) {
-        if(type === 'personal') {
+        if (type === 'personal') {
             cy.get('[class="mat-radio-container"]').eq(1).click()
         } else {
             cy.get('[class="mat-radio-container"]').eq(0).click()
@@ -411,9 +411,9 @@ class ParentPage {
 
     getMaxAvailableBalanceAfterRecalculation(user, account_type, position, balances) {
 
-            cy.writeFile("cypress/fixtures/Prod/Helpers/max available " + account_type + " " + user + ".json",
-                {'available': balances[position], 'wallet':betweenWallets.wallets[position]})
-           }
+        cy.writeFile("cypress/fixtures/Prod/Helpers/max available " + account_type + " " + user + ".json",
+            {'available': balances[position], 'wallet': betweenWallets.wallets[position]})
+    }
 
     getRandomWallet(min, max) {
         let i = this.getRandomIntInclusive(min, max)
@@ -425,20 +425,31 @@ class ParentPage {
     }
 
     getRandomAccountType(min, max) {
-        if(this.getRandomIntInclusive(min, max) === 1) {
-        return 'personal'
+        if (this.getRandomIntInclusive(min, max) === 1) {
+            return 'personal'
         } else {
             return 'business'
         }
     }
 
+    getRandomAccountType2(min, max) {
+        if (this.getRandomIntInclusive(min, max) === 1) {
+            return 'personal'
+        } else {
+            return 'corporate'
+        }
+    }
+
     getSumElemArray(arrRecBal) {
-        return arrRecBal.reduce(function(sum, elem) {
+        return arrRecBal.reduce(function (sum, elem) {
             return sum + elem;
         }, 0);
 
     }
+
 }
+
+
 
 
 export default new ParentPage();

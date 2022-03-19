@@ -68,9 +68,9 @@ class HomePage {
         return cy.contains('Verification');
     }
 
-    getChangeAccount() {
-        cy.get('[class="acc-active__info_acc-type"]').click();
-        return cy.contains('Personal account').click();
+    getChangeAccount(text) {
+        cy.get('[class="mat-menu-trigger account-bar unselectable"]').click();
+        return cy.contains(text).click();
     }
 
     getSubmenuPersonal() {

@@ -26,7 +26,7 @@ describe('Between Wallets suit UI', () => {
         moneyTransferPage.clickTab('Between Wallets');
         moneyTransferPage.chooseCurrencyWallet(betweenWallets.wallet);
         moneyTransferPage.enterTextInToInputRecipient(merchants.account_4);
-        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         cy.wait(1000);
@@ -48,7 +48,7 @@ describe('Between Wallets suit UI', () => {
         moneyTransferPage.chooseCurrencyWallet(betweenWallets.wallet);
         moneyTransferPage.enterTextInToInputRecipient(merchants.email_4);
         moneyTransferPage.chooseAccountType('business');
-        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         cy.wait(1000);
@@ -69,7 +69,7 @@ describe('Between Wallets suit UI', () => {
         moneyTransferPage.chooseCurrencyWallet(betweenWallets.wallet);
         moneyTransferPage.enterTextInToInputRecipient(merchants.email_4);
         moneyTransferPage.chooseAccountType('personal');
-        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         cy.wait(1000);
@@ -90,7 +90,7 @@ describe('Between Wallets suit UI', () => {
         moneyTransferPage.chooseCurrencyWallet(betweenWallets.wallet);
         moneyTransferPage.enterTextInToInputRecipient(merchants.email_2);
         moneyTransferPage.chooseAccountType('personal');
-        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         cy.wait(1000);
@@ -112,7 +112,7 @@ describe('Between Wallets suit UI', () => {
         moneyTransferPage.chooseCurrencyWallet(betweenWallets.wallet);
         moneyTransferPage.enterTextInToInputRecipient(merchants.email_2);
         moneyTransferPage.chooseAccountType('business')
-        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         cy.wait(1000);
@@ -132,7 +132,7 @@ describe('Between Wallets suit UI', () => {
         moneyTransferPage.clickTab('Between Wallets');
         moneyTransferPage.chooseCurrencyWallet(betweenWallets.wallet);
         moneyTransferPage.enterTextInToInputRecipient("ECOM" + 0 + merchants.account_4 + "F");
-        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         cy.wait(1000);
@@ -152,7 +152,7 @@ describe('Between Wallets suit UI', () => {
         moneyTransferPage.clickTab('Between Wallets');
         moneyTransferPage.chooseCurrencyWallet(betweenWallets.wallet);
         moneyTransferPage.enterTextInToInputRecipient("ECOM" + 0 + merchants.account_6 + "F");
-        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         cy.wait(1000);
@@ -172,7 +172,8 @@ describe('Between Wallets suit UI', () => {
         moneyTransferPage.clickTab('Between Wallets');
         moneyTransferPage.chooseCurrencyWallet(betweenWallets.wallet);
         moneyTransferPage.enterTextInToInputRecipient('    ' + merchants.email_4 + '    ');
-        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        moneyTransferPage.chooseAccountType('personal')
+        moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         cy.wait(1000);
@@ -207,7 +208,7 @@ describe('Between Wallets suit UI', () => {
         moneyTransferPage.enterTextInToInputRecipient(merchants.email_6);
         let account_type = moneyTransferPage.getRandomAccountType2(1, 2);
         moneyTransferPage.chooseAccountType(account_type);
-        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         cy.wait(1000);
@@ -227,7 +228,7 @@ describe('Between Wallets suit UI', () => {
         let account_type = moneyTransferPage.getRandomAccountType(1, 2);
         console.log(account_type)
         moneyTransferPage.chooseAccountType(account_type);
-        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         cy.wait(1000);
@@ -246,7 +247,7 @@ describe('Between Wallets suit UI', () => {
         moneyTransferPage.enterTextInToInputRecipient(merchants.email_6);
         let account_type = moneyTransferPage.getRandomAccountType(1, 2);
         moneyTransferPage.chooseAccountType(account_type);
-        moneyTransferPage.enterTextInToInputAmount(merchants.amount_transfer);
+        moneyTransferPage.enterTextInToInputAmount(betweenWallets.amount_transfer);
         cy.wait(1000);
         moneyTransferPage.clickButtonProceed();
         cy.wait(1000);

@@ -3,7 +3,6 @@ import withdraw from "../fixtures/Stage/withdraw.json";
 import merchant from "../fixtures/Stage/merchant.json";
 import feen from "../fixtures/Stage/feen.json";
 import betweenWallets from "../fixtures/Prod/betweenWallets.json";
-import endpoints from "../fixtures/Stage/endpoints.json"
 import merchants from "../fixtures/Prod/merchants.json";
 
 let no_res = '.no-result';

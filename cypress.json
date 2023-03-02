@@ -1,9 +1,0 @@
-{
-  "baseUrl": "https://account.stage.paydo.com/",
-  "waitForAnimations": true,
-  "chromeWebSecurity": false,
-  "projectId": "s4n8mx",
-  "viewportHeight": 1080,
-  "viewportWidth": 1920,
-  "watchForFileChanges": false
-}

@@ -18,12 +18,20 @@ cy.getDeltaChargeback = function getDelta(n1, n2) {
 
 class TransactionsPage {
 
-    clickFilter() {
-        parentPage.clickButton('Filter');
-    }
-
     checkUrl(Url) {
         parentPage.checkUrl(Url)
+    }
+
+    checkPageTitle(name) {
+        parentPage.isPageTitleExist(name);
+    }
+
+    checkButtonExist(button_name) {
+        parentPage.isButtonExist(button_name);
+    }
+
+    clickFilter() {
+        parentPage.clickButton('Filter');
     }
 
     enterTextInToFilter(text) {

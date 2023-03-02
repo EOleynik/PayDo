@@ -1,6 +1,8 @@
 import merchant from "../fixtures/Stage/merchant.json";
 import parentPage from "../pages/ParentPage"
 
+const blockInfo = 'div[class="ng-tns-c441-0 ng-trigger ng-trigger-alertFade alert alert-info ng-star-inserted"]'
+const pageTitle = 'What should you do next?'
 
 class HomePage {
 
@@ -10,6 +12,10 @@ class HomePage {
 
     clickMenuBankDetails() {
         cy.get('[class="top-menu__li ng-star-inserted"]').eq(3).click();
+    }
+
+    clickMenu(name) {
+        parentPage.getMenu(name).click();
     }
 
     clickMenuCards() {
@@ -44,12 +50,12 @@ class HomePage {
         parentPage.getMenu('Transactions').click();
     }
 
-    clickMenuListOfTransfer() {
+    clickMenuListOfTransfers() {
         parentPage.getMenu('List of Transfers').click();
     }
 
-    clickMenuCreateTransfer() {
-        parentPage.getMenu('Create Transfer').click();
+    clickMenuMoneyTransfers() {
+        parentPage.getMenu('Money Transfers').click();
     }
 
     clickMenuExchange() {
@@ -105,6 +111,25 @@ class HomePage {
     }
 
 
+    checkTextInfoExist(text) {
+        parentPage.isTextExist(blockInfo, text);
+    }
+
+    checkBlockInfoExist() {
+        parentPage.isBlockExist(blockInfo)
+    }
+
+    checkAccountType(type) {
+        parentPage.getAccountType(type).invoke('text').should((text) => {
+            expect(text).to.eq(type)
+        })
+    }
+
+    checkPageTitle(title) {
+        parentPage.getPageTitle(title).invoke('text').should((text) => {
+            expect(text).to.eq(title)
+        });
+    }
 
 }
 

@@ -1,5 +1,8 @@
 import merchant from "../fixtures/Stage/merchant.json";
 import parentPage from "../pages/ParentPage";
+import homePage from "./HomePage";
+
+const blockError = 'div[class="ng-tns-c410-0 ng-trigger ng-trigger-alertFade alert alert-danger ng-star-inserted"]'
 
 class LoginPage {
 
@@ -40,8 +43,7 @@ class LoginPage {
     }
 
     enter2FACode(authenticator) {
-        cy.get('ng-otp-input').find('input[class="otp-input ng-pristine ng-valid ng-star-inserted ng-touched"]')
-            .clear().type(parentPage.get2FACode(authenticator));
+        cy.get('[class="d-block"]').type(parentPage.get2FACode(authenticator));
     }
 
     LoginOnPaymentPage() {
@@ -62,20 +64,43 @@ class LoginPage {
         );
     }
 
-    checkAuthorization(email, password, authenticator) {
+    checkAuthorizationAndLogin(email, password) {
         cy.get('body').then(($body) => {
-            cy.wait(2000);
+            cy.wait(1000);
             if ($body.text().includes('Continue')) {
                 cy.contains('Change account ').click();
-                cy.wait(2000);
-                parentPage.getLogin(email, password, authenticator)
+                cy.wait(1000);
+                parentPage.getLogin(email, password)
             } else {
-                parentPage.getLogin(email, password, authenticator)
+                parentPage.getLogin(email, password)
             }
         })
     }
 
+    checkAuthorizationAndLoginWithAuth(email, password, authenticator) {
+        cy.get('body').then(($body) => {
+            cy.wait(1000);
+            if ($body.text().includes('Continue')) {
+                cy.contains('Change account ').click();
+                cy.wait(1000);
+                parentPage.getLoginWithAuth(email, password, authenticator)
+            } else {
+                parentPage.getLoginWithAuth(email, password, authenticator)
+            }
+        })
+    }
 
+    chooseAccountType(type) {
+        parentPage.chooseAccountType(type)
+    }
+
+    isAlertExist() {
+        parentPage.isBlockExist(blockError);
+    }
+
+    checkTextExist(text) {
+        parentPage.isTextExist(blockError, text)
+    }
 }
 
 

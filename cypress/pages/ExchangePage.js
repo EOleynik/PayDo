@@ -5,6 +5,18 @@ import parentPage from "../pages/ParentPage";
 
 class ExchangePage {
 
+    checkUrl(Url) {
+        parentPage.checkUrl(Url)
+    }
+
+    checkPageTitle(name) {
+        parentPage.isPageTitleExist(name);
+    }
+
+    checkButtonExist(button_name) {
+        parentPage.isButtonExist(button_name);
+    }
+
     selectWalletExchangeFrom(wallet) {
         cy.get('[class="button-toggle"]').eq(0).click();
         cy.contains('mat-card-title', wallet).click();

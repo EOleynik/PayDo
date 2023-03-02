@@ -1,4 +1,3 @@
-import ticket from "../fixtures/Stage/ticket.json";
 import parentPage from "../pages/ParentPage";
 
 class TicketsPage {
@@ -6,6 +5,10 @@ class TicketsPage {
 
     checkUrl(Url) {
         parentPage.checkUrl(Url)
+    }
+
+    checkPageTitle(name) {
+        parentPage.isPageTitleExist(name);
     }
 
     clickButtonCreateNewTicket() {

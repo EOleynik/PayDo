@@ -91,13 +91,13 @@ Cypress.Commands.add('uploadFile', (fileNamePath, fileName, fileType = ' ', sele
     })
 });
 
-// Cypress.Commands.add('isExistElement', (selector) => {
-//     cy.get('body').then(($el) => {
-//         if ($el.has(selector)) {
-//             return true
-//         } else {
-//             return false
-//         }
-//     })
-//});
+Cypress.Commands.add('isExistElement', (selector) => {
+    cy.get('body').then(($el) => {
+        if ($el.has(selector)) {
+            return true
+        } else {
+            return false
+        }
+    })
+});
 

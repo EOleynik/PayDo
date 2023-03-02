@@ -1,13 +1,13 @@
 import card from "../fixtures/Stage/card.json";
 import feen from "../fixtures/Stage/feen.json";
 import betweenWallets from "../fixtures/Prod/betweenWallets.json";
-import * as lookup from "country-code-lookup";
+//import * as lookup from "country-code-lookup";
 import merchants from "../fixtures/Prod/merchants.json";
 
 
 class ParentPage {
 
-    getLogin(email, password, authenticator) {
+    getLoginWithAuth(email, password, authenticator) {
         cy.get("[formcontrolname=email]").clear().type(email);
         cy.get("[formcontrolname=password]").clear().type(password);
         cy.contains('span', ' Login ').click();
@@ -15,6 +15,13 @@ class ParentPage {
         cy.get('[class="d-block"]').type(this.get2FACode(authenticator));
         cy.contains('span', ' Login ').click();
     }
+
+    getLogin(email, password) {
+        cy.get("[formcontrolname=email]").clear().type(email);
+        cy.get("[formcontrolname=password]").clear().type(password);
+        cy.contains('span', ' Login ').click();
+        cy.wait(1000);
+            }
 
     get2FACode(key) {
         let notp = require('otplib');
@@ -138,6 +145,14 @@ class ParentPage {
 
     isButtonExist(button_name) {
         cy.contains(button_name).should('exist')
+    }
+
+    isBlockExist(element) {
+        cy.get(element).should('exist')
+    }
+
+    isTextExist(element, text) {
+        cy.get(element).contains(text)
     }
 
     getMenu(name) {
@@ -447,6 +462,17 @@ class ParentPage {
 
     }
 
+    isPageTitleExist(name) {
+        cy.contains(name).should('exist')
+    }
+
+    getAccountType(type) {
+       return cy.contains('span', type)
+    }
+
+    getPageTitle(pageTitle) {
+        return cy.contains('span', pageTitle)
+    }
 }
 
 

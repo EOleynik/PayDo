@@ -10,6 +10,10 @@ class TopUpPage {
         parentPage.checkUrl(Url);
     }
 
+    checkButtonExist(button_name) {
+        parentPage.isButtonExist(button_name);
+    }
+
     chooseWalletTopUp(wallet) {
         cy.get('[class="shared-wallet-select"]').click();
         cy.get('[class="mat-option-text"]').contains(wallet).click();

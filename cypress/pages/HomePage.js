@@ -1,7 +1,7 @@
 import merchant from "../fixtures/Stage/merchant.json";
 import parentPage from "../pages/ParentPage"
 
-const blockInfo = 'div[class="ng-tns-c441-0 ng-trigger ng-trigger-alertFade alert alert-info ng-star-inserted"]'
+const fullAuth = 'Full authentication is required to access this resource.'
 const pageTitle = 'What should you do next?'
 
 class HomePage {
@@ -46,7 +46,7 @@ class HomePage {
         parentPage.getMenu('REST').click();
     }
 
-    clickMenuTransactions () {
+    clickMenuTransactions() {
         parentPage.getMenu('Transactions').click();
     }
 
@@ -111,12 +111,12 @@ class HomePage {
     }
 
 
-    checkTextInfoExist(text) {
-        parentPage.isTextExist(blockInfo, text);
+    checkTextInfoExist() {
+        parentPage.isTextExist(fullAuth);
     }
 
     checkBlockInfoExist() {
-        parentPage.isBlockExist(blockInfo)
+        parentPage.isBlockExist()
     }
 
     checkAccountType(type) {
@@ -125,11 +125,12 @@ class HomePage {
         })
     }
 
-    checkPageTitle(title) {
-        parentPage.getPageTitle(title).invoke('text').should((text) => {
-            expect(text).to.eq(title)
+    checkPageTitle() {
+        parentPage.getPageTitle(pageTitle).invoke('text').should((text) => {
+            expect(text).to.eq(pageTitle)
         });
     }
+
 
 }
 

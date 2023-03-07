@@ -1,8 +1,10 @@
 import merchant from "../fixtures/Stage/merchant.json";
 import parentPage from "../pages/ParentPage";
-import homePage from "./HomePage";
+
 
 const blockError = 'div[class="ng-tns-c410-0 ng-trigger ng-trigger-alertFade alert alert-danger ng-star-inserted"]'
+const error = 'The username or password you entered is incorrect'
+const error2FA = 'Invalid two-factor authentication code'
 
 class LoginPage {
 
@@ -22,7 +24,7 @@ class LoginPage {
         parentPage.getInput('password').clear().type(text);
     }
 
-    clickButton(name){
+    clickButton(name) {
         parentPage.clickButton(name);
     }
 
@@ -64,28 +66,15 @@ class LoginPage {
         );
     }
 
-    checkAuthorizationAndLogin(email, password) {
+    checkAuthorizationAndLogin(email, password, authenticator) {
         cy.get('body').then(($body) => {
             cy.wait(1000);
             if ($body.text().includes('Continue')) {
                 cy.contains('Change account ').click();
                 cy.wait(1000);
-                parentPage.getLogin(email, password)
+                authenticator ? parentPage.getLoginWithAuth(email, password, authenticator) : parentPage.getLogin(email, password)
             } else {
-                parentPage.getLogin(email, password)
-            }
-        })
-    }
-
-    checkAuthorizationAndLoginWithAuth(email, password, authenticator) {
-        cy.get('body').then(($body) => {
-            cy.wait(1000);
-            if ($body.text().includes('Continue')) {
-                cy.contains('Change account ').click();
-                cy.wait(1000);
-                parentPage.getLoginWithAuth(email, password, authenticator)
-            } else {
-                parentPage.getLoginWithAuth(email, password, authenticator)
+                authenticator ? parentPage.getLoginWithAuth(email, password, authenticator) : parentPage.getLogin(email, password)
             }
         })
     }
@@ -94,12 +83,30 @@ class LoginPage {
         parentPage.chooseAccountType(type)
     }
 
+    chooseRandomAccountType() {
+        cy.writeFile("cypress/fixtures/Prod/Helpers/randomAccountType.json", {
+            'accountType':parentPage.getRandomAccountType()
+    })
+    }
+
+    clickRandomAccountType() {
+        this.chooseRandomAccountType()
+        cy.readFile("cypress/fixtures/Prod/Helpers/randomAccountType.json").then((data) => {
+            let type = data.accountType;
+            parentPage.chooseAccountType(type)
+    })
+    }
+
     isAlertExist() {
         parentPage.isBlockExist(blockError);
     }
 
-    checkTextExist(text) {
-        parentPage.isTextExist(blockError, text)
+    checkTextExist() {
+        parentPage.isTextExist(blockError, error)
+    }
+
+    checkTextError2FAExist() {
+        parentPage.isTextExist(blockError, error2FA)
     }
 }
 

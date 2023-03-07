@@ -7,6 +7,12 @@ import merchants from "../fixtures/Prod/merchants.json";
 
 class ParentPage {
 
+    getSelectedAccountType() {
+        cy.readFile("cypress/fixtures/Prod/Helpers/randomAccountType.json").then((data) => {
+            return data.accountType
+        })
+    }
+
     getLoginWithAuth(email, password, authenticator) {
         cy.get("[formcontrolname=email]").clear().type(email);
         cy.get("[formcontrolname=password]").clear().type(password);
@@ -147,12 +153,20 @@ class ParentPage {
         cy.contains(button_name).should('exist')
     }
 
-    isBlockExist(element) {
-        cy.get(element).should('exist')
+    isBlockExist() {
+        cy.get('.alert__title').should('exist')
     }
 
-    isTextExist(element, text) {
-        cy.get(element).contains(text)
+    isElementExist(locator) {
+        cy.get(locator).should('exist')
+    }
+
+    isElementNotExist(locator) {
+        cy.get(locator).should('not.exist')
+    }
+
+    isTextExist(text) {
+        cy.get('.alert-text').should('exist');
     }
 
     getMenu(name) {
@@ -384,7 +398,7 @@ class ParentPage {
     }
 
     chooseAccountType(type) {
-        if (type === 'personal') {
+        if (type === 'Personal') {
             cy.get('[class="mat-radio-container"]').eq(1).click()
         } else {
             cy.get('[class="mat-radio-container"]').eq(0).click()
@@ -439,11 +453,15 @@ class ParentPage {
         return this.getRandomArbitrary(min, max)
     }
 
-    getRandomAccountType(min, max) {
-        if (this.getRandomIntInclusive(min, max) === 1) {
-            return 'personal'
+    getRandomAccountType() {
+        if (this.getRandomIntInclusive(1, 2) === 1) {
+           let account_type = 'Personal'
+            cy.log(account_type)
+            return account_type
         } else {
-            return 'business'
+          let  account_type = 'Business'
+            cy.log(account_type)
+            return account_type
         }
     }
 

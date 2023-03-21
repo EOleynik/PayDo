@@ -13,6 +13,12 @@ class PaymentMethodsPage {
     checkButtonExist(button_name) {
         parentPage.isButtonExist(button_name);
     }
+
+    checkButtonStatus(name, status) {
+        parentPage.getButtonStatus(name, status)
+    }
+
+
 }
 
 

@@ -3,14 +3,19 @@ import exchange from "../fixtures/Stage/exchange.json";
 import feen from "../fixtures/Stage/feen.json";
 import parentPage from "../pages/ParentPage";
 
+
+const exchangeFormGet = 'div[class="exchange-form-control__field"]'
+const ErrorNotMoney = '.ng-trigger-alertFade'
+
 class ExchangePage {
 
     checkUrl(Url) {
         parentPage.checkUrl(Url)
     }
 
-    checkPageTitle(name) {
-        parentPage.isPageTitleExist(name);
+    checkPageTitle(title) {
+        parentPage.isPageTitleExist();
+        parentPage.checkText(title);
     }
 
     checkButtonExist(button_name) {
@@ -18,27 +23,27 @@ class ExchangePage {
     }
 
     selectWalletExchangeFrom(wallet) {
-        cy.get('[class="button-toggle"]').eq(0).click();
-        cy.contains('mat-card-title', wallet).click();
+        cy.get('[class="exchange-form-select__trigger"]').eq(0).click();
+        cy.contains('.mat-option-text', wallet).click();
     }
 
     selectWalletExchangeTo(wallet) {
-        cy.get('[class="button-toggle"]').eq(1).click();
-        cy.contains('mat-card-title', wallet).click();
+        cy.get('[class="exchange-form-select__trigger"]').eq(1).click();
+        cy.contains('.mat-option-text', wallet).click();
     }
 
     enterAmountForExchange(amount) {
-        cy.get('[formcontrolname="give"]').clear().type(amount);
+        cy.get('.exchange-form-control__field').eq(0).clear().type(amount);
     }
 
-    clickButtonConvertCurrency() {
-        parentPage.clickButton('Convert currency');
+    clickButton(name) {
+        parentPage.clickButton(name);
     }
 
-    checkStatusExchange(message) {
-        cy.get('.alert-text').invoke('text').should((text) => {
+    checkTextError(message) {
+        cy.get('li.ng-tns-c442-0 > .ng-tns-c442-0').invoke('text').should((text) => {
             let alert = (text);
-            let error = alert.split(':',1);
+            let error = alert.split(':', 1);
             expect(error.toString()).to.eq(message);
         });
     }
@@ -115,49 +120,65 @@ class ExchangePage {
 
                                 expect(av_bal_from_wallet_after).to.eq((av_bal_from_wallet - exchange.amount_exchange).toFixed(2));
 
-                            }catch (e) {
+                            } catch (e) {
                                 cy.log(av_bal_from_wallet);
                                 cy.log(av_bal_from_wallet_after);
                             }
 
-                                // Amount after exchange
-                                let amount = (exchange.amount_exchange * rate).toFixed(2);
+                            // Amount after exchange
+                            let amount = (exchange.amount_exchange * rate).toFixed(2);
 
-                                // Percentage for exchange
-                                let pers =((amount / 100) * exchange.exchange_percentage).toFixed(2);
+                            // Percentage for exchange
+                            let pers = ((amount / 100) * exchange.exchange_percentage).toFixed(2);
 
-                                // Subtract the percentage for the conversion
-                                let ex_amount = (amount - pers);
+                            // Subtract the percentage for the conversion
+                            let ex_amount = (amount - pers);
 
-                                    // Get available balance "to wallet" after
-                                    cy.request({
-                                        method: 'GET',
-                                        url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
-                                        headers: {
-                                            token: merchant.token,
-                                        }
-                                    }).then((response) => {
-                                        expect(response).property('status').to.equal(200);
-                                        expect(response.body).property('data').to.not.be.oneOf([null, ""]);
-                                        let av_bal_to_wallet_after = response.body.data[exchange.exchange_to].available.actual.toString();
+                            // Get available balance "to wallet" after
+                            cy.request({
+                                method: 'GET',
+                                url: "https://account.stage.paydo.com/v1/wallets/get-all-balances/" + merchant.main_currency,
+                                headers: {
+                                    token: merchant.token,
+                                }
+                            }).then((response) => {
+                                expect(response).property('status').to.equal(200);
+                                expect(response.body).property('data').to.not.be.oneOf([null, ""]);
+                                let av_bal_to_wallet_after = response.body.data[exchange.exchange_to].available.actual.toString();
 
-                                        try {
+                                try {
 
-                                            expect(av_bal_to_wallet_after).to.eq((+av_bal_to_wallet + ex_amount).toFixed(2));
+                                    expect(av_bal_to_wallet_after).to.eq((+av_bal_to_wallet + ex_amount).toFixed(2));
 
-                                        }catch (e) {
-                                            cy.log(av_bal_to_wallet);
-                                            cy.log(av_bal_to_wallet_after);
-                                        }
-                                    })
+                                } catch (e) {
+                                    cy.log(av_bal_to_wallet);
+                                    cy.log(av_bal_to_wallet_after);
+                                }
+                            })
                         })
                     })
                 })
             })
         })
     }
+    
+    isErrorExist() {
+        parentPage.isElementExist(ErrorNotMoney);
+    }
+
+    checkButtonStatus(name, status) {
+        parentPage.getButtonStatus(name, status);
+    }
+
+    checkStatusExchange(status) {
+        cy.get('.exchange-dialog > h2').invoke('text').should((text) => {
+          expect(text).to.eq(status);
+    })
+    }
 
 
 }
+
+
 
 export default new ExchangePage();

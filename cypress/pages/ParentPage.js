@@ -64,8 +64,8 @@ class ParentPage {
     }
 
     signatureGeneration(payAmount, payCurrency, description, secret_key) {
-        var sha256 = require('js-sha256');
-        var hash = sha256.create();
+        let sha256 = require('js-sha256');
+        let hash = sha256.create();
         hash.update(payAmount + ':' + payCurrency + ':' + description + ':' + secret_key);
         hash.hex();
         return hash.toString()
@@ -138,14 +138,14 @@ class ParentPage {
     }
 
     clickButton(name) {
-        return this.getButton(name).click({force: true});
+        this.getButton(name).click({force: true});
     }
 
     getButtonStatus(name, status) {
         if (status === 'disabled') {
-            cy.contains('button', name).should('be.disabled')
+            cy.contains(name).should('be.disabled')
         } else {
-            cy.contains('button', name).should('not.be.disabled')
+            cy.contains(name).should('not.be.disabled')
         }
     }
 
@@ -153,19 +153,19 @@ class ParentPage {
         cy.contains(button_name).should('exist')
     }
 
-    isBlockExist() {
-        cy.get('.alert__title').should('exist')
-    }
-
-    isElementExist(locator) {
-        cy.get(locator).should('exist')
+    isElementExist(locator, index) {
+        index ?
+            cy.get(locator).eq(index).should('exist')
+            :
+            cy.get(locator).should('exist')
     }
 
     isElementNotExist(locator) {
         cy.get(locator).should('not.exist')
     }
 
-    isTextExist(text) {
+
+    isTextExist() {
         cy.get('.alert-text').should('exist');
     }
 
@@ -480,16 +480,34 @@ class ParentPage {
 
     }
 
-    isPageTitleExist(name) {
-        cy.contains(name).should('exist')
+    isPageTitleExist(element) {
+        element ?
+            this.getPageTitle(element).eq(0).should('exist')
+            :
+            this.getPageTitle('.page-title').eq(0).should('exist')
+            }
+
+    checkText(checkText, element, index) {
+        element ?
+            this.getPageTitle(element).eq(0).invoke('text').should((text) => {
+                expect(text).to.equal(checkText)
+            })
+            :
+            this.getPageTitle('h1.page-title').eq(0).invoke('text').should((text) => {
+                expect(text).to.equal(checkText)
+            })
     }
 
     getAccountType(type) {
        return cy.contains('span', type)
     }
 
-    getPageTitle(pageTitle) {
-        return cy.contains('span', pageTitle)
+    getPageTitle(element) {
+        return cy.get(element)
+    }
+
+    getElement(type) {
+        return cy.contains('span', type)
     }
 }
 

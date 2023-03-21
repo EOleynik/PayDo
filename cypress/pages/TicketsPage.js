@@ -7,8 +7,9 @@ class TicketsPage {
         parentPage.checkUrl(Url)
     }
 
-    checkPageTitle(name) {
-        parentPage.isPageTitleExist(name);
+    checkPageTitle(title) {
+        parentPage.isPageTitleExist();
+        parentPage.checkText(title)
     }
 
     clickButtonCreateNewTicket() {

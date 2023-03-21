@@ -1,13 +1,16 @@
 import parentPage from "../pages/ParentPage"
 
+const pageTitleElement = '.breadcrumbs'
+
 class IPNPage {
 
     checkUrl(Url) {
         parentPage.checkUrl(Url)
     }
 
-    checkPageTitle(name) {
-        parentPage.isPageTitleExist(name);
+    checkPageTitle(title) {
+        parentPage.isPageTitleExist(pageTitleElement);
+        parentPage.checkText(title, pageTitleElement)
     }
 }
 

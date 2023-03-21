@@ -1,6 +1,8 @@
 import parentPage from "../pages/ParentPage"
 
-const shortest = 'Enter personal information'
+
+const elementTitle = '.title-wrap > h1'
+
 
 class VerificationPage {
 
@@ -8,13 +10,20 @@ class VerificationPage {
         parentPage.checkUrl(Url)
     }
 
-    checkPageTitle() {
-        parentPage.isPageTitleExist(shortest);
+    checkPageTitle(title) {
+        parentPage.isPageTitleExist(elementTitle);
+        parentPage.checkText(title, elementTitle);
     }
 
     checkButtonExist(button_name) {
         parentPage.isButtonExist(button_name);
     }
+
+    checkButtonStatus(name, status) {
+        parentPage.getButtonStatus(name, status)
+    }
+
+
 }
 
 

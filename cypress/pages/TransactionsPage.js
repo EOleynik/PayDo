@@ -22,8 +22,9 @@ class TransactionsPage {
         parentPage.checkUrl(Url)
     }
 
-    checkPageTitle(name) {
-        parentPage.isPageTitleExist(name);
+    checkPageTitle(title) {
+        parentPage.isPageTitleExist();
+        parentPage.checkText(title)
     }
 
     checkButtonExist(button_name) {

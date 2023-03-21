@@ -273,6 +273,9 @@ class ProjectsPage {
         }
     }
 
+    checkButtonStatus(name, status) {
+        parentPage.getButtonStatus(name, status)
+    }
 
 
 }

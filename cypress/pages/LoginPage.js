@@ -2,9 +2,10 @@ import merchant from "../fixtures/Stage/merchant.json";
 import parentPage from "../pages/ParentPage";
 
 
-const blockError = 'div[class="ng-tns-c410-0 ng-trigger ng-trigger-alertFade alert alert-danger ng-star-inserted"]'
-const error = 'The username or password you entered is incorrect'
-const error2FA = 'Invalid two-factor authentication code'
+const alertError = '.ng-trigger-alertFade';
+const alertText = '.alert-text';
+const textError = 'The username or password you entered is incorrect';
+const textError2FA = 'Invalid two-factor authentication code';
 
 class LoginPage {
 
@@ -97,16 +98,24 @@ class LoginPage {
     })
     }
 
-    isAlertExist() {
-        parentPage.isBlockExist(blockError);
+    checkAlertExist() {
+        parentPage.isElementExist(alertError)
     }
 
-    checkTextExist() {
-        parentPage.isTextExist(blockError, error)
+    checkTextAlertExist() {
+        parentPage.isTextExist(textError)
     }
 
     checkTextError2FAExist() {
-        parentPage.isTextExist(blockError, error2FA)
+        parentPage.isTextExist(alertError, textError2FA)
+    }
+
+    checkTextAlert() {
+        parentPage.checkText(textError, alertText)
+    }
+
+    checkTextAlert2FA() {
+        parentPage.checkText(textError2FA, alertText)
     }
 }
 

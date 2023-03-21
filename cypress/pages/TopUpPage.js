@@ -4,6 +4,8 @@ import parentPage from "./ParentPage";
 import feen from "../fixtures/Stage/feen.json";
 import card from "../fixtures/Stage/card.json";
 
+//const pageTitle ='Top Up wallet'
+
 class TopUpPage {
 
     checkUrl(Url) {
@@ -287,6 +289,15 @@ class TopUpPage {
                 parentPage.clickButton(' Ok ');
                 cy.wait(2000);
             }
+    }
+
+    checkPageTitle(title) {
+        parentPage.isPageTitleExist();
+        parentPage.checkText(title);
+    }
+
+    checkButtonStatus(name, status) {
+        parentPage.getButtonStatus(name, status)
     }
 
 

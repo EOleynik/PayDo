@@ -14,14 +14,32 @@ const section2faTitle = '.section-2fa__title';
 const section2faText = '.section-2fa__text';
 const stepperItems = '.dashboard-stepper-item';
 const itemTextBlock = '.dashboard-stepper-item-text-block';
-const itemCheckBox = '.step'
-const typesAuthenticator = '.mat-expansion-panel'
-const providerName = '.provider-name'
+const itemCheckBox = '.step';
+const typesAuthenticator = '.mat-expansion-panel';
+const providerName = '.provider-name';
+const pageTitleElement = 'h1.page-title';
+const sectionBalances = '.section-balances';
+const providerLabel = '.provider-label';
+const googleAuthBody = '.panel-body';
+const panelApp = '.panel-app';
+const downloadAppStore = '.provider-apps > div > a:nth-child(1) > span.mat-button-wrapper > mat-icon';
+const iconDownloadGooglePlay = '.provider-apps > div > a:nth-child(3) > span.mat-button-wrapper > mat-icon';
+const sectionBalancesTitle = 'div.section-balances > h2';
+const clockTime = '.clock-time';
+
 
 class HomePage {
 
     checkUrl(Url) {
         parentPage.checkUrl(Url);
+    }
+
+    isButtonExist(name) {
+        parentPage.isButtonExist(name);
+    }
+
+    checkButtonStatus(name, status) {
+        parentPage.getButtonStatus(name, status);
     }
 
     clickMenuBankDetails() {
@@ -72,7 +90,7 @@ class HomePage {
 
     checkMerchantID(accountID) {
         return cy.get('[class="acc-active__info_id"]').invoke('text').should((text) => {
-            expect(text).to.eq("ID " + merchant.bussiness_account);
+            expect(text).to.eq("ID " + merchant.business_account);
         })
     }
 
@@ -92,7 +110,7 @@ class HomePage {
 
     checkPageTitle(title) {
         parentPage.isPageTitleExist();
-        parentPage.checkText(title);
+        parentPage.checkText(title, pageTitleElement);
     }
 
     checkTextAlert() {
@@ -156,7 +174,7 @@ class HomePage {
     }
 
     text2FASectionIsExist() {
-        parentPage.isElementExist(section2faText)
+        parentPage.isElementExist(section2faText);
     }
 
     checkText2FASection() {
@@ -167,22 +185,77 @@ class HomePage {
        }
     }
 
-
     typeAuthenticatorIsExist(name) {
         if (name === "Google Authenticator app") {
-            parentPage.isElementExist(typesAuthenticator, '0')
+            parentPage.isElementExist(typesAuthenticator, '0');
         } if (name === 'One-time text code') {
-            parentPage.isElementExist(typesAuthenticator, '1')
+            parentPage.isElementExist(typesAuthenticator, '1');
         }
     }
 
     checkProviderName(name) {
         if (name === "Google Authenticator app") {
-            parentPage.checkText(name, providerName, '0')
+            parentPage.checkText(name, providerName, '0');
         } if (name === 'One-time text code') {
-            parentPage.checkText(name, providerName, '1')
+            parentPage.checkText(name, providerName, '1');
         }
     }
+
+    sectionBalancesIsExist() {
+        parentPage.isElementExist(sectionBalances);
+    }
+
+    providerLabelIsExist(title) {
+        parentPage.isElementExist(providerLabel);
+        parentPage.checkText(title, providerLabel);
+    }
+
+    checkTextPanelBody() {
+        parentPage.checkText(boardStepper.googleAuthPanelText[0], '.panel-body > .mb-4', 0);
+    }
+
+    checkTextPanelBody2() {
+        parentPage.checkText(boardStepper.oneTimePanelText[0], '.panel-body > .mb-4', 1 );
+    }
+
+    panelAppIsExist() {
+        parentPage.isElementExist(panelApp);
+    }
+
+    iconDownloadAppStoreIsExist() {
+        parentPage.isElementExist(downloadAppStore);
+    }
+
+    iconDownloadGooglePlayIsExist() {
+        parentPage.isElementExist(iconDownloadGooglePlay);
+    }
+
+    appStoreHaveLink() {
+        cy.get('div.d-flex.provider-apps > div > a:nth-child(1)')
+           .should('have.attr', 'href',
+           'https://apps.apple.com/us/app/google-authenticator/id388497605');
+    }
+
+    downloadGoogleHaveLink() {
+        cy.get('div.d-flex.provider-apps > div > a:nth-child(3)')
+            .should('have.attr', 'href',
+            'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2');
+    }
+
+    checkTitleSectionBalances(title) {
+        parentPage.isPageTitleExist(sectionBalancesTitle);
+        parentPage.checkText(title, sectionBalancesTitle);
+    }
+
+    checkClockTime() {
+        parentPage.isElementExist(clockTime);
+        cy.log(" " + parentPage.getLocalDate('en-us') + ", " + parentPage.getTime(':') +
+            ", " + "UTC +" + (parentPage.getTime(':').split(':', 1) - parentPage.getUTCTime()).toString().padStart(2, '0') + ":00 ");
+        let checkText = (" " + parentPage.getLocalDate('en-us') + ", " + parentPage.getTime(':') +
+            ", " + "UTC +" + (parentPage.getTime(':').split(':', 1) - parentPage.getUTCTime()).toString().padStart(2, '0') + ":00 ");
+        parentPage.checkText(checkText, clockTime)
+    }
 }
+
 
 export default new HomePage();

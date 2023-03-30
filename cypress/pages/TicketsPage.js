@@ -1,5 +1,7 @@
 import parentPage from "../pages/ParentPage";
 
+const pageTitleElement = 'h1.page-title'
+
 class TicketsPage {
 
 
@@ -9,7 +11,7 @@ class TicketsPage {
 
     checkPageTitle(title) {
         parentPage.isPageTitleExist();
-        parentPage.checkText(title)
+        parentPage.checkText(title, pageTitleElement)
     }
 
     clickButtonCreateNewTicket() {

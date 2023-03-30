@@ -4,8 +4,9 @@ import feen from "../fixtures/Stage/feen.json";
 import parentPage from "../pages/ParentPage";
 
 
-const exchangeFormGet = 'div[class="exchange-form-control__field"]'
-const ErrorNotMoney = '.ng-trigger-alertFade'
+const exchangeFormGet = 'div[class="exchange-form-control__field"]';
+const ErrorNotMoney = '.ng-trigger-alertFade';
+const pageTitleElement = 'h1.page-title'
 
 class ExchangePage {
 
@@ -15,7 +16,7 @@ class ExchangePage {
 
     checkPageTitle(title) {
         parentPage.isPageTitleExist();
-        parentPage.checkText(title);
+        parentPage.checkText(title, pageTitleElement);
     }
 
     checkButtonExist(button_name) {

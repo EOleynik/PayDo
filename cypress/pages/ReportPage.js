@@ -1,5 +1,7 @@
 import parentPage from "../pages/ParentPage"
 
+const pageTitleElement = 'h1.page-title'
+
 class ReportPage {
 
     checkUrl(Url) {
@@ -8,7 +10,7 @@ class ReportPage {
 
     checkPageTitle(title) {
         parentPage.isPageTitleExist();
-        parentPage.checkText(title)
+        parentPage.checkText(title, pageTitleElement)
     }
 }
 

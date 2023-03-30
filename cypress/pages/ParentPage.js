@@ -31,9 +31,7 @@ class ParentPage {
 
     get2FACode(key) {
         let notp = require('otplib');
-        let secret = key;
-        let code = notp.authenticator.generate(secret);
-        return code
+        return notp.authenticator.generate(key)
     }
 
     getIndex_max(arr) {
@@ -71,10 +69,9 @@ class ParentPage {
         return hash.toString()
     }
 
-    getTime() {
+    getTime(delimiter) {
         let today = new Date();
-        let time = today.getHours() + '_' + today.getMinutes() + '_' + today.getSeconds();
-        return time;
+        return today.getHours().toString().padStart(2, '0') + delimiter + today.getMinutes().toString().padStart(2, '0');
     }
 
     getCodeCountry(country) {
@@ -149,8 +146,8 @@ class ParentPage {
         }
     }
 
-    isButtonExist(button_name) {
-        cy.contains(button_name).should('exist')
+    isButtonExist(name) {
+        cy.contains(name).should('exist')
     }
 
     isElementExist(locator, index) {
@@ -405,7 +402,6 @@ class ParentPage {
         }
     }
 
-
     send2FA(email, password) {
         cy.request('POST', 'https://account.paydo.com/v1/users/login', {
             email: email,
@@ -488,12 +484,12 @@ class ParentPage {
             }
 
     checkText(checkText, element, index) {
-        element ?
-            this.getPageTitle(element).eq(0).invoke('text').should((text) => {
+        index ?
+            cy.get(element).eq(index).invoke('text').should((text) => {
                 expect(text).to.equal(checkText)
             })
             :
-            this.getPageTitle('h1.page-title').eq(0).invoke('text').should((text) => {
+            cy.get(element).eq(0).invoke('text').should((text) => {
                 expect(text).to.equal(checkText)
             })
     }
@@ -509,9 +505,17 @@ class ParentPage {
     getElement(type) {
         return cy.contains('span', type)
     }
+
+    getLocalDate(locales) {
+        const d = new Date;
+        return d.toLocaleDateString('en-us', {month:"short", day:"numeric"});
+    }
+
+    getUTCTime() {
+        const t = new Date;
+        return t.getUTCHours();
+    }
 }
-
-
 
 
 export default new ParentPage();

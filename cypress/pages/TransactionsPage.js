@@ -16,6 +16,8 @@ cy.getDeltaChargeback = function getDelta(n1, n2) {
     return Math.abs(n1 - n2) <= chargeback.precision;
 };
 
+const pageTitleElement = 'h1.page-title'
+
 class TransactionsPage {
 
     checkUrl(Url) {
@@ -24,7 +26,7 @@ class TransactionsPage {
 
     checkPageTitle(title) {
         parentPage.isPageTitleExist();
-        parentPage.checkText(title)
+        parentPage.checkText(title, pageTitleElement)
     }
 
     checkButtonExist(button_name) {

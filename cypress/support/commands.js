@@ -101,3 +101,6 @@ Cypress.Commands.add('isExistElement', (selector) => {
     })
 });
 
+const compareSnapshotCommand = require('cypress-visual-regression/dist/command');
+
+compareSnapshotCommand();

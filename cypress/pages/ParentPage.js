@@ -70,8 +70,9 @@ class ParentPage {
     }
 
     getTime(delimiter) {
-        let today = new Date();
-        return today.getHours().toString().padStart(2, '0') + delimiter + today.getMinutes().toString().padStart(2, '0');
+        let t = new Date();
+        //return t.getHours( {hours:"2-digit"}) + delimiter + t.getMinutes().toString().padStart(2, '0');
+        return t.getHours( {hours:"2-digit"} ) + delimiter + t.getMinutes( {minute:"2-digit"} );
     }
 
     getCodeCountry(country) {
@@ -508,13 +509,19 @@ class ParentPage {
 
     getLocalDate(locales) {
         const d = new Date;
-        return d.toLocaleDateString('en-us', {month:"short", day:"numeric"});
+        return d.toLocaleDateString("en-US", {month:"short", day:"2-digit"});
     }
 
     getUTCTime() {
         const t = new Date;
         return t.getUTCHours();
     }
+
+    isElementHaveLink(element, link) {
+        cy.get(element).should('have.attr', 'href',link);
+    }
+
+
 }
 
 

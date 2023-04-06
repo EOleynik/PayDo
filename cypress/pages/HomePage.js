@@ -2,6 +2,7 @@ import merchant from "../fixtures/Stage/merchant.json";
 import parentPage from "../pages/ParentPage";
 import merchants from "../fixtures/Prod/merchants.json";
 import boardStepper from "../fixtures/Prod/boardStepper.json";
+import moment from "moment";
 
 
 const fullAuth = 'Full authentication is required to access this resource.';
@@ -20,12 +21,34 @@ const providerName = '.provider-name';
 const pageTitleElement = 'h1.page-title';
 const sectionBalances = '.section-balances';
 const providerLabel = '.provider-label';
-const googleAuthBody = '.panel-body';
-const panelApp = '.panel-app';
-const downloadAppStore = '.provider-apps > div > a:nth-child(1) > span.mat-button-wrapper > mat-icon';
+//const googleAuthBody = '.panel-body';
+const panelApp = 'div.d-flex.provider-apps > div > a:nth-child(1)'
+//const panelApp = '.panel-app';
+const providerAppLink = 'https://apps.apple.com/us/app/google-authenticator/id388497605';
+const panelGooglePlay = 'div.d-flex.provider-apps > div > a:nth-child(3)'
+const providerGoogleLink = 'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2';
+const iconDownloadAppStore = '.provider-apps > div > a:nth-child(1) > span.mat-button-wrapper > mat-icon';
 const iconDownloadGooglePlay = '.provider-apps > div > a:nth-child(3) > span.mat-button-wrapper > mat-icon';
 const sectionBalancesTitle = 'div.section-balances > h2';
 const clockTime = '.clock-time';
+const columnHeaders = ".mat-header-row";
+const sectionCompleteBusVer = ".section-business-verification";
+const busVerTitle = "Complete Business Verification";
+const sectionCompleteBusVerTitle = ".section-business-verification__title";
+const sectionCompleteBusVerText = ".section-business-verification__text";
+const sectionAddCard = '.section-add-card';
+const addCardTitle = 'Add Card';
+const sectionAddCardTitle = '.section-add-card__title';
+const sectionAddCardText = '.section-add-card__text';
+const redirectAddCard = 'div.section-add-card__text > div.buttons-wrapper > a';
+const redirectAddCardLink ='/need-saved-card/card_list';
+const sectionTopUpWallet = '.section-top-up';
+const topUpWalletTitle = 'Top up wallet';
+const sectionTopUpWalletTitle = '.section-top-up__title';
+const sectionTopUpWalletText = '.section-top-up__text';
+const redirectTopUp = 'div.section-top-up__text > div.buttons-wrapper > a';
+const redirectTopUpLink = '/top-up/by-card';
+
 
 
 class HomePage {
@@ -143,7 +166,7 @@ class HomePage {
         parentPage.clickButton(merchants.email_8);
         parentPage.isElementExist(overlayPane);
         parentPage.clickButton(merchants.email_8);
-        cy.wait(500);
+        cy.wait(300);
     }
 
     dashboardStepperIsExist() {
@@ -218,12 +241,12 @@ class HomePage {
         parentPage.checkText(boardStepper.oneTimePanelText[0], '.panel-body > .mb-4', 1 );
     }
 
-    panelAppIsExist() {
-        parentPage.isElementExist(panelApp);
-    }
+    // panelAppIsExist() {
+    //     parentPage.isElementExist(panelApp);
+    // }
 
     iconDownloadAppStoreIsExist() {
-        parentPage.isElementExist(downloadAppStore);
+        parentPage.isElementExist(iconDownloadAppStore);
     }
 
     iconDownloadGooglePlayIsExist() {
@@ -231,15 +254,21 @@ class HomePage {
     }
 
     appStoreHaveLink() {
-        cy.get('div.d-flex.provider-apps > div > a:nth-child(1)')
-           .should('have.attr', 'href',
-           'https://apps.apple.com/us/app/google-authenticator/id388497605');
+        parentPage.isElementHaveLink(panelApp, providerAppLink);
+        // cy.get('div.d-flex.provider-apps > div > a:nth-child(1)')
+        //    .should('have.attr', 'href',
+        //    'https://apps.apple.com/us/app/google-authenticator/id388497605');
     }
 
-    downloadGoogleHaveLink() {
-        cy.get('div.d-flex.provider-apps > div > a:nth-child(3)')
-            .should('have.attr', 'href',
-            'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2');
+    googlePlayHaveLink() {
+        parentPage.isElementHaveLink(panelGooglePlay, providerGoogleLink)
+        // cy.get('div.d-flex.provider-apps > div > a:nth-child(3)')
+        //     .should('have.attr', 'href',
+        //     'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2');
+    }
+
+    buttonAddCardHaveLink() {
+        parentPage.isElementHaveLink(redirectAddCard, redirectAddCardLink)
     }
 
     checkTitleSectionBalances(title) {
@@ -249,11 +278,78 @@ class HomePage {
 
     checkClockTime() {
         parentPage.isElementExist(clockTime);
-        cy.log(" " + parentPage.getLocalDate('en-us') + ", " + parentPage.getTime(':') +
-            ", " + "UTC +" + (parentPage.getTime(':').split(':', 1) - parentPage.getUTCTime()).toString().padStart(2, '0') + ":00 ");
-        let checkText = (" " + parentPage.getLocalDate('en-us') + ", " + parentPage.getTime(':') +
-            ", " + "UTC +" + (parentPage.getTime(':').split(':', 1) - parentPage.getUTCTime()).toString().padStart(2, '0') + ":00 ");
-        parentPage.checkText(checkText, clockTime)
+        // cy.log(" " + parentPage.getLocalDate('en-us') + ", " + parentPage.getTime(':') +
+        //     ", " + "UTC +" + (parentPage.getTime(':').split(':', 1) - parentPage.getUTCTime()).toString().padStart(2, '0') + ":00 ");
+        // let checkText = (" " + parentPage.getLocalDate('en-us') + ", " + parentPage.getTime(':') +
+        //     ", " + "UTC +" + (parentPage.getTime(':').split(':', 1) - parentPage.getUTCTime()).toString().padStart(2, '0') + ":00 ");
+        // parentPage.checkText(checkText, clockTime)
+        //let clock = moment(new Date()).format('MMM DD, HH:mm, UTC Z')
+        parentPage.checkText(" " + moment(new Date()).format('MMM DD, HH:mm, UTC Z') + " ", clockTime)
+    }
+
+    checkColumnHeadersBalancesSection() {
+        parentPage.isElementExist(columnHeaders);
+        for (let i = 0; i < boardStepper.balanceColumnHeaders.length; i++) {
+            cy.get('.mat-header-cell').eq(i).invoke('text').should((text) => {
+                expect(text).to.equal(boardStepper.balanceColumnHeaders[i])
+            })
+        }
+    }
+
+    checkSectionCompleteBusinessVerification() {
+        parentPage.isElementExist(sectionCompleteBusVer);
+        parentPage.checkText(busVerTitle, sectionCompleteBusVerTitle);
+    }
+
+    checkTextTitleBusVer() {
+        cy.get(sectionCompleteBusVerText).find('p').invoke('text').should((text) => {
+            expect(text).to.eq(boardStepper.titleBusVerText);
+        })
+    }
+
+    checkHeadingTextSectionCompleteBusinessVerification() {
+        cy.get(sectionCompleteBusVerText).find('h3').invoke('text').should((text) => {
+            expect(text).to.eq(boardStepper.headingTextSectionCompleteBusVer);
+        })
+    }
+
+    checkTextSectionCompleteBusinessVerification() {
+        for (let i = 0; i < boardStepper.textSectionCompleteBusVer.length; i++) {
+            cy.get(sectionCompleteBusVerText).find('li').eq(i).invoke('text').should((text) => {
+                expect(text).to.eq(boardStepper.textSectionCompleteBusVer[i]);
+            })
+        }
+    }
+
+
+    checkSectionAddCard() {
+        parentPage.isElementExist(sectionAddCard);
+        parentPage.checkText(addCardTitle, sectionAddCardTitle)
+    }
+
+    checkTextSectionAddCard() {
+        for (let i = 0; i < boardStepper.textSectionAddCard.length; i++) {
+            cy.get(sectionAddCardText).find('p').eq(i).invoke('text').should((text) => {
+                expect(text).to.eq(boardStepper.textSectionAddCard[i]);
+            })
+        }
+    }
+
+    checkSectionTopUpWallet() {
+        parentPage.isElementExist(sectionTopUpWallet)
+        parentPage.checkText(topUpWalletTitle,sectionTopUpWalletTitle)
+    }
+
+    checkTextSectionTopUpWallet() {
+        for (let i = 0; i < boardStepper.textSectionTopUpWallet.length; i++) {
+            cy.get(sectionTopUpWalletText).find('p').eq(i).invoke('text').should((text) => {
+                expect(text).to.eq(boardStepper.textSectionTopUpWallet[i]);
+            })
+        }
+    }
+
+    buttonTopUpHaveLink() {
+        parentPage.isElementHaveLink(redirectTopUp, redirectTopUpLink);
     }
 }
 

@@ -1,0 +1,10 @@
+{
+  "ticketPage": "Can't find what you're looking for?We’re happy to answer any questions you may have, just send us a ticket.",
+  "noVerificationBlock": "Before you start to manage payments, we need to verify your company.Fill out the form and upload the documents of your company, including information about the Director, Beneficiaries, and Shareholders. It takes 7 minutes.",
+  "noVerificationBlock2": "Before you start to manage payments, we need to verify your company.Fill out the form and upload the documents of your company, including information about the Director, Beneficiaries and Shareholders. It takes 7 minutes.",
+  "reportPage": " We provide the ability to upload data for a maximum of 31 calendar days.  Please create two export requests if you need to upload data for more than 31 calendar days. ",
+  "jwtTokenPage": "After creating token you will see it only once. If you leave this page, you don't see it again.",
+  "certificatePage": "Generating a new certificate will cancel the previous certificate.",
+  "ipnPage": " Instant payment notification (IPN) is a method for online retailers to\n automatically track purchases and other server-to-server\n communication in real time. This allows the opportunity to store payment\n transactions, order information and other sales internally. IPN\n messages can represent payment success or failures, order transaction status\n changes, accounting ledger information and many others\n depending on the payment gateway. ",
+  "moduleAddAnIPN": "You can add a new IPN in a few clicks"
+}

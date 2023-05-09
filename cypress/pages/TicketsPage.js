@@ -1,6 +1,7 @@
 import parentPage from "../pages/ParentPage";
 
-const pageTitleElement = 'h1.page-title'
+const pageTitleElement = 'h1.page-title';
+const ticketInfoText = '.ticket-info';
 
 class TicketsPage {
 
@@ -75,6 +76,20 @@ class TicketsPage {
 
     getButtonFilterTicket() {
         return cy.contains('span', ' Filter ');
+    }
+
+    checkButtonExist(button_name) {
+        parentPage.isButtonExist(button_name);
+    }
+
+    checkButtonStatus(name, status) {
+        parentPage.getButtonStatus(name, status);
+    }
+
+
+    checkTicketInfoText(checkText) {
+            parentPage.isElementExist(ticketInfoText);
+            parentPage.checkText(checkText, ticketInfoText);
     }
 }
 

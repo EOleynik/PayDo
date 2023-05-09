@@ -71,7 +71,7 @@ class LoginPage {
         cy.get('body').then(($body) => {
             cy.wait(1000);
             if ($body.text().includes('Continue')) {
-                cy.contains('Change account ').click();
+                cy.contains(' Change account ').click();
                 cy.wait(1000);
                 authenticator ? parentPage.getLoginWithAuth(email, password, authenticator) : parentPage.getLogin(email, password)
             } else {

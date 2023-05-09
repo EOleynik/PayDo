@@ -8,6 +8,8 @@ import chargeback from "../fixtures/Stage/chargeback.json";
 import createCheckoutPage from "./CreateCheckoutPage";
 import parentPage from "./ParentPage";
 
+const transactionsPageTitle = '.ngp-heading__text';
+
 cy.getDeltaCheckout = function getDelta(n1, n2) {
     return Math.abs(n1 - n2) <= checkout.precision;
 };
@@ -16,7 +18,6 @@ cy.getDeltaChargeback = function getDelta(n1, n2) {
     return Math.abs(n1 - n2) <= chargeback.precision;
 };
 
-const pageTitleElement = 'h1.page-title'
 
 class TransactionsPage {
 
@@ -25,8 +26,8 @@ class TransactionsPage {
     }
 
     checkPageTitle(title) {
-        parentPage.isPageTitleExist();
-        parentPage.checkText(title, pageTitleElement)
+        parentPage.isPageTitleExist(transactionsPageTitle);
+        parentPage.checkText(title, transactionsPageTitle);
     }
 
     checkButtonExist(button_name) {

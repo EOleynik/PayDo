@@ -3,6 +3,8 @@ import parentPage from "../pages/ParentPage";
 import merchants from "../fixtures/Prod/merchants.json";
 import boardStepper from "../fixtures/Prod/boardStepper.json";
 import moment from "moment";
+import settingsPage from "../pages/SettingsPage"
+import sidebarElements from "../fixtures/Prod/sidebarElements.json";
 
 
 const fullAuth = 'Full authentication is required to access this resource.';
@@ -211,7 +213,7 @@ class HomePage {
     typeAuthenticatorIsExist(name) {
         if (name === "Google Authenticator app") {
             parentPage.isElementExist(typesAuthenticator, '0');
-        } if (name === 'One-time text code') {
+        } if (name === 'One-time text code to your email') {
             parentPage.isElementExist(typesAuthenticator, '1');
         }
     }
@@ -219,7 +221,7 @@ class HomePage {
     checkProviderName(name) {
         if (name === "Google Authenticator app") {
             parentPage.checkText(name, providerName, '0');
-        } if (name === 'One-time text code') {
+        } if (name === 'One-time text code to your email') {
             parentPage.checkText(name, providerName, '1');
         }
     }
@@ -290,8 +292,8 @@ class HomePage {
     checkColumnHeadersBalancesSection() {
         parentPage.isElementExist(columnHeaders);
         for (let i = 0; i < boardStepper.balanceColumnHeaders.length; i++) {
-            cy.get('.mat-header-cell').eq(i).invoke('text').should((text) => {
-                expect(text).to.equal(boardStepper.balanceColumnHeaders[i])
+            cy.get('.mat-header-cell').eq(i).invoke('text').then((text) => {
+                expect(text).to.eq(boardStepper.balanceColumnHeaders[i])
             })
         }
     }
@@ -350,6 +352,25 @@ class HomePage {
 
     buttonTopUpHaveLink() {
         parentPage.isElementHaveLink(redirectTopUp, redirectTopUpLink);
+    }
+
+    fullCheckAlertOrPageTitle(element) {
+        if(element !== 'Settings') {
+            this.checkAlertExist();
+            this.checkTextAlertExist();
+            this.checkTextAlert()
+            parentPage.closeAlert()
+        } else {
+        settingsPage.checkPageTitle('Settings')
+        }
+    }
+
+    goToMenuSections(sections) {
+        for (let i = 0; i < sections.length; i++) {
+            this.clickMenu(sections[i]);
+            cy.wait(1000);
+            this.fullCheckAlertOrPageTitle(sections[i])
+        }
     }
 }
 

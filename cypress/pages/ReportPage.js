@@ -12,6 +12,15 @@ class ReportPage {
         parentPage.isPageTitleExist();
         parentPage.checkText(title, pageTitleElement)
     }
+
+    checkInfoText(checkText) {
+        parentPage.isElementExist('.section-block');
+        // parentPage.checkText(checkText, noVerificationBlock);
+        cy.get('.section-block').find('p').invoke('text').should((text) => {
+            expect(text).to.eq(checkText);
+        })
+    }
+
 }
 
 

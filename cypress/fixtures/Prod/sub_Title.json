@@ -1,0 +1,5 @@
+{
+  "jwtToken": ["Add new token","List of tokens"],
+  "certificate": ["The previous certificate was generated on: "],
+  "IPN": ["Add an IPN", "Checkout - IPN URL list"]
+}

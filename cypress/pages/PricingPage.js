@@ -1,9 +1,9 @@
-import parentPage from "../pages/ParentPage"
+import parentPage from "../pages/ParentPage";
 
 const sectionTitle = '.section-title';
 const noVerificationBlock = '.no-verification-block';
 
-class BankDetailsPage {
+class PricingPage {
 
     checkUrl(Url) {
         parentPage.checkUrl(Url)
@@ -11,7 +11,7 @@ class BankDetailsPage {
 
     checkPageTitle(title) {
         parentPage.isPageTitleExist(sectionTitle);
-        parentPage.checkText(title, sectionTitle);
+        parentPage.checkText(title, sectionTitle)
     }
 
     checkInfoText(checkText) {
@@ -29,8 +29,6 @@ class BankDetailsPage {
     checkButtonStatus(name, status) {
         parentPage.getButtonStatus(name, status)
     }
-
 }
 
-
-export default new BankDetailsPage();
+export default new PricingPage();

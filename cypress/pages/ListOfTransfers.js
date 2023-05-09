@@ -1,9 +1,10 @@
-import parentPage from "../pages/ParentPage"
+import parentPage from "./ParentPage";
+import boardStepper from "../fixtures/Prod/boardStepper.json";
 
 const sectionTitle = '.section-title';
 const noVerificationBlock = '.no-verification-block';
 
-class BankDetailsPage {
+class ListOfTransfers {
 
     checkUrl(Url) {
         parentPage.checkUrl(Url)
@@ -11,12 +12,12 @@ class BankDetailsPage {
 
     checkPageTitle(title) {
         parentPage.isPageTitleExist(sectionTitle);
-        parentPage.checkText(title, sectionTitle);
+        parentPage.checkText(title, sectionTitle)
     }
 
     checkInfoText(checkText) {
         parentPage.isElementExist(noVerificationBlock);
-        // parentPage.checkText(checkText, noVerificationBlock);
+       // parentPage.checkText(checkText, noVerificationBlock);
         cy.get(noVerificationBlock).find('p').invoke('text').should((text) => {
             expect(text).to.eq(checkText);
         })
@@ -32,5 +33,4 @@ class BankDetailsPage {
 
 }
 
-
-export default new BankDetailsPage();
+export default new ListOfTransfers();

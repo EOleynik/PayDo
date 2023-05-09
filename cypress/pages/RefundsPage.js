@@ -3,8 +3,24 @@ import feen from "../fixtures/Stage/feen.json"
 import refund from "../fixtures/Stage/refund.json";
 import createCheckoutPage from "./CreateCheckoutPage";
 import transactionsPage from "./TransactionsPage";
+import parentPage from "./ParentPage";
 
-class RefundPage{
+const pageTitle = '.page-title';
+
+class RefundsPage{
+
+    checkUrl(Url) {
+        parentPage.checkUrl(Url)
+    }
+
+    checkPageTitle(title) {
+        parentPage.isPageTitleExist();
+        parentPage.checkText(title, pageTitle);
+    }
+
+    checkButtonExist(button_name) {
+        parentPage.isButtonExist(button_name);
+    }
 
     rejectRefund() {
 
@@ -60,4 +76,4 @@ class RefundPage{
 }
 
 
-export default new RefundPage();
+export default new RefundsPage();

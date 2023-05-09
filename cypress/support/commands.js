@@ -27,10 +27,15 @@
 // Performs an XMLHttpRequest instead of a cy.request (able to send data as
 // FormData - multipart/form-data)
 
-import 'cypress-file-upload';
 
-import '@testing-library/cypress/add-commands';
 
+
+
+// import 'cypress-file-upload';
+// import '@testing-library/cypress/add-commands';
+
+const compareSnapshotCommand = require('cypress-image-diff-js/dist/command');
+compareSnapshotCommand();
 
 Cypress.Commands.add('form_request', (method, url, formData, done) => {
     const xhr = new XMLHttpRequest();
@@ -69,7 +74,7 @@ Cypress.Commands.add("generateClient",() => {
 
 Cypress.Commands.add("parse",(string) => {
 
-    var el = document.createElement( 'html' );
+    let el = document.createElement( 'html' );
     el.innerHTML = parse(string).toString();
     return el;
 
@@ -101,6 +106,50 @@ Cypress.Commands.add('isExistElement', (selector) => {
     })
 });
 
-const compareSnapshotCommand = require('cypress-visual-regression/dist/command');
+function compareSnapshotTestCommand() {
+    Cypress.Commands.add('compareSnapshotTest', { prevSubject: 'optional' }, (subject, name, params = 0.0) => {
+        let screenshotOptions = {};
+        let errorThreshold = 0.0;
+        if (typeof params === 'number') {
+            errorThreshold = params;
+        } else if (typeof params === 'object') {
+            errorThreshold = params.errorThreshold || 0.0;
+            // eslint-disable-next-line prefer-object-spread
+            screenshotOptions = Object.assign({}, params);
+        }
 
-compareSnapshotCommand();
+        const specDirectory = Cypress.spec.relative.replace('cypress/e2e', '');
+        // take snapshot
+        if (subject) {
+            cy.get(subject).screenshot(name, screenshotOptions);
+        } else {
+            cy.screenshot(name, screenshotOptions);
+        }
+
+        // run visual tests
+        if (Cypress.env('type') === 'actual') {
+            const options = {
+                fileName: name,
+                specDirectory,
+                failSilently: Cypress.env('failSilently') !== undefined ? Cypress.env('failSilently') : true
+            };
+            cy.task('compareSnapshotsPlugin', options).then(results => {
+                if (results.error) {
+                    console.log(results.error); // eslint-disable-line no-console
+                    return results.error;
+                }
+
+                if (results.percentage > errorThreshold) {
+                    return false
+                };
+
+                return true;
+            });
+        }
+    });
+}
+
+
+
+
+

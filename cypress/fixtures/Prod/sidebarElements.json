@@ -1,0 +1,6 @@
+{
+  "business_eWallet":["List of Transfers","Account Details","Cards","Money Transfers","Top Up wallet","Pricing",
+    "Reports","Transactions","Projects","IPN","Reports"],
+  "business_merchant":["Transactions","Projects","IPN","Reports"],
+  "business_general":["Tickets","Exchange","Verification","Partner program","Settings"]
+}

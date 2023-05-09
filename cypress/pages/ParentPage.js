@@ -16,16 +16,16 @@ class ParentPage {
     getLoginWithAuth(email, password, authenticator) {
         cy.get("[formcontrolname=email]").clear().type(email);
         cy.get("[formcontrolname=password]").clear().type(password);
-        cy.contains('span', ' Login ').click();
-        cy.wait(1000);
-        cy.get('[class="d-block"]').type(this.get2FACode(authenticator));
-        cy.contains('span', ' Login ').click();
+        cy.contains('span', ' Log in ').click();
+        cy.wait(1500);
+        cy.get('.otp-confirm-field__control').type(this.get2FACode(authenticator));
+        cy.contains('span', ' Log in ').click();
     }
 
     getLogin(email, password) {
         cy.get("[formcontrolname=email]").clear().type(email);
         cy.get("[formcontrolname=password]").clear().type(password);
-        cy.contains('span', ' Login ').click();
+        cy.contains('span', ' Log in ').click();
         cy.wait(1000);
             }
 
@@ -168,6 +168,7 @@ class ParentPage {
     }
 
     getMenu(name) {
+        cy.wait(1000);
         return cy.contains(name);
     }
 
@@ -198,6 +199,7 @@ class ParentPage {
             password: password,
             type: account_type
         }).then((response) => {
+            //expect(response).property('status').to.equal(206);
             expect(response).property('status').to.equal(206);
 
             cy.request({
@@ -522,6 +524,118 @@ class ParentPage {
     }
 
 
+    loginWithAPI(user, account_type) {
+        try {
+        cy.request('POST', 'https://account.paydo.com/v1/users/login', {
+            email: user[0],
+            password: user[1],
+            type: account_type
+        }).its('headers')
+            .then((res) => {
+                let tok = res.token
+
+                cy.request({
+                    method: 'GET',
+                    url: 'https://account.paydo.com/v1/users/me',
+                    headers: {
+                        token: tok,
+                    }
+                }).then((response) => {
+
+                    let id =response.body.data[0].id
+                    let email = response.body.data[0].personalInformation.email
+                    let token = tok
+                    let role = 0
+                    let status = response.body.status
+                    let accountType = response.body.data[0].type
+                    let stayLogin = true
+                    let isLoggedIn = true
+                    let approvedStatus = response.body.data[0].systemInformation.approvedStatus
+                    let departments = response.body.data[0].systemInformation.departments
+                    let roleType = response.body.data[0].systemInformation.roleType
+                    let moduleUrl = 'profile'
+
+                    let user_session = JSON.stringify({
+                    id, email, token, role, status, accountType, stayLogin, isLoggedIn, approvedStatus, departments, roleType, moduleUrl})
+
+                    window.localStorage.setItem('user-session', user_session)
+
+                    cy.visit('https://account.paydo.com');
+                    cy.wait(2000);
+                })
+            })
+        } catch (e) {}
+    }
+
+    loginWithAPI_2FA(user, authenticator, account_type) {
+        try {
+            cy.request('POST', 'https://account.paydo.com/v1/users/login', {
+                email: user[0],
+                password: user[1],
+                type: account_type
+            }).then((response) => {
+                expect(response).property('status').to.equal(206);
+
+                cy.request({
+                    method: 'POST',
+                    url: 'https://account.paydo.com/v1/users/login',
+                    headers: {
+                        "x-2fa-code": this.get2FACode(authenticator)
+                    },
+                    body: {
+                        email: user[0],
+                        password: user[1],
+                        type: account_type
+                    }
+                }).its('headers')
+                    .then((res) => {
+                        let tok = res.token
+
+                        cy.request({
+                            method: 'GET',
+                            url: 'https://account.paydo.com/v1/users/me',
+                            headers: {
+                                token: tok,
+                            }
+                        }).then((response) => {
+
+                            let id = response.body.data[0].id
+                            let email = response.body.data[0].personalInformation.email
+                            let token = tok
+                            let role = 0
+                            let status = response.body.status
+                            let accountType = response.body.data[0].type
+                            let stayLogin = true
+                            let isLoggedIn = true
+                            let approvedStatus = response.body.data[0].systemInformation.approvedStatus
+                            let departments = response.body.data[0].systemInformation.departments
+                            let roleType = response.body.data[0].systemInformation.roleType
+                            let moduleUrl = 'profile'
+
+                            let user_session = JSON.stringify({
+                                id,
+                                email,
+                                token,
+                                role,
+                                status,
+                                accountType,
+                                stayLogin,
+                                isLoggedIn,
+                                approvedStatus,
+                                departments,
+                                roleType,
+                                moduleUrl
+                            })
+
+                            window.localStorage.setItem('user-session', user_session)
+
+                            cy.visit('https://account.paydo.com');
+                            cy.wait(2000);
+                        })
+                    })
+            })
+        } catch (e) {}
+    }
 }
 
 

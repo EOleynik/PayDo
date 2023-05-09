@@ -1,13 +1,25 @@
 import parentPage from "../pages/ParentPage"
 
+const sectionTitle = '.section-title';
+const noVerificationBlock = '.no-verification-block';
+
 class BankDetailsPage {
 
     checkUrl(Url) {
         parentPage.checkUrl(Url)
     }
 
-    checkPageTitle(name) {
-        parentPage.isPageTitleExist(name);
+    checkPageTitle(title) {
+        parentPage.isPageTitleExist(sectionTitle);
+        parentPage.checkText(title, sectionTitle);
+    }
+
+    checkInfoText(checkText) {
+        parentPage.isElementExist(noVerificationBlock);
+        // parentPage.checkText(checkText, noVerificationBlock);
+        cy.get(noVerificationBlock).find('p').invoke('text').should((text) => {
+            expect(text).to.eq(checkText);
+        })
     }
 
     checkButtonExist(button_name) {

@@ -2,7 +2,14 @@ import merchant from "../fixtures/Stage/merchant.json";
 import feen from "../fixtures/Stage/feen.json";
 import parentPage from "../pages/ParentPage"
 
+const pageTitle = '.page-title';
+
 class ChargebackPage {
+
+    checkPageTitle(title) {
+        parentPage.isPageTitleExist();
+        parentPage.checkText(title, pageTitle);
+    }
 
     getInputMerchantID(){
         return cy.get('[formcontrolname="userIdentifier"]').click();

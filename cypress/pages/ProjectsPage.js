@@ -1,7 +1,15 @@
 import merchant from "../fixtures/Stage/merchant.json"
 import parentPage from "./ParentPage";
 import project from "../fixtures/Stage/project.json";
-import feen from "../fixtures/Stage/feen.json"
+import feen from "../fixtures/Stage/feen.json";
+import sub_Title from "../fixtures/Prod/sub_Title.json"
+
+const pageTitleElement = '.page-title';
+const widgetBlock = '.widget-block';
+const sectionTitle = '.section-title';
+const sectionBlock = '.section-block';
+const subTitle = '.sub-title';
+const importantText = '.important-text';
 
 class ProjectsPage {
 
@@ -23,6 +31,31 @@ class ProjectsPage {
 
     checkUrl(Url) {
         parentPage.checkUrl(Url)
+    }
+
+    checkPageTitle(title) {
+        parentPage.isPageTitleExist();
+        parentPage.checkText(title, pageTitleElement)
+    }
+
+    checkSectionTitle(title) {
+        parentPage.isElementExist(sectionTitle);
+        parentPage.checkText(title, sectionTitle);
+    }
+
+    checkInfoText(checkText) {
+        parentPage.isElementExist('.section-block');
+        // parentPage.checkText(checkText, noVerificationBlock);
+        cy.get('.section-block').find('p').invoke('text').should((text) => {
+            expect(text).to.eq(checkText);
+        })
+    }
+
+    checkSectionBlock(section) {
+        for (let i = 0; i < section.length; i++) {
+            parentPage.isElementExist(sectionBlock, i);
+            parentPage.checkText(section[i], subTitle, i);
+        }
     }
 
     createProject() {
@@ -278,6 +311,21 @@ class ProjectsPage {
     }
 
 
+    checkWidgetBlock() {
+        parentPage.isElementExist(widgetBlock);
+    }
+
+
+    checkImportantText(checkText) {
+        parentPage.isElementExist(importantText);
+        parentPage.checkText(checkText, importantText);
+    }
+
+    checkSubTitle(title) {
+        for (let i = 0; i < title.length; i++) {
+            parentPage.checkText(title[i], subTitle);
+        }
+    }
 }
 
 

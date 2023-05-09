@@ -8,13 +8,28 @@ import merchants from "../fixtures/Prod/merchants.json";
 let no_res = '.no-result';
 let country_name = '.mat-option-text';
 let error = '.mat-error';
-let info = '[class="block-info__text"]'
-let preview = '[class="preview-item d-flex justify-content-between"]'
+let info = '[class="block-info__text"]';
+let preview = '[class="preview-item d-flex justify-content-between"]';
+const sectionTitle = '.section-title';
+const noVerificationBlock = '.no-verification-block';
 
 class MoneyTransferPage {
 
     checkUrl(Url) {
         parentPage.checkUrl(Url)
+    }
+
+    checkPageTitle(title) {
+        parentPage.isPageTitleExist(sectionTitle);
+        parentPage.checkText(title, sectionTitle)
+    }
+
+    checkInfoText(checkText) {
+        parentPage.isElementExist(noVerificationBlock);
+        // parentPage.checkText(checkText, noVerificationBlock);
+        cy.get(noVerificationBlock).find('p').invoke('text').should((text) => {
+            expect(text).to.eq(checkText);
+        })
     }
 
     enterTextInToInputRecipient(recipient_account) {

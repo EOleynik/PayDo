@@ -4,7 +4,8 @@ import parentPage from "./ParentPage";
 import feen from "../fixtures/Stage/feen.json";
 import card from "../fixtures/Stage/card.json";
 
-//const pageTitle ='Top Up wallet'
+const sectionTitle = '.section-title';
+const noVerificationBlock = '.no-verification-block';
 
 class TopUpPage {
 
@@ -292,14 +293,21 @@ class TopUpPage {
     }
 
     checkPageTitle(title) {
-        parentPage.isPageTitleExist();
-        parentPage.checkText(title);
+        parentPage.isPageTitleExist(sectionTitle);
+        parentPage.checkText(title, sectionTitle);
     }
 
     checkButtonStatus(name, status) {
         parentPage.getButtonStatus(name, status)
     }
 
+    checkInfoText(checkText) {
+        parentPage.isElementExist(noVerificationBlock);
+        // parentPage.checkText(checkText, noVerificationBlock);
+        cy.get(noVerificationBlock).find('p').invoke('text').should((text) => {
+            expect(text).to.eq(checkText);
+        })
+    }
 
 }
 
